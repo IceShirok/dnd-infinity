@@ -24,17 +24,22 @@ class PlayerBase(Jsonable):
 
         self.level = level
 
-    def __json__(self):
-        j = {
-                'name': self.name,
-                'base_ability_scores': {
+    @property
+    def ability_scores(self):
+        return {
                     'STR': self._str,
                     'DEX': self._dex,
                     'CON': self._con,
                     'INT': self._int,
                     'WIS': self._wis,
                     'CHA': self._cha,
-                },
+                }
+
+
+    def __json__(self):
+        j = {
+                'name': self.name,
+                'base_ability_scores': self.ability_scores,
                 'level': self.level,
                 'proficiency_bonus': self.proficiency_bonus,
             }

@@ -22,7 +22,10 @@ class PlayerBackground(Jsonable):
 class Criminal(PlayerBackground):
     def __init__(self):
         super(Criminal, self).__init__(name='criminal',
-                                                 feature='criminal contact',
+                                                 feature={
+                                                    'name': 'criminal contact',
+                                                    'description': 'You have an accomplice.',
+                                                 },
                                                  proficiencies={
                                                      'skills': ['deception', 'stealth'],
                                                      'tools': ['thieves_tools', 'bone_dice'],
