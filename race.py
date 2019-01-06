@@ -59,3 +59,44 @@ class HillDwarf(Dwarf):
                                             })
         self.name = 'Hill Dwarf'
 
+
+class Gnome(Race):
+    def __init__(self, asi, traits):
+        def_asi = {'INT': 2}
+        def_traits = {
+                'darkvision': 60,
+                'gnome_cunning': {
+                    'description': 'advantage to all INT, WIS, CHA saving throws against magic',
+                },
+            }
+        super(Gnome, self).__init__(name='Gnome',
+                                    asi={**def_asi, **asi},
+                                    size='small',
+                                    speed=25,
+                                    languages=['common', 'gnomish'],
+                                    traits={**def_traits, **traits})
+
+class RockGnome(Gnome):
+    def __init__(self, traits):
+        super(RockGnome, self).__init__(asi={'CON': 1},
+                                            traits={
+                                                'artificers_lore': {
+                                                    'description': '+10 INT checks to magic items',
+                                                },
+                                                'tinker': {
+                                                    'description': 'you have proficiency with tinkers tools',
+                                                }
+                                            })
+        self.name = 'Rock Gnome'
+
+
+class Human(Race):
+    def __init__(self):
+        def_asi = {'STR': 1, 'DEX': 1, 'CON': 1, 'INT': 1, 'WIS': 1, 'CHA': 1}
+        def_traits = {}
+        super(Human, self).__init__(name='Human',
+                                    asi=def_asi,
+                                    size='medium',
+                                    speed=25,
+                                    languages=['common', 'elvish'],
+                                    traits=def_traits)

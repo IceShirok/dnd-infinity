@@ -2,7 +2,7 @@
 import json
 
 from base import Jsonable, PlayerBase
-from race import HillDwarf
+from race import HillDwarf, RockGnome, Human
 from pclass import RangerFactory
 from background import Criminal
 from pc import PlayerCharacter
@@ -22,13 +22,21 @@ def main():
 
     print('-----')
 
-    ttt = PlayerBase("Tamiphi Tockentell", 10, 11, 16, 18, 20, 7, level=8)
-    print(ttt)
+    ttt_base = PlayerBase("Tamiphi Tockentell", 10, 11, 16, 18, 20, 7, level=8)
+    gnome = RockGnome({})
+    print(ttt_base)
+    print(gnome)
 
     print('-----')
 
-    csheet = CharacterSheetGenerator().generate_character_sheet(pc)
-    print(json.dumps(csheet, indent=4))
+    lok_base = PlayerBase("Lok", 15, 18, 10, 12, 16, 9, level=4)
+    human = Human()
+    print(lok_base)
+    print(human)
+    #print('-----')
+
+    #csheet = CharacterSheetGenerator().generate_character_sheet(pc)
+    #print(json.dumps(csheet, indent=4))
 
 
 if __name__ == '__main__':
