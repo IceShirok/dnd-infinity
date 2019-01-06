@@ -127,6 +127,12 @@ class CharacterSheetGenerator(object):
             'background_proficiencies': character.background.proficiencies,
         }
 
+        # spellcasting, if it exists
+        spellcasting_p = {}
+        for c in character.classes:
+            if c.spellcasting:
+                spellcasting_p = c.spellcasting.__json__()
+
         # the final struct
         j = {
             'name': character.base.name,
@@ -150,6 +156,7 @@ class CharacterSheetGenerator(object):
                 'total_hit_dice': hit_dice,
             },
             'traits_and_features': traits,
+            'spellcasting': spellcasting_p,
         }
         return j
 

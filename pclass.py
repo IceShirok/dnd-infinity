@@ -1,10 +1,11 @@
 
 import json
 from base import Jsonable
+from spells import SpellcastingAbility
 
 class PlayerClass(Jsonable):
 
-    def __init__(self, name, level, hit_die, proficiencies, saving_throws, skills, features):
+    def __init__(self, name, level, hit_die, proficiencies, saving_throws, skills, features, spellcasting=None):
         self.name = name
         self.level = level
         self.hit_die = hit_die
@@ -12,8 +13,12 @@ class PlayerClass(Jsonable):
         self.saving_throws = saving_throws
         self.skills = skills
         self.features = features
+        self.spellcasting = spellcasting
 
     def __json__(self):
+        spellcasting_p = self.spellcasting
+        if spellcasting_p:
+            spellcasting_p = spellcasting_p.__json__()
         j = {
                 'class': self.name,
                 'level': self.level,
@@ -22,6 +27,7 @@ class PlayerClass(Jsonable):
                 'saving_throws': self.saving_throws,
                 'skills': self.skills,
                 'features': self.features,
+                'spellcasting': spellcasting_p,
             }
         return j
 
@@ -58,7 +64,8 @@ class RangerFactory(PlayerClassFactory):
         }
         return Ranger(level=1,
                       skills=def_skills,
-                      features=def_features)
+                      features=def_features,
+                      spellcasting=None)
 
     def _generate_class_2(self):
         features = {
@@ -74,19 +81,24 @@ class RangerFactory(PlayerClassFactory):
                     }
                 }
         }
-        return Ranger(level=2, skills=[], features=features)
+
+        # TODO make this a bit more elegant...
+        spellcasting = SpellcastingAbility(list_spells_known=['hunters_mark', 'cure_wounds'],
+                                           spell_slots={ "1st": 2 })
+        return Ranger(level=2, skills=[], features=features, spellcasting=spellcasting)
 
 class Ranger(PlayerClass):
-    def __init__(self, level, skills, features):
+    def __init__(self, level, skills, features, spellcasting):
         super(Ranger, self).__init__(name='Ranger',
-                                          level=level,
-                                          hit_die=10,
-                                          proficiencies={
-                                              'armor': ['light', 'medium', 'shields'],
-                                              'weapons': ['simple', 'martial'],
-                                              'tools': [],
-                                          },
-                                          saving_throws=['STR', 'DEX'],
-                                          skills=skills,
-                                          features=features)
+                                      level=level,
+                                      hit_die=10,
+                                      proficiencies={
+                                          'armor': ['light', 'medium', 'shields'],
+                                          'weapons': ['simple', 'martial'],
+                                          'tools': [],
+                                      },
+                                      saving_throws=['STR', 'DEX'],
+                                      skills=skills,
+                                      features=features,
+                                      spellcasting=spellcasting)
 
