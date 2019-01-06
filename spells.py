@@ -2,7 +2,7 @@
 from base import Jsonable
 
 """
-A spell in D&D.
+A singular spell in D&D.
 I will very likely keep the majority of the information in a database
 because of the sheer number of spells in the book. Some spells will
 be manually created into objects for testing purposes.

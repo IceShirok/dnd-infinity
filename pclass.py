@@ -3,6 +3,17 @@ import json
 from base import Jsonable
 from spells import SpellcastingAbility
 
+
+"""
+A player character's (PC) class.
+This particular feature is going to be modelled by aggregating
+all the class/level combinations to view the PC's class.
+This model reflects how the PHB breaks down the class by level,
+as well as make multiclassing easier to manage.
+i.e. a pure 10th level ranger will have ranger_1, ranger_2,
+..., ranger_10 objects. Whereas a barbarian 2/druid 2 PC
+will have a total of 4 objects, 2 from each class.
+"""
 class PlayerClass(Jsonable):
 
     def __init__(self, name, level, hit_die, proficiencies, saving_throws, skills, features, spellcasting=None):
@@ -31,6 +42,11 @@ class PlayerClass(Jsonable):
             }
         return j
 
+"""
+A class factory. This must be extended to accomodate a specific
+class. This enforces classes to implement features that
+the PC gains upon reaching a specific level.
+"""
 class PlayerClassFactory(object):
     def __init__(self):
         pass
@@ -49,6 +65,7 @@ class PlayerClassFactory(object):
 
     def _generate_class_2(self):
         pass
+
 
 class RangerFactory(PlayerClassFactory):
     def _generate_class_1(self):

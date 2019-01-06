@@ -2,6 +2,13 @@
 import json
 from base import Jsonable
 
+
+"""
+A player character's (PC) background.
+This doesn't change after a PC is created, but this is created
+separately because it is a separate section in the PHB and is
+easy to model as such.
+"""
 class PlayerBackground(Jsonable):
 
     def __init__(self, name, feature, proficiencies, languages):

@@ -2,6 +2,11 @@
 import json
 import math
 
+"""
+An interface to allow objects to be viewed in a JSON format.
+This is more for testing and debugging purposes, and some
+features may be replaced with objects instead.
+"""
 class Jsonable(object):
     def __json__(self):
         pass
@@ -10,6 +15,15 @@ class Jsonable(object):
         return json.dumps(self.__json__(), indent=4, sort_keys=False)
 
 
+"""
+A player character (PC) base will consist of the PC's name,
+base ability scores, and level by experience. Features that
+do not change with certain PC features (race, class, background)
+and cannot be derived by other features (i.e. proficiency bonus)
+are put in this class.
+Why level by experience and not by class? I'm thinking a little
+too far ahead, but it's because of multiclassing.
+"""
 class PlayerBase(Jsonable):
 
     def __init__(self, name, _str, _dex, _con, _int, _wis, _cha, level=1):
@@ -26,6 +40,9 @@ class PlayerBase(Jsonable):
 
     @property
     def ability_scores(self):
+        """
+        Return the base ability scores.
+        """
         return {
                     'STR': self._str,
                     'DEX': self._dex,
@@ -47,5 +64,10 @@ class PlayerBase(Jsonable):
 
     @property
     def proficiency_bonus(self):
+        """
+        Return the proficiency bonus of the PC.
+        Proficiency bonus is based on a character's level.
+        TODO fix the formula
+        """
         return math.floor((self.level + 3) / 4) + 1
 

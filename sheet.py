@@ -3,9 +3,11 @@ import math
 
 
 def _modifier(score):
+    # Calculates the ability modifier
     return math.floor((score-10)/2)
 
 def _modifier_p(score):
+    # Calculates and returns a prettified ability modifier score
     mod = _modifier(score)
     if mod > 0:
         return '+{}'.format(mod)
@@ -13,6 +15,7 @@ def _modifier_p(score):
         return str(mod)
 
 def calculate_ability_scores(base, race):
+    # Calculate the scores and modifiers for each ability score
     ability_scores_raw = base.ability_scores
 
     for a in race.asi.keys():
@@ -44,6 +47,7 @@ def calculate_hit_points(ability_scores, classes):
     return hit_points
 
 def calculate_hit_dice(classes):
+    # A bit more complex because of multiclassing feature
     hit_dice = {}
     for c in classes:
         hit_die = 'd{}'.format(c.hit_die)
@@ -71,6 +75,7 @@ SKILL_PROFICIENCIES = {
     'CHA': ['deception', 'intimidation', 'performance', 'persuasion'],
 }
 
+# TODO may be placed in another class entirely
 def calculate_skill_proficiencies(ability_scores, first_class, p_bonus):
     skill_proficiencies = first_class.skills
     skill_proficiencies_p = {}
@@ -84,6 +89,13 @@ def calculate_skill_proficiencies(ability_scores, first_class, p_bonus):
                 skill_proficiencies_p[skill]['modifier'] += p_bonus
     return skill_proficiencies_p
 
+
+"""
+A service that generates a character sheet-friendly JSON.
+The service's purpose is to aggregate and merge all the different
+features from different parts of the PC so that it would be
+suitable to use as a character sheet.
+"""
 class CharacterSheetGenerator(object):
     def __init__(self):
         pass

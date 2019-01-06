@@ -1,6 +1,14 @@
 
 from base import Jsonable
 
+
+"""
+A player character's (PC) backpack, or equipment.
+Currently a work-in-progress, since this particular
+feature is much more transient than a PC's stats.
+The 'trasient' feature will likely is delegated to
+a specific service.
+"""
 class Backpack(Jsonable):
     def __init__(self):
 	self.copper_pieces = 0

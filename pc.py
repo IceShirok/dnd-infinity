@@ -2,6 +2,11 @@
 from base import Jsonable
 
 
+"""
+A player character (PC) in D&D.
+A PC consists of some base characteristics, a race, a class, and
+a background.
+"""
 class PlayerCharacter(Jsonable):
     def __init__(self, base, race=None, classes=None, background=None):
         self.base = base

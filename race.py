@@ -3,6 +3,11 @@ import json
 from base import Jsonable
 
 
+"""
+A player character's (PC) race.
+A PC's race does not change for the most part, although
+some features may scale up with a PC's level.
+"""
 class Race(Jsonable):
     def __init__(self, name, asi, size, speed, languages=['common'], traits={}):
         self.name = name
@@ -22,6 +27,9 @@ class Race(Jsonable):
                 'traits': self.traits,
             }
         return j
+
+
+# DWARF
 
 class Dwarf(Race):
     def __init__(self, asi, traits):
@@ -60,6 +68,8 @@ class HillDwarf(Dwarf):
         self.name = 'Hill Dwarf'
 
 
+# GNOME
+
 class Gnome(Race):
     def __init__(self, asi, traits):
         def_asi = {'INT': 2}
@@ -89,6 +99,8 @@ class RockGnome(Gnome):
                                             })
         self.name = 'Rock Gnome'
 
+
+# HUMAN
 
 class Human(Race):
     def __init__(self):
