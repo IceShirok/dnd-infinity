@@ -1,6 +1,6 @@
 
 import json
-from base import Jsonable
+from base import Jsonable, Requireable
 
 
 """
@@ -8,7 +8,7 @@ A player character's (PC) race.
 A PC's race does not change for the most part, although
 some features may scale up with a PC's level.
 """
-class Race(Jsonable):
+class Race(Jsonable, Requireable):
     def __init__(self, name, asi, size, speed, languages=['common'], traits={}):
         self.name = name
         self.asi = asi
@@ -29,25 +29,6 @@ class Race(Jsonable):
                 'traits': self.traits,
             }
         return j
-    
-    def _required_customization(self):
-        """
-        Return a list of features that need to be fulfilled in order for
-        the verify function to not spit out fire and brimstone.
-        This should be a list of JSON objects.
-        """
-        return []
-
-    def _verify(self):
-        """
-        This function serves to make sure that the race, with its inputs,
-        is considered valid. In most cases, this applies for races that
-        requires selecting a feature amongst a selection (i.e. select a
-        skill proficiency from a list of 3).
-        Return true if all verification has passed, or throw an exception
-        (ValueError?) with a message saying what is invalid.
-        """
-        return True
 
 # DWARF
 
