@@ -109,6 +109,8 @@ class PlayerCharacter(Jsonable):
     
     @property
     def class_name(self):
+        # TODO maybe this will be aggregated to a class/level thing
+        # this is more important with multiclassing so we can delay this
         return self.classes[0].name
     
     @property
@@ -192,16 +194,23 @@ class PlayerCharacter(Jsonable):
     
     @property
     def skill_proficiencies(self):
-        skill_proficiencies = self.classes[0].skills
-        skill_proficiencies_p = {}
+        # TODO i think that each class should be responsible for
+        # giving the PC class the skill proficiencies, as opposed
+        # to the PC class trying to parse through everything
+        # AKA do this to most of the rest of this class
+        skill_proficiencies = (self.classes[0].skills + self.background.skills)
         ability_scores = self.ability_scores
+
+        skill_proficiencies_p = {}
         for ability in SKILL_PROFICIENCIES.keys():
             for skill in SKILL_PROFICIENCIES[ability]:
                 skill_proficiencies_p[skill] = {
                     'ability': ability,
+                    'is_proficient': False,
                 }
                 skill_proficiencies_p[skill]['modifier'] = ability_scores[ability]['modifier']
                 if skill in skill_proficiencies:
+                    skill_proficiencies_p[skill]['is_proficient'] = True
                     skill_proficiencies_p[skill]['modifier'] += self.proficiency_bonus
         return skill_proficiencies_p
     
@@ -265,6 +274,10 @@ class PlayerCharacter(Jsonable):
             },
             'traits_and_features': {
                 'size': self.size,
+                # TODO when doing the traits, this can have some replication
+                # this is in mind with the character sheet generator
+                # and listing where things came from vs. actually deriving
+                # the total calculations
                 'racial_traits': self.race.traits,
                 'languages': self.languages,
                 'class_features': self.get_features(),

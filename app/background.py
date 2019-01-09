@@ -25,6 +25,10 @@ class PlayerBackground(Jsonable):
                 'languages': self.languages,
         }
         return j
+    
+    @property
+    def skills(self):
+        return self.proficiencies['skills']
 
 class Criminal(PlayerBackground):
     def __init__(self):
