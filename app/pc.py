@@ -53,11 +53,7 @@ class PlayerBase(Jsonable):
 
     @property
     def proficiency_bonus(self):
-        """
-        Return the proficiency bonus of the PC.
-        Proficiency bonus is based on a character's level.
-        TODO fix the formula
-        """
+        # Proficiency bonus is based on a character's level.
         return math.floor((self.level + 3) / 4) + 1
 
 
@@ -69,13 +65,13 @@ def _modifier(score):
     # Calculates the ability modifier
     return math.floor((score-10)/2)
 
-def _modifier_p(score):
-    # Calculates and returns a prettified ability modifier score
-    mod = _modifier(score)
-    if mod > 0:
-        return '+{}'.format(mod)
+def prettify_modifier(modifier):
+    # Function used to add a + to positive score, - to negative score,
+    # or do nothing to a 0. Used for visual purposes.
+    if modifier > 0:
+        return '+{}'.format(modifier)
     else:
-        return str(mod)
+        return str(modifier)
 
 SKILL_PROFICIENCIES = {
     'STR': ['athletics'],
