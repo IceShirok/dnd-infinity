@@ -131,7 +131,8 @@ class PlayerCharacter(Jsonable):
     def size(self):
       return self.race.size
 
-    def calculate_ability_scores(self):
+    @property
+    def ability_scores(self):
         # Calculate the scores and modifiers for each ability score
         ability_scores_raw = self.base.ability_scores
 
@@ -182,7 +183,7 @@ class PlayerCharacter(Jsonable):
     def saving_throws(self):
         saving_throws = self.classes[0].saving_throws
         saving_throws_p = {}
-        ability_scores = self.calculate_ability_scores()
+        ability_scores = self.ability_scores
         for a in ability_scores.keys():
             saving_throws_p[a] = ability_scores[a]['modifier']
             if a in saving_throws:
@@ -193,7 +194,7 @@ class PlayerCharacter(Jsonable):
     def skill_proficiencies(self):
         skill_proficiencies = self.classes[0].skills
         skill_proficiencies_p = {}
-        ability_scores = self.calculate_ability_scores()
+        ability_scores = self.ability_scores
         for ability in SKILL_PROFICIENCIES.keys():
             for skill in SKILL_PROFICIENCIES[ability]:
                 skill_proficiencies_p[skill] = {
@@ -250,7 +251,7 @@ class PlayerCharacter(Jsonable):
                 'background': self.background_name,
             },
             'proficiency_bonus': self.proficiency_bonus,
-            'ability_scores': self.calculate_ability_scores(),
+            'ability_scores': self.ability_scores,
             'saving_throws': self.saving_throws,
             'skills': self.skill_proficiencies,
             'combat': {
