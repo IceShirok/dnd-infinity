@@ -26,7 +26,7 @@ def test_pc():
     dorian_base = pc.PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=2)
     dorian_race = race.HillDwarf(traits={'tool_proficiency': 'brewers_kit'})
     dorian_classes = [
-            cclass.RangerFactory().generate_by_level(1),
+            cclass.RangerFactory().generate_by_level(1, skills=['athletics', 'animal_handling', 'survival'], favored_enemy='plants', languages='elvish', favored_terrain='forest'),
             cclass.RangerFactory().generate_by_level(2)
             ]
     dorian_background = background.Criminal()
