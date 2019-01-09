@@ -2,11 +2,7 @@
 import json
 import sys
 
-from race import HillDwarf, RockGnome, Human
-from pclass import RangerFactory
-from background import Criminal
-from pc import PlayerBase, PlayerCharacter
-
+import race, cclass, background, pc
 import equipment
 
 """
@@ -27,33 +23,33 @@ def main():
     print('bye')
 
 def test_pc():
-    base = PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=2)
-    race = HillDwarf({})
-    classes = [
-            RangerFactory().generate_by_level(1),
-            RangerFactory().generate_by_level(2)
+    dorian_base = pc.PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=2)
+    dorian_race = race.HillDwarf({})
+    dorian_classes = [
+            cclass.RangerFactory().generate_by_level(1),
+            cclass.RangerFactory().generate_by_level(2)
             ]
-    background = Criminal()
-    pc = PlayerCharacter(base, race, classes, background)
-    print(pc.__str__())
+    dorian_background = background.Criminal()
+    dorian_pc = pc.PlayerCharacter(dorian_base, dorian_race, dorian_classes, dorian_background)
+    print(dorian_pc.__str__())
 
     print('-----')
 
-    ttt_base = PlayerBase("Tamiphi Tockentell", 10, 11, 16, 18, 20, 7, level=8)
-    gnome = RockGnome({})
+    ttt_base = pc.PlayerBase("Tamiphi Tockentell", 10, 11, 16, 18, 20, 7, level=8)
+    gnome = race.RockGnome({})
     print(ttt_base)
     print(gnome)
 
     print('-----')
 
-    lok_base = PlayerBase("Lok", 15, 18, 10, 12, 16, 9, level=4)
-    human = Human()
+    lok_base = pc.PlayerBase("Lok", 15, 18, 10, 12, 16, 9, level=4)
+    human = race.Human()
     print(lok_base)
     print(human)
 
     print('-----')
 
-    print(json.dumps(pc.generate_character_sheet(), indent=4))
+    print(json.dumps(dorian_pc.generate_character_sheet(), indent=4))
 
 def test_stuff():
     backpack = equipment.Backpack(gold_pieces=15)
