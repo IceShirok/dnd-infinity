@@ -24,7 +24,7 @@ def main():
 
 def test_pc():
     dorian_base = pc.PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=2)
-    dorian_race = race.HillDwarf({})
+    dorian_race = race.HillDwarf(traits={'tool_proficiency': 'brewers_kit'})
     dorian_classes = [
             cclass.RangerFactory().generate_by_level(1),
             cclass.RangerFactory().generate_by_level(2)
@@ -43,7 +43,7 @@ def test_pc():
     print('-----')
 
     lok_base = pc.PlayerBase("Lok", 15, 18, 10, 12, 16, 9, level=4)
-    human = race.Human()
+    human = race.Human(languages=['draconic'])
     print(lok_base)
     print(human)
 

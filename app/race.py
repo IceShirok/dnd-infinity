@@ -16,6 +16,8 @@ class Race(Jsonable):
         self.speed = speed
         self.languages = languages
         self.traits = traits
+        
+        self._verify()
 
     def __json__(self):
         j = {
@@ -27,7 +29,25 @@ class Race(Jsonable):
                 'traits': self.traits,
             }
         return j
+    
+    def _required_customization(self):
+        """
+        Return a list of features that need to be fulfilled in order for
+        the verify function to not spit out fire and brimstone.
+        This should be a list of JSON objects.
+        """
+        return []
 
+    def _verify(self):
+        """
+        This function serves to make sure that the race, with its inputs,
+        is considered valid. In most cases, this applies for races that
+        requires selecting a feature amongst a selection (i.e. select a
+        skill proficiency from a list of 3).
+        Return true if all verification has passed, or throw an exception
+        (ValueError?) with a message saying what is invalid.
+        """
+        return True
 
 # DWARF
 
@@ -42,29 +62,47 @@ class Dwarf(Race):
                 'dwarven_combat_training': {
                     'weapon_proficiency': ['battleaxe', 'handaxe'],
                 },
-                'tool_proficiency': {
-                    'tools': ['smiths_tools', 'brewers_kit', 'masons_tools'],
-                    'choice': 1,
-                },
                 'stonecunning': {
                     'description': '+10 int checks to stone',
                 },
             }
         super(Dwarf, self).__init__(name='Dwarf',
-                                        asi={**def_asi, **asi},
-                                        size='medium',
-                                        speed=25,
-                                        languages=['common', 'dwarvish'],
-                                        traits={**def_traits, **traits})
+                                    asi={**def_asi, **asi},
+                                    size='medium',
+                                    speed=25,
+                                    languages=['common', 'dwarvish'],
+                                    traits={**def_traits, **traits})
+    
+    def _required_customization(self):
+        req = [
+            {
+                'tool_proficiency': {
+                    'tools': ['smiths_tools', 'brewers_kit', 'masons_tools'],
+                    'choice': 1,
+                }
+            }
+        ]
+        return req
+
+    def _verify(self):
+        # TODO try to de-dupe a lot of this proficiency stuff
+        if 'tool_proficiency' not in self.traits:
+            raise ValueError('Must input a tool proficiency!')
+        if self.traits['tool_proficiency'] not in ['smiths_tools', 'brewers_kit', 'masons_tools']:
+            raise ValueError('Must enter a valid tool proficiency!')
+        return True
+
 
 class HillDwarf(Dwarf):
     def __init__(self, traits):
-        super(HillDwarf, self).__init__(asi={'WIS': 1},
-                                            traits={
-                                                'dwarven_toughness': {
-                                                    'description': 'increase 1 HP per level',
-                                                },
-                                            })
+        def_asi = {'CON': 2}
+        def_traits = {
+                          'dwarven_toughness': {
+                              'description': 'increase 1 HP per level',
+                          },
+                      }
+        super(HillDwarf, self).__init__(asi=def_asi,
+                                        traits={**def_traits, **traits})
         self.name = 'Hill Dwarf'
 
 
@@ -103,12 +141,30 @@ class RockGnome(Gnome):
 # HUMAN
 
 class Human(Race):
-    def __init__(self):
+    def __init__(self, languages):
         def_asi = {'STR': 1, 'DEX': 1, 'CON': 1, 'INT': 1, 'WIS': 1, 'CHA': 1}
         def_traits = {}
+        def_languages = ['common']
         super(Human, self).__init__(name='Human',
                                     asi=def_asi,
                                     size='medium',
                                     speed=25,
-                                    languages=['common', 'elvish'],
+                                    languages=def_languages+languages,
                                     traits=def_traits)
+    
+    def _required_customization(self):
+        req = [
+            {
+                'languages': {
+                    'description': 'choose any one language',
+                    'choice': 1,
+                }
+            }
+        ]
+        return req
+
+    def _verify(self):
+        # TODO try to de-dupe a lot of this proficiency stuff
+        if len(self.languages) != 2:
+            raise ValueError('Must input one custom language!')
+        return True
