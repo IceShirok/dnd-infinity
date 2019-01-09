@@ -2,15 +2,12 @@
 import json
 import sys
 
-from base import Jsonable, PlayerBase
 from race import HillDwarf, RockGnome, Human
 from pclass import RangerFactory
 from background import Criminal
-from pc import PlayerCharacter
+from pc import PlayerBase, PlayerCharacter
 
 import equipment
-
-from sheet import CharacterSheetGenerator
 
 """
 Testing playground for D&D Infinity.
@@ -53,10 +50,10 @@ def test_pc():
     human = Human()
     print(lok_base)
     print(human)
-    #print('-----')
 
-    #csheet = CharacterSheetGenerator().generate_character_sheet(pc)
-    #print(json.dumps(csheet, indent=4))
+    print('-----')
+
+    print(json.dumps(pc.generate_character_sheet(), indent=4))
 
 def test_stuff():
     backpack = equipment.Backpack(gold_pieces=15)
