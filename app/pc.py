@@ -179,13 +179,16 @@ class PlayerCharacter(Jsonable):
     
     @property
     def saving_throws(self):
+        # TODO saving throws may appear in multiple classes
         saving_throws = self.classes[0].saving_throws
         saving_throws_p = {}
         ability_scores = self.ability_scores
         for a in ability_scores.keys():
-            saving_throws_p[a] = ability_scores[a]['modifier']
+            saving_throws_p[a] = { 'modifier': ability_scores[a]['modifier'] }
+            saving_throws_p[a]['is_proficient'] = False
             if a in saving_throws:
-               saving_throws_p[a] += self.proficiency_bonus
+               saving_throws_p[a]['modifier'] += self.proficiency_bonus
+               saving_throws_p[a]['is_proficient'] = True
         return saving_throws_p
     
     @property

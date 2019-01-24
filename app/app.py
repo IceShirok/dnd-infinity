@@ -56,11 +56,12 @@ def write_html_page():
     
     html_page += '<div>'
     html_page += '<h2>Saving Throws</h2>'
-    def generate_saving_throw_html(ability, modifier):
-        tick = '-' #'v' if is_proficient else '-'
+    def generate_saving_throw_html(ability, modifier, is_proficient):
+        tick = 'v' if is_proficient else '-'
         return '<div style="margin: 5px"><p>{} {}: {}</p></div>'.format(tick, ability, pc.prettify_modifier(modifier))
     for save in dorian.saving_throws:
-        html_page += generate_saving_throw_html(save, dorian.saving_throws[save])
+        s_details = dorian.saving_throws[save]
+        html_page += generate_saving_throw_html(save, s_details['modifier'], s_details['is_proficient'])
     html_page += '</div>'
 
     
