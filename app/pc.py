@@ -209,12 +209,20 @@ class PlayerCharacter(Jsonable):
         return skill_proficiencies_p
     
     @property
+    def proficiencies(self):
+        p = { **self.race.proficiencies, **self.class_proficiencies, **self.background.proficiencies }
+        return p
+
+    @property
     def class_proficiencies(self):
-      return self.classes[0].proficiencies
+        p = {}
+        for c in self.classes:
+            p = { **p, **c.proficiencies }
+        return p
     
     @property
     def languages(self):
-      return (self.race.languages + self.background.languages)
+        return (self.race.languages + self.background.languages)
 
     def get_features(self):
         skill_features = {}
@@ -257,6 +265,7 @@ class PlayerCharacter(Jsonable):
             'ability_scores': self.ability_scores,
             'saving_throws': self.saving_throws,
             'skills': self.skill_proficiencies,
+            'proficiencies': self.proficiencies,
             'combat': {
                 'armor_class': self.armor_class,
                 'initiative': self.initiative,
@@ -277,7 +286,7 @@ class PlayerCharacter(Jsonable):
                 'class_features': self.get_features(),
                 'class_proficiencies': self.class_proficiencies,
                 'background_feature': self.background.feature,
-                'background_proficiencies': self.background.proficiencies,
+                'background_proficiencies': self.background.background_proficiencies,
             },
             'spellcasting': self.get_spellcasting(),
         }

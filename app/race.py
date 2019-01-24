@@ -33,6 +33,10 @@ class Race(Jsonable, Requireable):
     @property
     def skills(self):
         pass
+    
+    @property
+    def proficiencies(self):
+        pass
 
 
 # DWARF
@@ -62,6 +66,13 @@ class Dwarf(Race):
     @property
     def skills(self):
         return []
+    
+    @property
+    def proficiencies(self):
+        p = {}
+        p['weapons'] = self.traits['dwarven_combat_training']['weapon_proficiency']
+        p['tools'] = self.traits['tool_proficiency']['tools']
+        return p
 
     def _required_customization(self):
         req = [
@@ -78,7 +89,7 @@ class Dwarf(Race):
         # TODO try to de-dupe a lot of this proficiency stuff
         if 'tool_proficiency' not in self.traits:
             raise ValueError('Must input a tool proficiency!')
-        if self.traits['tool_proficiency'] not in ['smiths_tools', 'brewers_kit', 'masons_tools']:
+        if 'tools' not in self.traits['tool_proficiency'] or len(self.traits['tool_proficiency']['tools']) != 1 or self.traits['tool_proficiency']['tools'][0] not in ['smiths_tools', 'brewers_kit', 'masons_tools']:
             raise ValueError('Must enter a valid tool proficiency!')
         return True
 
@@ -116,6 +127,11 @@ class Gnome(Race):
     @property
     def skills(self):
         return []
+    
+    @property
+    def proficiencies(self):
+        p = {}
+        return p
 
 
 class RockGnome(Gnome):
@@ -130,6 +146,12 @@ class RockGnome(Gnome):
                                                 }
                                             })
         self.name = 'Rock Gnome'
+    
+    @property
+    def proficiencies(self):
+        p = {}
+        p['tools'] = ['tinkers tools']
+        return p
 
 
 # HUMAN
@@ -166,3 +188,8 @@ class Human(Race):
     @property
     def skills(self):
         return []
+    
+    @property
+    def proficiencies(self):
+        p = {}
+        return p

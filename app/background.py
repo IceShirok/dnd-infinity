@@ -14,21 +14,32 @@ class PlayerBackground(Jsonable):
     def __init__(self, name, feature, proficiencies, languages):
         self.name = name
         self.feature = feature
-        self.proficiencies = proficiencies
+        self.__proficiencies = proficiencies
         self.languages = languages
 
     def __json__(self):
         j = {
                 'background': self.name,
                 'feature': self.feature,
-                'proficiencies': self.proficiencies,
+                'proficiencies': self.__proficiencies,
                 'languages': self.languages,
         }
         return j
 
     @property
     def skills(self):
-        return self.proficiencies['skills']
+        return self.__proficiencies['skills']
+
+    @property
+    def background_proficiencies(self):
+        p = { **self.__proficiencies }
+        return p
+
+    @property
+    def proficiencies(self):
+        p = { **self.background_proficiencies }
+        p.pop('skills')
+        return p
 
 class Criminal(PlayerBackground):
     def __init__(self):
