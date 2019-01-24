@@ -91,11 +91,27 @@ def generate_health_html(player_character):
     html_page += '</div>'
     return html_page
 
+def generate_proficiencies(player_character):
+    html_page = ''
+    html_page += '<div>'
+    html_page += '<h2>Proficiencies</h2>'
+    for p in player_character.proficiencies:
+        a_list = ', '.join(player_character.proficiencies[p])
+        html_page += '<p><strong>{}</strong>: {}</p>'.format(p, a_list)
+    html_page += '<p><strong>Languages</strong>: {}</p>'.format(', '.join(player_character.languages))
+    html_page += '</div>'
+    return html_page
+
 def generate_features_html(player_character):
     html_page = ''
     html_page += '<div>'
     html_page += '<h2>Traits & Features</h2>'
-    html_page += '<p>TBD</p>'
+    subfeatures = player_character.features
+    for fk in subfeatures:
+        html_page += '<h3>{}</h3>'.format(fk)
+        subfeature = subfeatures[fk]
+        for f in subfeature:
+            html_page += '<h4>{}</h4><p>{}</p>'.format(subfeature[f]['name'], subfeature[f]['description'])
     html_page += '</div>'
     return html_page
 
@@ -130,6 +146,7 @@ def write_html_page(player_character):
     html_page += '</div>'
     
     html_page += '<div class="column">'
+    html_page += generate_proficiencies(player_character)
     html_page += generate_features_html(player_character)
     html_page += '</div>'
     

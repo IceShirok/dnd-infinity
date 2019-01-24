@@ -92,12 +92,14 @@ class RangerFactory(PlayerClassFactory):
 
         def_features = {
                 'favored_enemy': {
-                    'deescription': 'has a grudge against something',
+                    'name': 'Favored Enemy',
+                    'description': 'Beginning at 1st level, you have significant experience studying, tracking, hunting, and even talking to a certain type of enemy. ...',
                     'enemies': [favored_enemy],
                 },
-                'languages': [languages],
+                #'languages': [languages],
                 'natural_explorer': {
-                    'description': 'really likes a certain terrain',
+                    'name': 'Natural Explorer',
+                    'description': 'You are particularly familiar with one type of natural environment and are adept at traveling and surviving in such regions. ...',
                     'terrains': [favored_terrain]
                 },
         }
@@ -155,7 +157,11 @@ class RangerFactory(PlayerClassFactory):
         self._validate_class_2(fighting_style=fighting_style)
 
         features = {
-            'fighting_style': [fighting_style]
+            'fighting_style': {
+                'name': 'Fighting Style',
+                'description': 'At 2nd level, you adopt a particular style of fighting as your specialty.',
+                'style': [fighting_style],
+            }
         }
 
         # TODO make this a bit more elegant...

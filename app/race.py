@@ -45,15 +45,23 @@ class Dwarf(Race):
     def __init__(self, asi, traits):
         def_asi = {'CON': 2}
         def_traits = {
-                'darkvision': 60,
+                'darkvision': {
+                    'name': 'Darkvision',
+                    'range': 60,
+                    'description': 'Accustomed to life underground, you have superior vision in dark and dim Conditions. You can see in dim light within 60 feet of you as if it were bright light, and in Darkness as if it were dim light. You can’t discern color in Darkness, only shades of gray.',
+                },
                 'dwarven_resilience': {
-                    'description': 'poison resistance',
+                    'name': 'Dwarven Resilience',
+                    'description': 'You have advantage on Saving Throws against poison, and you have Resistance against poison damage.',
                 },
                 'dwarven_combat_training': {
-                    'weapon_proficiency': ['battleaxe', 'handaxe'],
+                    'name': 'Dwarven Combat Training',
+                    'weapon_proficiency': ['battleaxe', 'handaxe', 'light_hammer', 'warhammer'],
+                    'description': 'You have proficiency with the Battleaxe, Handaxe, Light Hammer, and Warhammer.',
                 },
                 'stonecunning': {
-                    'description': '+10 int checks to stone',
+                    'name': 'Stonecunning',
+                    'description': 'Whenever you make an Intelligence (History) check related to the Origin of stonework, you are considered proficient in the History skill and add double your Proficiency Bonus to the check, instead of your normal Proficiency Bonus.',
                 },
             }
         super(Dwarf, self).__init__(name='Dwarf',
@@ -98,10 +106,11 @@ class HillDwarf(Dwarf):
     def __init__(self, traits):
         def_asi = {'CON': 2}
         def_traits = {
-                          'dwarven_toughness': {
-                              'description': 'increase 1 HP per level',
-                          },
-                      }
+            'dwarven_toughness': {
+                'name': 'Dwarven Toughness',
+                'description': 'Your hit point maximum increases by 1, and it increases by 1 every time you gain a level.',
+            },
+        }
         super(HillDwarf, self).__init__(asi=def_asi,
                                         traits={**def_traits, **traits})
         self.name = 'Hill Dwarf'
@@ -113,9 +122,14 @@ class Gnome(Race):
     def __init__(self, asi, traits):
         def_asi = {'INT': 2}
         def_traits = {
-                'darkvision': 60,
+                'darkvision': {
+                    'name': 'Darkvision',
+                    'range': 60,
+                    'description': 'Accustomed to life underground, you have superior vision in dark and dim Conditions. You can see in dim light within 60 feet of you as if it were bright light, and in Darkness as if it were dim light. You can’t discern color in Darkness, only shades of gray.',
+                },
                 'gnome_cunning': {
-                    'description': 'advantage to all INT, WIS, CHA saving throws against magic',
+                    'name': 'Gnome Cunning',
+                    'description': 'You have advantage on all Intelligence, Wisdom, and Charisma Saving Throws against magic.',
                 },
             }
         super(Gnome, self).__init__(name='Gnome',
@@ -135,22 +149,25 @@ class Gnome(Race):
 
 
 class RockGnome(Gnome):
-    def __init__(self, traits):
+    def __init__(self):
+        traits = {
+            'artificers_lore': {
+                'name': 'Artificer''s Lore',
+                'description': 'Whenever you make an Intelligence (History) check related to Magic Items, alchemical Objects, or technological devices, you can add twice your Proficiency Bonus, instead of any Proficiency Bonus you normally apply.',
+            },
+            'tinker': {
+                'name': 'Tinker',
+                'description': 'You have proficiency with artisan’s tools (tinker’s tools). ...',
+            }
+        }
         super(RockGnome, self).__init__(asi={'CON': 1},
-                                            traits={
-                                                'artificers_lore': {
-                                                    'description': '+10 INT checks to magic items',
-                                                },
-                                                'tinker': {
-                                                    'description': 'you have proficiency with tinkers tools',
-                                                }
-                                            })
+                                            traits=traits)
         self.name = 'Rock Gnome'
     
     @property
     def proficiencies(self):
         p = {}
-        p['tools'] = ['tinkers tools']
+        p['tools'] = ['tinkers_tools']
         return p
 
 

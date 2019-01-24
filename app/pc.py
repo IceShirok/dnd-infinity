@@ -238,6 +238,17 @@ class PlayerCharacter(Jsonable):
             skill_features = { **skill_features, **c.features }
         return skill_features
     
+    @property
+    def features(self):
+        return {
+            #'size': self.size,
+            'racial_traits': self.race.traits,
+            'class_features': self.class_features,
+            #'class_proficiencies': self.class_proficiencies,
+            'background_feature': self.background.feature,
+            #'background_proficiencies': self.background.background_proficiencies,
+        }
+    
     def get_spellcasting(self):
         spellcasting_p = {}
         for c in self.classes:
@@ -283,19 +294,7 @@ class PlayerCharacter(Jsonable):
                 'max_hp': self.max_hit_points,
                 'total_hit_dice': self.total_hit_dice,
             },
-            'traits_and_features': {
-                'size': self.size,
-                # TODO when doing the traits, this can have some replication
-                # this is in mind with the character sheet generator
-                # and listing where things came from vs. actually deriving
-                # the total calculations
-                'racial_traits': self.race.traits,
-                'languages': self.languages,
-                'class_features': self.class_features,
-                'class_proficiencies': self.class_proficiencies,
-                'background_feature': self.background.feature,
-                'background_proficiencies': self.background.background_proficiencies,
-            },
+            'traits_and_features': self.features,
             'spellcasting': self.get_spellcasting(),
         }
         return j

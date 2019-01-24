@@ -24,7 +24,14 @@ def main():
 
 def create_dorian():
     dorian_base = pc.PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=2)
-    dorian_race = race.HillDwarf(traits={'tool_proficiency': {'tools': ['brewers_kit']}})
+    tool_prof = {
+        'tool_proficiency': {
+            'name': 'Tool Proficiency',
+            'tools': ['brewers_kit'],
+            'description': 'You gain proficiency with the artisan’s tools of your choice: smith’s tools, brewer’s supplies, or mason’s tools.',
+        }
+    }
+    dorian_race = race.HillDwarf(traits=tool_prof)
     dorian_classes = [
             cclass.RangerFactory().generate_by_level(1, skills=['athletics', 'animal_handling', 'survival'], favored_enemy='plants', languages='elvish', favored_terrain='forest'),
             cclass.RangerFactory().generate_by_level(2, fighting_style=['two_weapon_fighting'])
@@ -40,7 +47,7 @@ def test_pc():
     print('-----')
 
     ttt_base = pc.PlayerBase("Tamiphi Tockentell", 10, 11, 16, 18, 20, 7, level=8)
-    gnome = race.RockGnome({})
+    gnome = race.RockGnome()
     print(ttt_base)
     print(gnome)
 

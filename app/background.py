@@ -43,15 +43,19 @@ class PlayerBackground(Jsonable):
 
 class Criminal(PlayerBackground):
     def __init__(self):
+        feature = {
+            'criminal_contact': {
+                'name': 'Criminal Contact',
+                'description': 'You have a reliable and trustworthy contact who acts as your liaison to a network of other criminals. ...',
+            }
+        }
+        proficiencies = {
+            'skills': ['deception', 'stealth'],
+            'tools': ['thieves_tools', 'bone_dice'],
+        }
         super(Criminal, self).__init__(name='criminal',
-                                                 feature={
-                                                    'name': 'criminal contact',
-                                                    'description': 'You have an accomplice.',
-                                                 },
-                                                 proficiencies={
-                                                     'skills': ['deception', 'stealth'],
-                                                     'tools': ['thieves_tools', 'bone_dice'],
-                                                 },
-                                                 languages=[])
+                                       feature=feature,
+                                       proficiencies=proficiencies,
+                                       languages=[])
 
 
