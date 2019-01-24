@@ -227,7 +227,8 @@ class PlayerCharacter(Jsonable):
             lang = lang + c.languages
         return lang
 
-    def get_features(self):
+    @property
+    def class_features(self):
         skill_features = {}
         for c in self.classes:
             skill_features = { **skill_features, **c.features }
@@ -286,7 +287,7 @@ class PlayerCharacter(Jsonable):
                 # the total calculations
                 'racial_traits': self.race.traits,
                 'languages': self.languages,
-                'class_features': self.get_features(),
+                'class_features': self.class_features,
                 'class_proficiencies': self.class_proficiencies,
                 'background_feature': self.background.feature,
                 'background_proficiencies': self.background.background_proficiencies,

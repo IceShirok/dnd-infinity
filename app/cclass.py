@@ -72,31 +72,24 @@ class PlayerClassFactory(object):
     def _req_class_1(self):
         pass
 
+    def _validate_class_1(self, **kwargs):
+        pass
+
     def _generate_class_2(self):
         pass
 
     def _req_class_2(self):
         pass
 
+    def _validate_class_2(self, **kwargs):
+        pass
+
 
 class RangerFactory(PlayerClassFactory):
     def _generate_class_1(self, skills=[], favored_enemy=None, languages=None, favored_terrain=None):
         # validation
-        if len(skills) != 3:
-            raise ValueError('You must pick 3 skill proficiencies!')
+        self._validate_class_1(skills=skills, favored_enemy=favored_enemy, languages=languages, favored_terrain=favored_terrain)
 
-        def_skills = set(['animal_handling', 'athletics', 'insight', 'investigation',
-                        'nature', 'perception', 'stealth', 'survival'])
-        if not set(skills).issubset(def_skills):
-            raise ValueError('You must pick valid skill proficiencies!')
-
-        if not favored_enemy or favored_enemy not in ['aberrations', 'fey', 'elementals', 'plants']:
-            raise ValueError('You must select a favored enemy!')
-        if not languages:
-            raise ValueError('You must select a language!')
-        if not favored_terrain or favored_terrain not in ['forest', 'grassland', 'swamp']:
-            raise ValueError('You must select a favored terrain!')
-  
         def_features = {
                 'favored_enemy': {
                     'deescription': 'has a grudge against something',
@@ -133,9 +126,45 @@ class RangerFactory(PlayerClassFactory):
             }
         }
         return req
+    
+    def _validate_class_1(self, **kwargs):
+        skills = kwargs['skills']
+        if len(skills) != 3:
+            raise ValueError('You must pick 3 skill proficiencies!')
 
-    def _generate_class_2(self):
+        def_skills = set(['animal_handling', 'athletics', 'insight', 'investigation',
+                        'nature', 'perception', 'stealth', 'survival'])
+        if not set(skills).issubset(def_skills):
+            raise ValueError('You must pick valid skill proficiencies!')
+
+        favored_enemy = kwargs['favored_enemy']
+        if not favored_enemy or favored_enemy not in ['aberrations', 'fey', 'elementals', 'plants']:
+            raise ValueError('You must select a favored enemy!')
+
+        languages = kwargs['languages']
+        if not languages:
+            raise ValueError('You must select a language!')
+
+        favored_terrain = kwargs['favored_terrain']
+        if not favored_terrain or favored_terrain not in ['forest', 'grassland', 'swamp']:
+            raise ValueError('You must select a favored terrain!')
+        return True
+
+    def _generate_class_2(self, fighting_style=None):
+        # validation
+        self._validate_class_2(fighting_style=fighting_style)
+
         features = {
+            'fighting_style': [fighting_style]
+        }
+
+        # TODO make this a bit more elegant...
+        spellcasting = SpellcastingAbility(list_spells_known=['hunters_mark', 'cure_wounds'],
+                                           spell_slots={ "1st": 2 })
+        return Ranger(level=2, skills=[], features=features, spellcasting=spellcasting)
+
+    def _req_class_2(self):
+        req = {
                 'fighting_style': {
                     'styles': ['archery', 'defense', 'dueling', 'two_weapon_fighting'],
                     'choices': 1,
@@ -148,14 +177,14 @@ class RangerFactory(PlayerClassFactory):
                     }
                 }
         }
+        return req
+    
+    def _validate_class_2(self, **kwargs):
+        fighting_style = kwargs['fighting_style']
+        if fighting_style[0] not in self._req_class_2()['fighting_style']['styles']:
+            raise ValueError('You must pick a fighting style!')
 
-        # TODO make this a bit more elegant...
-        spellcasting = SpellcastingAbility(list_spells_known=['hunters_mark', 'cure_wounds'],
-                                           spell_slots={ "1st": 2 })
-        return Ranger(level=2, skills=[], features=features, spellcasting=spellcasting)
-
-    def _req_class_2(self):
-        pass
+        return True
 
 
 class Ranger(PlayerClass):

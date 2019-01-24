@@ -27,7 +27,7 @@ def test_pc():
     dorian_race = race.HillDwarf(traits={'tool_proficiency': {'tools': ['brewers_kit']}})
     dorian_classes = [
             cclass.RangerFactory().generate_by_level(1, skills=['athletics', 'animal_handling', 'survival'], favored_enemy='plants', languages='elvish', favored_terrain='forest'),
-            cclass.RangerFactory().generate_by_level(2)
+            cclass.RangerFactory().generate_by_level(2, fighting_style=['two_weapon_fighting'])
             ]
     dorian_background = background.Criminal()
     dorian_pc = pc.PlayerCharacter(dorian_base, dorian_race, dorian_classes, dorian_background)
