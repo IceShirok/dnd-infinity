@@ -29,6 +29,11 @@ class Race(Jsonable, Requireable):
                 'traits': self.traits,
             }
         return j
+    
+    @property
+    def skills(self):
+        pass
+
 
 # DWARF
 
@@ -54,6 +59,10 @@ class Dwarf(Race):
                                     languages=['common', 'dwarvish'],
                                     traits={**def_traits, **traits})
     
+    @property
+    def skills(self):
+        return []
+
     def _required_customization(self):
         req = [
             {
@@ -104,6 +113,10 @@ class Gnome(Race):
                                     speed=25,
                                     languages=['common', 'gnomish'],
                                     traits={**def_traits, **traits})
+    @property
+    def skills(self):
+        return []
+
 
 class RockGnome(Gnome):
     def __init__(self, traits):
@@ -149,3 +162,7 @@ class Human(Race):
         if len(self.languages) != 2:
             raise ValueError('Must input one custom language!')
         return True
+
+    @property
+    def skills(self):
+        return []

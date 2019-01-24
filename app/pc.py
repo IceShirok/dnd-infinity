@@ -190,11 +190,7 @@ class PlayerCharacter(Jsonable):
     
     @property
     def skill_proficiencies(self):
-        # TODO i think that each class should be responsible for
-        # giving the PC class the skill proficiencies, as opposed
-        # to the PC class trying to parse through everything
-        # AKA do this to most of the rest of this class
-        skill_proficiencies = (self.classes[0].skills + self.background.skills)
+        skill_proficiencies = (self.race.skills + self.classes[0].skills + self.background.skills)
         ability_scores = self.ability_scores
 
         skill_proficiencies_p = {}
