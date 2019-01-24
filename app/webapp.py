@@ -92,36 +92,48 @@ def generate_health_html(player_character):
     return html_page
 
 def generate_features_html(player_character):
-    return '<p>Traits & Features TBD</p>'
+    html_page = ''
+    html_page += '<div>'
+    html_page += '<h2>Traits & Features</h2>'
+    html_page += '<p>TBD</p>'
+    html_page += '</div>'
+    return html_page
 
 def write_html_page(player_character):
     html_page = '<html>'
-    html_page += '<head><title>DnD Character Sheet Test</title></head>'
+    html_page += '<head>'
+    html_page += '<title>DnD Character Sheet Test</title>'
+    html_page += '<link rel="stylesheet" href="styles.css" />'
+    html_page += '</head>'
     html_page += '<body>'
 
     html_page += '<h1>Character Sheet</h1>'
+
+    html_page += '<div id="container">' # start container
     
-    html_page += '<div>'
+    html_page += '<div id="banner">'
     html_page += generate_banner_html(player_character)
     html_page += '</div>'
 
-    html_page += '<div style="display: inline-block; margin: 5px; vertical-align: top;">'
+    html_page += '<div class="column">'
     html_page += generate_ability_scores_html(player_character)
     html_page += '</div>'
 
-    html_page += '<div style="display: inline-block; margin: 5px; vertical-align: top;">'
+    html_page += '<div class="column">'
     html_page += generate_saving_throws_html(player_character)
     html_page += generate_skills_html(player_character)
     html_page += '</div>'
 
-    html_page += '<div style="display: inline-block; margin: 5px; vertical-align: top;">'
+    html_page += '<div class="column">'
     html_page += generate_basic_combat_html(player_character)
     html_page += generate_health_html(player_character)
     html_page += '</div>'
     
-    html_page += '<div style="display: inline-block; margin: 5px; vertical-align: top;">'
+    html_page += '<div class="column">'
     html_page += generate_features_html(player_character)
     html_page += '</div>'
+    
+    html_page += '</div>' # end container
 
     html_page += '</body>'
     html_page += '</html>'
