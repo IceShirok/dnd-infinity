@@ -74,10 +74,6 @@ class PlayerClassFactory(object):
 
 
 class RangerFactory(PlayerClassFactory):
-    # TODO oof how to customize the constraints via a factory?
-    # o i guess it's just enforced on the factory instead of the object???
-    # also how to handle repetition within the PC itself? might just have
-    # to be 2 passes for now
     def _generate_class_1(self, skills=[], favored_enemy=None, languages=None, favored_terrain=None):
         # validation
         if len(skills) != 3:

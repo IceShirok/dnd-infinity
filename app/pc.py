@@ -190,9 +190,11 @@ class PlayerCharacter(Jsonable):
     
     @property
     def skill_proficiencies(self):
-        skill_proficiencies = (self.race.skills + self.classes[0].skills + self.background.skills)
-        ability_scores = self.ability_scores
+        skill_proficiencies = (self.race.skills + self.background.skills)
+        for c in  self.classes:
+            skill_proficiencies = skill_proficiencies + c.skills
 
+        ability_scores = self.ability_scores
         skill_proficiencies_p = {}
         for ability in SKILL_PROFICIENCIES.keys():
             for skill in SKILL_PROFICIENCIES[ability]:
