@@ -41,6 +41,12 @@ class PlayerClass(Jsonable):
                 'spellcasting': spellcasting_p,
             }
         return j
+    
+    @property
+    def languages(self):
+        if 'languages' in self.features:
+            return self.features['languages']
+        return []
 
 """
 A class factory. This must be extended to accomodate a specific

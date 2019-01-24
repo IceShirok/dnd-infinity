@@ -222,7 +222,10 @@ class PlayerCharacter(Jsonable):
     
     @property
     def languages(self):
-        return (self.race.languages + self.background.languages)
+        lang = (self.race.languages + self.background.languages)
+        for c in self.classes:
+            lang = lang + c.languages
+        return lang
 
     def get_features(self):
         skill_features = {}
