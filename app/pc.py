@@ -179,8 +179,9 @@ class PlayerCharacter(Jsonable):
     
     @property
     def saving_throws(self):
-        # TODO saving throws may appear in multiple classes
-        saving_throws = self.classes[0].saving_throws
+        saving_throws = []
+        for c in self.classes:
+            saving_throws += c.saving_throws
         saving_throws_p = {}
         ability_scores = self.ability_scores
         for a in ability_scores.keys():
