@@ -3,6 +3,8 @@ import math
 
 from base import Jsonable
 
+import skills, ability_scores
+
 
 """
 A player character (PC) base will consist of the PC's name,
@@ -33,13 +35,13 @@ class PlayerBase(Jsonable):
         Return the base ability scores.
         """
         return {
-                    'STR': self._str,
-                    'DEX': self._dex,
-                    'CON': self._con,
-                    'INT': self._int,
-                    'WIS': self._wis,
-                    'CHA': self._cha,
-                }
+            ability_scores.STR: self._str,
+            ability_scores.DEX: self._dex,
+            ability_scores.CON: self._con,
+            ability_scores.INT: self._int,
+            ability_scores.WIS: self._wis,
+            ability_scores.CHA: self._cha,
+        }
 
 
     def __json__(self):
@@ -55,32 +57,6 @@ class PlayerBase(Jsonable):
     def proficiency_bonus(self):
         # Proficiency bonus is based on a character's level.
         return math.floor((self.level + 3) / 4) + 1
-
-
-"""
-Common functions
-"""
-
-def _modifier(score):
-    # Calculates the ability modifier
-    return math.floor((score-10)/2)
-
-def prettify_modifier(modifier):
-    # Function used to add a + to positive score, - to negative score,
-    # or do nothing to a 0. Used for visual purposes.
-    if modifier > 0:
-        return '+{}'.format(modifier)
-    else:
-        return str(modifier)
-
-SKILL_PROFICIENCIES = {
-    'STR': ['athletics'],
-    'DEX': ['acrobatics', 'sleight_of_hand', 'stealth'],
-    'CON': [],
-    'INT': ['arcana', 'history', 'investigation', 'nature', 'religion'],
-    'WIS': ['animal_handling', 'insight', 'medicine', 'perception', 'survival'],
-    'CHA': ['deception', 'intimidation', 'performance', 'persuasion'],
-}
 
 
 """
@@ -142,27 +118,27 @@ class PlayerCharacter(Jsonable):
             score = ability_scores_raw[a]
             ability_scores_p[a] = {
                 'score': score,
-                'modifier': _modifier(score),
+                'modifier': ability_scores.modifier(score),
             }
 
         return ability_scores_p
 
     @property
     def armor_class(self):
-        return (10 + _modifier(self.base._dex))
+        return (10 + ability_scores.modifier(self.base._dex))
 
     @property
     def initiative(self):
-        return (_modifier(self.base._dex))
+        return (ability_scores.modifier(self.base._dex))
 
     @property
     def max_hit_points(self):
         hit_points = 0
         for c in self.classes:
             if hit_points <= 0:
-                hit_points = c.hit_die + _modifier(self.base._con)
+                hit_points = c.hit_die + ability_scores.modifier(self.base._con)
             else:
-                hit_points += math.ceil(c.hit_die/2) + _modifier(self.base._con)
+                hit_points += math.ceil(c.hit_die/2) + ability_scores.modifier(self.base._con)
         return hit_points
     
     @property
@@ -200,8 +176,8 @@ class PlayerCharacter(Jsonable):
 
         ability_scores = self.ability_scores
         skill_proficiencies_p = {}
-        for ability in SKILL_PROFICIENCIES.keys():
-            for skill in SKILL_PROFICIENCIES[ability]:
+        for ability in skills.SKILL_PROFICIENCIES_BY_ABILITY_SCORE.keys():
+            for skill in skills.SKILL_PROFICIENCIES_BY_ABILITY_SCORE[ability]:
                 skill_proficiencies_p[skill] = {
                     'ability': ability,
                     'is_proficient': False,

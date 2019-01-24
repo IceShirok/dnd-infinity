@@ -5,6 +5,8 @@ import sys
 import race, cclass, background, pc
 import equipment
 
+import skills, ability_scores
+
 """
 Testing playground for D&D Infinity.
 """
@@ -33,7 +35,7 @@ def create_dorian():
     }
     dorian_race = race.HillDwarf(traits=tool_prof)
     dorian_classes = [
-            cclass.RangerFactory().generate_by_level(1, skills=['athletics', 'animal_handling', 'survival'], favored_enemy='plants', languages='elvish', favored_terrain='forest'),
+            cclass.RangerFactory().generate_by_level(1, skills=[skills.ATHLETICS, skills.ANIMAL_HANDLING, skills.SURVIVAL], favored_enemy='plants', languages='elvish', favored_terrain='forest'),
             cclass.RangerFactory().generate_by_level(2, fighting_style=['two_weapon_fighting'])
             ]
     dorian_background = background.Criminal()

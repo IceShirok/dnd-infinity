@@ -2,6 +2,7 @@
 import json
 from base import Jsonable, Requireable
 
+import ability_scores, skills
 
 """
 A player character's (PC) race.
@@ -43,7 +44,7 @@ class Race(Jsonable, Requireable):
 
 class Dwarf(Race):
     def __init__(self, asi, traits):
-        def_asi = {'CON': 2}
+        def_asi = {ability_scores.CON: 2}
         def_traits = {
                 'darkvision': {
                     'name': 'Darkvision',
@@ -104,7 +105,7 @@ class Dwarf(Race):
 
 class HillDwarf(Dwarf):
     def __init__(self, traits):
-        def_asi = {'CON': 2}
+        def_asi = {ability_scores.WIS: 1}
         def_traits = {
             'dwarven_toughness': {
                 'name': 'Dwarven Toughness',
@@ -120,7 +121,7 @@ class HillDwarf(Dwarf):
 
 class Gnome(Race):
     def __init__(self, asi, traits):
-        def_asi = {'INT': 2}
+        def_asi = {ability_scores.INT: 2}
         def_traits = {
                 'darkvision': {
                     'name': 'Darkvision',
@@ -160,7 +161,7 @@ class RockGnome(Gnome):
                 'description': 'You have proficiency with artisan’s tools (tinker’s tools). ...',
             }
         }
-        super(RockGnome, self).__init__(asi={'CON': 1},
+        super(RockGnome, self).__init__(asi={ability_scores.CON: 1},
                                             traits=traits)
         self.name = 'Rock Gnome'
     
@@ -175,7 +176,14 @@ class RockGnome(Gnome):
 
 class Human(Race):
     def __init__(self, languages):
-        def_asi = {'STR': 1, 'DEX': 1, 'CON': 1, 'INT': 1, 'WIS': 1, 'CHA': 1}
+        def_asi = {
+            ability_scores.STR: 1,
+            ability_scores.DEX: 1,
+            ability_scores.CON: 1,
+            ability_scores.INT: 1,
+            ability_scores.WIS: 1,
+            ability_scores.CHA: 1
+        }
         def_traits = {}
         def_languages = ['common']
         super(Human, self).__init__(name='Human',

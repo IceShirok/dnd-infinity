@@ -3,6 +3,7 @@ import json
 from base import Jsonable
 from spells import SpellcastingAbility
 
+import ability_scores, skills
 
 """
 A player character's (PC) class.
@@ -111,7 +112,7 @@ class RangerFactory(PlayerClassFactory):
     def _req_class_1(self):
         req = {
             'skill_proficiency': {
-                'skills': ['animal_handling', 'athletics', 'insight', 'investigation', 'nature', 'perception', 'stealth', 'survival'],
+                'skills': [skills.ANIMAL_HANDLING, skills.ATHLETICS, skills.INSIGHT, skills.INVESTIGATION, skills.NATURE, skills.PERCEPTION, skills.STEALTH, skills.SURVIVAL],
                 'choices': 3,
             },
             'favored_enemy': {
@@ -134,13 +135,12 @@ class RangerFactory(PlayerClassFactory):
         if len(skills) != 3:
             raise ValueError('You must pick 3 skill proficiencies!')
 
-        def_skills = set(['animal_handling', 'athletics', 'insight', 'investigation',
-                        'nature', 'perception', 'stealth', 'survival'])
+        def_skills = set(self._req_class_1()['skill_proficiency']['skills'])
         if not set(skills).issubset(def_skills):
             raise ValueError('You must pick valid skill proficiencies!')
 
         favored_enemy = kwargs['favored_enemy']
-        if not favored_enemy or favored_enemy not in ['aberrations', 'fey', 'elementals', 'plants']:
+        if not favored_enemy or favored_enemy not in self._req_class_1()['favored_enemy']['enemies']:
             raise ValueError('You must select a favored enemy!')
 
         languages = kwargs['languages']
@@ -148,7 +148,7 @@ class RangerFactory(PlayerClassFactory):
             raise ValueError('You must select a language!')
 
         favored_terrain = kwargs['favored_terrain']
-        if not favored_terrain or favored_terrain not in ['forest', 'grassland', 'swamp']:
+        if not favored_terrain or favored_terrain not in self._req_class_1()['favored_terrain']['terrains']:
             raise ValueError('You must select a favored terrain!')
         return True
 
@@ -176,7 +176,7 @@ class RangerFactory(PlayerClassFactory):
                     'choices': 1,
                 },
                 'spellcasting': {
-                    'spellcasting_ability': 'WIS',
+                    'spellcasting_ability': ability_scores.WIS,
                     'spells_known': 2,
                     'spell_slots': {
                         '1st': 2
@@ -203,7 +203,7 @@ class Ranger(PlayerClass):
                                           'weapons': ['simple', 'martial'],
                                           'tools': [],
                                       },
-                                      saving_throws=['STR', 'DEX'],
+                                      saving_throws=[ability_scores.STR, ability_scores.DEX],
                                       skills=skills,
                                       features=features,
                                       spellcasting=spellcasting)

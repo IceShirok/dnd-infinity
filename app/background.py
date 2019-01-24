@@ -2,6 +2,7 @@
 import json
 from base import Jsonable
 
+import ability_scores, skills
 
 """
 A player character's (PC) background.
@@ -50,7 +51,7 @@ class Criminal(PlayerBackground):
             }
         }
         proficiencies = {
-            'skills': ['deception', 'stealth'],
+            'skills': [skills.DECEPTION, skills.STEALTH],
             'tools': ['thieves_tools', 'bone_dice'],
         }
         super(Criminal, self).__init__(name='criminal',

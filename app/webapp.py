@@ -5,6 +5,7 @@ import sys
 import race, cclass, background, pc
 import equipment
 import app
+import ability_scores
 
 
 """
@@ -32,7 +33,7 @@ def generate_ability_scores_html(player_character):
     html_page += '<h2>Ability Scores</h2>'
     html_page += '<div>Proficiency bonus: {}</div>'.format(player_character.proficiency_bonus)
     def generate_ability_score_html(ability, score):
-        mod = pc.prettify_modifier(pc._modifier(score))
+        mod = ability_scores.prettify_modifier(ability_scores.modifier(score))
         return '<div style="margin: 5px"><p>{}</p><h3>{}</h3><p>{}</p></div>'.format(ability, score, mod)
     for ability in ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA']:
         html_page += generate_ability_score_html(ability, player_character.base.ability_scores[ability])
@@ -45,7 +46,7 @@ def generate_saving_throws_html(player_character):
     html_page += '<h2>Saving Throws</h2>'
     def generate_saving_throw_html(ability, modifier, is_proficient):
         tick = 'v' if is_proficient else '-'
-        return '<div style="margin: 5px"><p>{} {}: {}</p></div>'.format(tick, ability, pc.prettify_modifier(modifier))
+        return '<div style="margin: 5px"><p>{} {}: {}</p></div>'.format(tick, ability, ability_scores.prettify_modifier(modifier))
     for save in player_character.saving_throws:
         s_details = player_character.saving_throws[save]
         html_page += generate_saving_throw_html(save, s_details['modifier'], s_details['is_proficient'])
@@ -58,7 +59,7 @@ def generate_skills_html(player_character):
     html_page += '<h2>Skills</h2>'
     def generate_skill_html(skill, is_proficient, modifier, ability):
         tick = 'v' if is_proficient else '-'
-        return '<div style="margin: 5px"><p>{} {}: {} ({})</p></div>'.format(tick, skill, pc.prettify_modifier(modifier), ability)
+        return '<div style="margin: 5px"><p>{} {}: {} ({})</p></div>'.format(tick, skill, ability_scores.prettify_modifier(modifier), ability)
     for skill in player_character.skill_proficiencies:
         s_details = player_character.skill_proficiencies[skill]
         html_page += generate_skill_html(skill, s_details['is_proficient'], s_details['modifier'], s_details['ability'])
