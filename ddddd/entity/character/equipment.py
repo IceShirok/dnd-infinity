@@ -1,15 +1,15 @@
 
-from base import Jsonable
+from ddddd.entity.base import Jsonable
 
 
-"""
-A player character's (PC) backpack, or equipment.
-Currently a work-in-progress, since this particular
-feature is much more transient than a PC's stats.
-The 'trasient' feature will likely is delegated to
-a specific service.
-"""
 class Backpack(Jsonable):
+    """
+    A player character's (PC) backpack, or equipment.
+    Currently a work-in-progress, since this particular
+    feature is much more transient than a PC's stats.
+    The 'trasient' feature will likely is delegated to
+    a specific service.
+    """
     def __init__(self,
                  copper_pieces=0,
                  silver_pieces=0,
@@ -41,18 +41,19 @@ class Backpack(Jsonable):
         }
         return j
 
-"""
-An item in D&D.
-The price will assume that it is in copper pieces (CP),
-since that is the lowest denomination of money.
-Weight is in pounds (lbs).
-"""
+
 class Item(Jsonable):
+    """
+    An item in D&D.
+    The price will assume that it is in copper pieces (CP),
+    since that is the lowest denomination of money.
+    Weight is in pounds (lbs).
+    """
     def __init__(self, name, price=0, weight=0, description=None):
         self.name = name
         self.description = description
-        self.price = 0
-        self.weight = 0
+        self.price = price
+        self.weight = weight
 
     def __json__(self):
         j = {
@@ -66,12 +67,13 @@ class Item(Jsonable):
             j['weight'] = self.weight
         return j
 
-"""
-Weapon in D&D.
-Weapons are simple or martial weapons.
-Weapons can have many different properties and damage.
-"""
+
 class Weapon(Item):
+    """
+    Weapon in D&D.
+    Weapons are simple or martial weapons.
+    Weapons can have many different properties and damage.
+    """
     def __init__(self, name, damage, price, weight, properties):
         super(Weapon, self).__init__(name, price, weight)
         self.damage = damage
@@ -85,12 +87,13 @@ class Weapon(Item):
         }
         return j
 
-"""
-Armor in D&D.
-Armor are light, medium, or heavy, or a shield.
-They have different prerequisites and effects.
-"""
+
 class Armor(Item):
+    """
+    Armor in D&D.
+    Armor are light, medium, or heavy, or a shield.
+    They have different prerequisites and effects.
+    """
     def __init__(self, name, price, weight, armor_class, strength, stealth):
         super(Armor, self).__init__(name, price, weight)
         self.armor_class = armor_class

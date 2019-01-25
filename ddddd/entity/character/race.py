@@ -1,15 +1,14 @@
 
-import json
-from base import Jsonable, Requireable
+from ddddd.entity.base import Jsonable, Requireable
+from ddddd.entity import ability_scores
 
-import ability_scores, skills
 
-"""
-A player character's (PC) race.
-A PC's race does not change for the most part, although
-some features may scale up with a PC's level.
-"""
 class Race(Jsonable, Requireable):
+    """
+    A player character's (PC) race.
+    A PC's race does not change for the most part, although
+    some features may scale up with a PC's level.
+    """
     def __init__(self, name, asi, size, speed, languages=['common'], traits={}):
         self.name = name
         self.asi = asi
@@ -30,18 +29,17 @@ class Race(Jsonable, Requireable):
                 'traits': self.traits,
             }
         return j
-    
+
     @property
     def skills(self):
         pass
-    
+
     @property
     def proficiencies(self):
         pass
 
 
 # DWARF
-
 class Dwarf(Race):
     def __init__(self, asi, traits):
         def_asi = {ability_scores.CON: 2}
@@ -78,9 +76,10 @@ class Dwarf(Race):
     
     @property
     def proficiencies(self):
-        p = {}
-        p['weapons'] = self.traits['dwarven_combat_training']['weapon_proficiency']
-        p['tools'] = self.traits['tool_proficiency']['tools']
+        p = {
+            'weapons': self.traits['dwarven_combat_training']['weapon_proficiency'],
+            'tools': self.traits['tool_proficiency']['tools'],
+        }
         return p
 
     def _required_customization(self):
@@ -139,6 +138,7 @@ class Gnome(Race):
                                     speed=25,
                                     languages=['common', 'gnomish'],
                                     traits={**def_traits, **traits})
+
     @property
     def skills(self):
         return []
@@ -167,8 +167,9 @@ class RockGnome(Gnome):
     
     @property
     def proficiencies(self):
-        p = {}
-        p['tools'] = ['tinkers_tools']
+        p = {
+            'tools': ['tinkers_tools'],
+        }
         return p
 
 

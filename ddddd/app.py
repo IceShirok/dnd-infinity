@@ -2,15 +2,14 @@
 import json
 import sys
 
-import race, cclass, background, pc
-import equipment
+from ddddd.entity.character import race, cclass, background, pc, equipment
+from ddddd.entity import skills
 
-import skills, ability_scores
 
-"""
-Testing playground for D&D Infinity.
-"""
 def main():
+    """
+    Testing playground for D&D Infinity.
+    """
     if len(sys.argv) < 2:
         print('put in argument pls')
         print('"pc" for testing pc')
@@ -23,6 +22,7 @@ def main():
         print('not sure what you put in')
         print('try something else')
     print('bye')
+
 
 def create_dorian():
     dorian_base = pc.PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=2)
@@ -41,6 +41,7 @@ def create_dorian():
     dorian_background = background.Criminal()
     dorian_pc = pc.PlayerCharacter(dorian_base, dorian_race, dorian_classes, dorian_background)
     return dorian_pc
+
 
 def test_pc():
     dorian_pc = create_dorian()
@@ -64,6 +65,7 @@ def test_pc():
 
     print(json.dumps(dorian_pc.generate_character_sheet(), indent=4))
 
+
 def test_stuff():
     backpack = equipment.Backpack(gold_pieces=15)
     print(backpack)
@@ -72,6 +74,7 @@ def test_stuff():
     backpack.add_item(equipment.Item('crowbar'))
     backpack.add_item(equipment.Item('clothes', description='A set of dark common clothes including a hood.'))
     print(backpack)
+
 
 if __name__ == '__main__':
     main()

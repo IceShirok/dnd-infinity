@@ -1,21 +1,18 @@
 
 import json
-import sys
 
-import race, cclass, background, pc
-import equipment
-import app
-import ability_scores
+from ddddd.entity import ability_scores
+from ddddd import app
 
 
-"""
-Testing playground for D&D Infinity.
-"""
 def main():
+    """
+    Testing playground for D&D Infinity.
+    """
     dorian = app.create_dorian()
-    dorian_json = dorian.__json__()
     print(json.dumps(dorian.generate_character_sheet(), indent=4))
     write_html_page(dorian)
+
 
 def generate_banner_html(player_character):
     html_page = ''
@@ -27,11 +24,13 @@ def generate_banner_html(player_character):
     html_page += '</div>'
     return html_page
 
+
 def generate_ability_scores_html(player_character):
     html_page = ''
     html_page += '<div>'
     html_page += '<h2>Ability Scores</h2>'
     html_page += '<div>Proficiency bonus: {}</div>'.format(player_character.proficiency_bonus)
+
     def generate_ability_score_html(ability, score):
         mod = ability_scores.prettify_modifier(ability_scores.modifier(score))
         return '<div style="margin: 5px"><p>{}</p><h3>{}</h3><p>{}</p></div>'.format(ability, score, mod)
@@ -40,10 +39,12 @@ def generate_ability_scores_html(player_character):
     html_page += '</div>'
     return html_page
 
+
 def generate_saving_throws_html(player_character):
     html_page = ''
     html_page += '<div>'
     html_page += '<h2>Saving Throws</h2>'
+
     def generate_saving_throw_html(ability, modifier, is_proficient):
         tick = 'v' if is_proficient else '-'
         return '<div style="margin: 5px"><p>{} {}: {}</p></div>'.format(tick, ability, ability_scores.prettify_modifier(modifier))
@@ -53,10 +54,12 @@ def generate_saving_throws_html(player_character):
     html_page += '</div>'
     return html_page
 
+
 def generate_skills_html(player_character):
     html_page = ''
     html_page += '<div>'
     html_page += '<h2>Skills</h2>'
+
     def generate_skill_html(skill, is_proficient, modifier, ability):
         tick = 'v' if is_proficient else '-'
         return '<div style="margin: 5px"><p>{} {}: {} ({})</p></div>'.format(tick, skill, ability_scores.prettify_modifier(modifier), ability)
@@ -65,6 +68,7 @@ def generate_skills_html(player_character):
         html_page += generate_skill_html(skill, s_details['is_proficient'], s_details['modifier'], s_details['ability'])
     html_page += '</div>'
     return html_page
+
 
 def generate_basic_combat_html(player_character):
     html_page = ''
@@ -76,12 +80,14 @@ def generate_basic_combat_html(player_character):
     html_page += '</div>'
     return html_page
 
+
 def generate_health_html(player_character):
     html_page = ''
     html_page += '<div>'
     html_page += '<h2>Health Stuff</h2>'
     html_page += '<p>Hit Points: {} / {}</p>'.format(player_character.max_hit_points, player_character.max_hit_points)
     html_page += '<p>Temporary Hit Points: {}</p>'.format(0)
+
     def prettify_hit_dice(hit_dice):
         p = []
         for die in hit_dice:
@@ -91,6 +97,7 @@ def generate_health_html(player_character):
     html_page += '<p>Death Saves: {} Success / {} Failures</p>'.format(0, 0)
     html_page += '</div>'
     return html_page
+
 
 def generate_proficiencies(player_character):
     html_page = ''
@@ -102,6 +109,7 @@ def generate_proficiencies(player_character):
     html_page += '<p><strong>Languages</strong>: {}</p>'.format(', '.join(player_character.languages))
     html_page += '</div>'
     return html_page
+
 
 def generate_features_html(player_character):
     html_page = ''
@@ -115,6 +123,7 @@ def generate_features_html(player_character):
             html_page += '<h4>{}</h4><p>{}</p>'.format(subfeature[f]['name'], subfeature[f]['description'])
     html_page += '</div>'
     return html_page
+
 
 def write_html_page(player_character):
     html_page = '<html>'

@@ -1,12 +1,14 @@
 
 import json
 
-"""
-An interface to allow objects to be viewed in a JSON format.
-This is more for testing and debugging purposes, and some
-features may be replaced with objects instead.
-"""
+
 class Jsonable(object):
+    """
+    An interface to allow objects to be viewed in a JSON format.
+    This is more for testing and debugging purposes, and some
+    features may be replaced with objects instead.
+    """
+
     def __json__(self):
         pass
 
@@ -14,12 +16,12 @@ class Jsonable(object):
         return json.dumps(self.__json__(), indent=4, sort_keys=False)
 
 
-"""
-An interface to add two functions for users to input custom
-information into the object. This is more going to be manipulated
-by whatever factory is constructing the object.
-"""
 class Requireable(object):
+    """
+    An interface to add two functions for users to input custom
+    information into the object. This is more going to be manipulated
+    by whatever factory is constructing the object.
+    """
     def _required_customization(self):
         """
         Return a list of features that need to be fulfilled in order for

@@ -1,22 +1,21 @@
 
-import json
-from base import Jsonable
-from spells import SpellcastingAbility
+from ddddd.entity.base import Jsonable
+from ddddd.entity.character.spells import SpellcastingAbility
 
-import ability_scores, skills
+from ddddd.entity import ability_scores, skills
 
-"""
-A player character's (PC) class.
-This particular feature is going to be modelled by aggregating
-all the class/level combinations to view the PC's class.
-This model reflects how the PHB breaks down the class by level,
-as well as make multiclassing easier to manage.
-i.e. a pure 10th level ranger will have ranger_1, ranger_2,
-..., ranger_10 objects. Whereas a barbarian 2/druid 2 PC
-will have a total of 4 objects, 2 from each class.
-"""
+
 class PlayerClass(Jsonable):
-
+    """
+    A player character's (PC) class.
+    This particular feature is going to be modelled by aggregating
+    all the class/level combinations to view the PC's class.
+    This model reflects how the PHB breaks down the class by level,
+    as well as make multiclassing easier to manage.
+    i.e. a pure 10th level ranger will have ranger_1, ranger_2,
+    ..., ranger_10 objects. Whereas a barbarian 2/druid 2 PC
+    will have a total of 4 objects, 2 from each class.
+    """
     def __init__(self, name, level, hit_die, proficiencies, saving_throws, skills, features, spellcasting=None):
         self.name = name
         self.level = level
@@ -49,12 +48,13 @@ class PlayerClass(Jsonable):
             return self.features['languages']
         return []
 
-"""
-A class factory. This must be extended to accomodate a specific
-class. This enforces classes to implement features that
-the PC gains upon reaching a specific level.
-"""
+
 class PlayerClassFactory(object):
+    """
+    A class factory. This must be extended to accomodate a specific
+    class. This enforces classes to implement features that
+    the PC gains upon reaching a specific level.
+    """
     def __init__(self):
         pass
 
@@ -196,14 +196,14 @@ class RangerFactory(PlayerClassFactory):
 class Ranger(PlayerClass):
     def __init__(self, level, skills, features, spellcasting):
         super(Ranger, self).__init__(name='Ranger',
-                                      level=level,
-                                      hit_die=10,
-                                      proficiencies={
-                                          'armor': ['light', 'medium', 'shields'],
-                                          'weapons': ['simple', 'martial'],
-                                          'tools': [],
-                                      },
-                                      saving_throws=[ability_scores.STR, ability_scores.DEX],
-                                      skills=skills,
-                                      features=features,
-                                      spellcasting=spellcasting)
+                                     level=level,
+                                     hit_die=10,
+                                     proficiencies={
+                                         'armor': ['light', 'medium', 'shields'],
+                                         'weapons': ['simple', 'martial'],
+                                         'tools': [],
+                                     },
+                                     saving_throws=[ability_scores.STR, ability_scores.DEX],
+                                     skills=skills,
+                                     features=features,
+                                     spellcasting=spellcasting)

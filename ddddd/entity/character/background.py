@@ -1,16 +1,15 @@
 
-import json
-from base import Jsonable
+from ddddd.entity.base import Jsonable
+from ddddd.entity import skills
 
-import ability_scores, skills
 
-"""
-A player character's (PC) background.
-This doesn't change after a PC is created, but this is created
-separately because it is a separate section in the PHB and is
-easy to model as such.
-"""
 class PlayerBackground(Jsonable):
+    """
+    A player character's (PC) background.
+    This doesn't change after a PC is created, but this is created
+    separately because it is a separate section in the PHB and is
+    easy to model as such.
+    """
 
     def __init__(self, name, feature, proficiencies, languages):
         self.name = name
@@ -42,6 +41,7 @@ class PlayerBackground(Jsonable):
         p.pop('skills')
         return p
 
+
 class Criminal(PlayerBackground):
     def __init__(self):
         feature = {
@@ -58,5 +58,3 @@ class Criminal(PlayerBackground):
                                        feature=feature,
                                        proficiencies=proficiencies,
                                        languages=[])
-
-

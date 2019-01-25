@@ -1,22 +1,20 @@
 
 import math
 
-from base import Jsonable
+from ddddd.entity.base import Jsonable
+from ddddd.entity import skills, ability_scores
 
-import skills, ability_scores
 
-
-"""
-A player character (PC) base will consist of the PC's name,
-base ability scores, and level by experience. Features that
-do not change with certain PC features (race, class, background)
-and cannot be derived by other features (i.e. proficiency bonus)
-are put in this class.
-Why level by experience and not by class? I'm thinking a little
-too far ahead, but it's because of multiclassing.
-"""
 class PlayerBase(Jsonable):
-
+    """
+    A player character (PC) base will consist of the PC's name,
+    base ability scores, and level by experience. Features that
+    do not change with certain PC features (race, class, background)
+    and cannot be derived by other features (i.e. proficiency bonus)
+    are put in this class.
+    Why level by experience and not by class? I'm thinking a little
+    too far ahead, but it's because of multiclassing.
+    """
     def __init__(self, name, _str, _dex, _con, _int, _wis, _cha, level=1):
         self.name = name
 
@@ -43,7 +41,6 @@ class PlayerBase(Jsonable):
             ability_scores.CHA: self._cha,
         }
 
-
     def __json__(self):
         j = {
                 'name': self.name,
@@ -59,12 +56,12 @@ class PlayerBase(Jsonable):
         return math.floor((self.level + 3) / 4) + 1
 
 
-"""
-A player character (PC) in D&D.
-A PC consists of some base characteristics, a race, a class, and
-a background.
-"""
 class PlayerCharacter(Jsonable):
+    """
+    A player character (PC) in D&D.
+    A PC consists of some base characteristics, a race, a class, and
+    a background.
+    """
     def __init__(self, base, race=None, classes=None, background=None):
         self.base = base
         self.race = race
@@ -73,11 +70,11 @@ class PlayerCharacter(Jsonable):
     
     @property
     def name(self):
-      return self.base.name
+        return self.base.name
     
     @property
     def race_name(self):
-      return self.race.name
+        return self.race.name
     
     @property
     def class_name(self):
@@ -87,11 +84,11 @@ class PlayerCharacter(Jsonable):
     
     @property
     def level(self):
-      return self.base.level
+        return self.base.level
     
     @property
     def background_name(self):
-      return self.background.name
+        return self.background.name
     
     @property
     def proficiency_bonus(self):
@@ -103,7 +100,7 @@ class PlayerCharacter(Jsonable):
         
     @property
     def size(self):
-      return self.race.size
+        return self.race.size
 
     @property
     def ability_scores(self):
@@ -125,11 +122,11 @@ class PlayerCharacter(Jsonable):
 
     @property
     def armor_class(self):
-        return (10 + ability_scores.modifier(self.base._dex))
+        return 10 + ability_scores.modifier(self.base._dex)
 
     @property
     def initiative(self):
-        return (ability_scores.modifier(self.base._dex))
+        return ability_scores.modifier(self.base._dex)
 
     @property
     def max_hit_points(self):
@@ -159,13 +156,13 @@ class PlayerCharacter(Jsonable):
         for c in self.classes:
             saving_throws += c.saving_throws
         saving_throws_p = {}
-        ability_scores = self.ability_scores
-        for a in ability_scores.keys():
-            saving_throws_p[a] = { 'modifier': ability_scores[a]['modifier'] }
+        _ability_scores = self.ability_scores
+        for a in _ability_scores.keys():
+            saving_throws_p[a] = { 'modifier': _ability_scores[a]['modifier'] }
             saving_throws_p[a]['is_proficient'] = False
             if a in saving_throws:
-               saving_throws_p[a]['modifier'] += self.proficiency_bonus
-               saving_throws_p[a]['is_proficient'] = True
+                saving_throws_p[a]['modifier'] += self.proficiency_bonus
+                saving_throws_p[a]['is_proficient'] = True
         return saving_throws_p
     
     @property
@@ -174,7 +171,7 @@ class PlayerCharacter(Jsonable):
         for c in  self.classes:
             skill_proficiencies = skill_proficiencies + c.skills
 
-        ability_scores = self.ability_scores
+        _ability_scores = self.ability_scores
         skill_proficiencies_p = {}
         for ability in skills.SKILL_PROFICIENCIES_BY_ABILITY_SCORE.keys():
             for skill in skills.SKILL_PROFICIENCIES_BY_ABILITY_SCORE[ability]:
@@ -182,7 +179,7 @@ class PlayerCharacter(Jsonable):
                     'ability': ability,
                     'is_proficient': False,
                 }
-                skill_proficiencies_p[skill]['modifier'] = ability_scores[ability]['modifier']
+                skill_proficiencies_p[skill]['modifier'] = _ability_scores[ability]['modifier']
                 if skill in skill_proficiencies:
                     skill_proficiencies_p[skill]['is_proficient'] = True
                     skill_proficiencies_p[skill]['modifier'] += self.proficiency_bonus
@@ -190,14 +187,14 @@ class PlayerCharacter(Jsonable):
     
     @property
     def proficiencies(self):
-        p = { **self.race.proficiencies, **self.class_proficiencies, **self.background.proficiencies }
+        p = {**self.race.proficiencies, **self.class_proficiencies, **self.background.proficiencies}
         return p
 
     @property
     def class_proficiencies(self):
         p = {}
         for c in self.classes:
-            p = { **p, **c.proficiencies }
+            p = {**p, **c.proficiencies}
         return p
     
     @property
@@ -211,7 +208,7 @@ class PlayerCharacter(Jsonable):
     def class_features(self):
         skill_features = {}
         for c in self.classes:
-            skill_features = { **skill_features, **c.features }
+            skill_features = {**skill_features, **c.features}
         return skill_features
     
     @property

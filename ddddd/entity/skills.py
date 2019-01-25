@@ -1,5 +1,5 @@
 
-import ability_scores
+from ddddd.entity import ability_scores
 
 ATHLETICS = 'Athletics'
 

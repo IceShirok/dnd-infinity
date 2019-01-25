@@ -1,13 +1,13 @@
+from ddddd.entity.base import Jsonable
 
-from base import Jsonable
 
-"""
-A singular spell in D&D.
-I will very likely keep the majority of the information in a database
-because of the sheer number of spells in the book. Some spells will
-be manually created into objects for testing purposes.
-"""
 class Spell(Jsonable):
+    """
+    A singular spell in D&D.
+    I will very likely keep the majority of the information in a database
+    because of the sheer number of spells in the book. Some spells will
+    be manually created into objects for testing purposes.
+    """
     def __init__(self, name, level, magic_school,
                  casting_time, spell_range, components, duration,
                  description):
@@ -33,6 +33,7 @@ class Spell(Jsonable):
         }
         return j
 
+
 # Cantrips (level 0 spells)
 CHILL_TOUCH = Spell(name='Chill Touch',
                     level=0,
@@ -54,14 +55,14 @@ BLESS = Spell(name='Bless',
               description='You bless up to three creatures of your choice within range.')
 
 
-"""
-An object representing a character's ability to cast spells.
-This is likely going to be delegated to the class factory, as each class
-will known the number of spells and the available spell slots
-for that class and level. I'm not sure whether to add the spellcasting
-bonus and DCs here or at the class level...
-"""
 class SpellcastingAbility(Jsonable):
+    """
+    An object representing a character's ability to cast spells.
+    This is likely going to be delegated to the class factory, as each class
+    will known the number of spells and the available spell slots
+    for that class and level. I'm not sure whether to add the spellcasting
+    bonus and DCs here or at the class level...
+    """
     def __init__(self, list_spells_known, spell_slots):
         self.list_spells_known = list_spells_known
         self.spell_slots = spell_slots
@@ -72,4 +73,3 @@ class SpellcastingAbility(Jsonable):
             'spell_slots': self.spell_slots,
         }
         return j
-        
