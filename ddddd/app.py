@@ -2,7 +2,7 @@
 import json
 import sys
 
-from ddddd.entity import skills
+from ddddd.entity import skills, language
 from ddddd.entity.character import race, cclass, background, pc, equipment
 
 
@@ -57,7 +57,7 @@ def test_pc():
     print('-----')
 
     lok_base = pc.PlayerBase("Lok", 15, 18, 10, 12, 16, 9, level=4)
-    human = race.Human(languages=['draconic'])
+    human = race.Human(languages=[language.DRACONIC])
     print(lok_base)
     print(human)
 

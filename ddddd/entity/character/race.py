@@ -1,5 +1,5 @@
 
-from ddddd.entity import ability_scores
+from ddddd.entity import ability_scores, language
 
 
 class Race(object):
@@ -8,12 +8,12 @@ class Race(object):
     A PC's race does not change for the most part, although
     some features may scale up with a PC's level.
     """
-    def __init__(self, name, asi, size, speed, languages=None, traits=None):
+    def __init__(self, name, asi, size, speed, languages: list = None, traits=None):
         self.name = name
         self.asi = asi
         self.size = size
         self.speed = speed
-        self.languages = languages if languages else ['common']
+        self.languages = languages if languages else []  # Change this for races like Kenku
         self.traits = traits if traits else {}
         
         self._verify()
@@ -76,27 +76,23 @@ class Dwarf(Race):
                                     asi={**def_asi, **asi},
                                     size='medium',
                                     speed=25,
-                                    languages=['common', 'dwarvish'],
+                                    languages=[language.COMMON, language.DWARVISH],
                                     traits={**def_traits, **traits})
     
     @property
     def proficiencies(self):
-        p = {
+        return {
             'weapons': self.traits['dwarven_combat_training']['weapon_proficiency'],
             'tools': self.traits['tool_proficiency']['tools'],
         }
-        return p
 
     def _required_customization(self):
-        req = [
-            {
+        return {
                 'tool_proficiency': {
                     'tools': ['smiths_tools', 'brewers_kit', 'masons_tools'],
                     'choice': 1,
                 }
             }
-        ]
-        return req
 
     def _verify(self):
         # TODO try to de-dupe a lot of this proficiency stuff
@@ -141,7 +137,7 @@ class Gnome(Race):
                                     asi={**def_asi, **asi},
                                     size='small',
                                     speed=25,
-                                    languages=['common', 'gnomish'],
+                                    languages=[language.COMMON, language.GNOMISH],
                                     traits={**def_traits, **traits})
 
 
@@ -181,7 +177,7 @@ class Human(Race):
             ability_scores.CHA: 1
         }
         def_traits = {}
-        def_languages = ['common']
+        def_languages = [language.COMMON]
         super(Human, self).__init__(name='Human',
                                     asi=def_asi,
                                     size='medium',
@@ -190,18 +186,18 @@ class Human(Race):
                                     traits=def_traits)
     
     def _required_customization(self):
-        req = [
-            {
+        return {
                 'languages': {
+                    'languages': language.LANGUAGES,
                     'description': 'choose any one language',
                     'choice': 1,
                 }
             }
-        ]
-        return req
 
     def _verify(self):
         # TODO try to de-dupe a lot of this proficiency stuff
         if len(self.languages) != 2:
             raise ValueError('Must input one custom language!')
+        if not set(self.languages).issubset(self._required_customization()['languages']['languages']):
+            raise ValueError('Must input a valid language!')
         return True

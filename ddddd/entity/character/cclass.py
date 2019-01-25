@@ -45,7 +45,7 @@ class PlayerClass(object):
     @property
     def languages(self):
         if 'languages' in self.features:
-            return self.features['languages']
+            return self.features['languages']['languages']
         return []
 
 
@@ -97,7 +97,11 @@ class RangerFactory(PlayerClassFactory):
                     'description': 'Beginning at 1st level, you have significant experience studying, tracking, hunting, and even talking to a certain type of enemy. ...',
                     'enemies': [favored_enemy],
                 },
-                #'languages': [languages],
+                'languages': {
+                    'name': 'Favored Enemy Languages',
+                    'description': 'You learn a language that your favored enemy would typically know.',
+                    'languages': [languages],
+                },
                 'natural_explorer': {
                     'name': 'Natural Explorer',
                     'description': 'You are particularly familiar with one type of natural environment and are adept at traveling and surviving in such regions. ...',
