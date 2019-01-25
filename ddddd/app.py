@@ -2,7 +2,7 @@
 import json
 import sys
 
-from ddddd.entity import skills, language
+from ddddd.entity import proficiency, language
 from ddddd.entity.character import race, cclass, background, pc, equipment
 
 
@@ -35,7 +35,7 @@ def create_dorian():
     }
     dorian_race = race.HillDwarf(traits=tool_prof)
     dorian_classes = [
-            cclass.RangerFactory().generate_by_level(1, skill_proficiencies=[skills.ATHLETICS, skills.ANIMAL_HANDLING, skills.SURVIVAL], favored_enemy='plants', languages='elvish', favored_terrain='forest'),
+            cclass.RangerFactory().generate_by_level(1, skill_proficiencies=[proficiency.ATHLETICS, proficiency.ANIMAL_HANDLING, proficiency.SURVIVAL], favored_enemy='plants', languages='elvish', favored_terrain='forest'),
             cclass.RangerFactory().generate_by_level(2, fighting_style=['two_weapon_fighting'])
             ]
     dorian_background = background.Criminal()

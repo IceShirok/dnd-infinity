@@ -1,6 +1,30 @@
 
 from ddddd.entity import ability_score, language
 
+RACE = 'race'
+SIZE = 'size'
+SPEED = 'speed'
+LANGUAGES = 'languages'
+ASI = 'ability_score_increase'
+TRAITS = 'traits'
+
+NAME = 'name'
+DESCRIPTION = 'description'
+CHOICES = 'choices'
+
+SMALL = 'small'
+MEDIUM = 'medium'
+SIZES = {
+    SMALL,
+    MEDIUM,
+}
+
+WEAPONS = 'weapons'
+WEAPON_PROFICIENCY = 'weapon_proficiency'
+ARMOR = 'armor'
+TOOLS = 'tools'
+TOOL_PROFICIENCY = 'tool_proficiency'
+
 
 class Race(object):
     """
@@ -15,9 +39,9 @@ class Race(object):
         self.speed = speed
         self.languages = languages if languages else []  # Change this for races like Kenku
         def_traits = {
-            'size': {
-                'name': 'Size',
-                'description': 'Your size is {}.'.format(self.size.capitalize()),
+            SIZE: {
+                NAME: 'Size',
+                DESCRIPTION: 'Your size is {}.'.format(self.size.capitalize()),
             },
         }
         self.traits = {**traits, **def_traits}
@@ -26,12 +50,12 @@ class Race(object):
 
     def __json__(self):
         j = {
-                'race': self.name,
-                'ability_score_increase': self.asi,
-                'size': self.size,
-                'speed': self.speed,
-                'languages': self.languages,
-                'traits': self.traits,
+                RACE: self.name,
+                ASI: self.asi,
+                SIZE: self.size,
+                SPEED: self.speed,
+                LANGUAGES: self.languages,
+                TRAITS: self.traits,
             }
         return j
 
@@ -60,27 +84,27 @@ class Dwarf(Race):
         def_asi = {ability_score.CON: 2}
         def_traits = {
                 'darkvision': {
-                    'name': 'Darkvision',
+                    NAME: 'Darkvision',
+                    DESCRIPTION: 'Accustomed to life underground, you have superior vision in dark and dim Conditions. You can see in dim light within 60 feet of you as if it were bright light, and in Darkness as if it were dim light. You can''t discern color in Darkness, only shades of gray.',
                     'range': 60,
-                    'description': 'Accustomed to life underground, you have superior vision in dark and dim Conditions. You can see in dim light within 60 feet of you as if it were bright light, and in Darkness as if it were dim light. You can’t discern color in Darkness, only shades of gray.',
                 },
                 'dwarven_resilience': {
-                    'name': 'Dwarven Resilience',
-                    'description': 'You have advantage on Saving Throws against poison, and you have Resistance against poison damage.',
+                    NAME: 'Dwarven Resilience',
+                    DESCRIPTION: 'You have advantage on Saving Throws against poison, and you have Resistance against poison damage.',
                 },
                 'dwarven_combat_training': {
-                    'name': 'Dwarven Combat Training',
-                    'weapon_proficiency': ['battleaxe', 'handaxe', 'light_hammer', 'warhammer'],
-                    'description': 'You have proficiency with the Battleaxe, Handaxe, Light Hammer, and Warhammer.',
+                    NAME: 'Dwarven Combat Training',
+                    DESCRIPTION: 'You have proficiency with the Battleaxe, Handaxe, Light Hammer, and Warhammer.',
+                    WEAPON_PROFICIENCY: ['battleaxe', 'handaxe', 'light_hammer', 'warhammer'],
                 },
                 'stonecunning': {
-                    'name': 'Stonecunning',
-                    'description': 'Whenever you make an Intelligence (History) check related to the Origin of stonework, you are considered proficient in the History skill and add double your Proficiency Bonus to the check, instead of your normal Proficiency Bonus.',
+                    NAME: 'Stonecunning',
+                    DESCRIPTION: 'Whenever you make an Intelligence (History) check related to the Origin of stonework, you are considered proficient in the History skill and add double your Proficiency Bonus to the check, instead of your normal Proficiency Bonus.',
                 },
             }
         super(Dwarf, self).__init__(name='Dwarf',
                                     asi={**def_asi, **asi},
-                                    size='medium',
+                                    size=MEDIUM,
                                     speed=25,
                                     languages=[language.COMMON, language.DWARVISH],
                                     traits={**def_traits, **traits})
@@ -88,23 +112,23 @@ class Dwarf(Race):
     @property
     def proficiencies(self):
         return {
-            'weapons': self.traits['dwarven_combat_training']['weapon_proficiency'],
-            'tools': self.traits['tool_proficiency']['tools'],
+            WEAPONS: self.traits['dwarven_combat_training'][WEAPON_PROFICIENCY],
+            TOOLS: self.traits[TOOL_PROFICIENCY][TOOLS],
         }
 
     def _required_customization(self):
         return {
-                'tool_proficiency': {
-                    'tools': ['smiths_tools', 'brewers_kit', 'masons_tools'],
-                    'choice': 1,
+                TOOL_PROFICIENCY: {
+                    TOOLS: ['smiths_tools', 'brewers_kit', 'masons_tools'],
+                    CHOICES: 1,
                 }
             }
 
     def _verify(self):
         # TODO try to de-dupe a lot of this proficiency stuff
-        if 'tool_proficiency' not in self.traits:
+        if TOOL_PROFICIENCY not in self.traits:
             raise ValueError('Must input a tool proficiency!')
-        if 'tools' not in self.traits['tool_proficiency'] or len(self.traits['tool_proficiency']['tools']) != 1 or self.traits['tool_proficiency']['tools'][0] not in ['smiths_tools', 'brewers_kit', 'masons_tools']:
+        if TOOLS not in self.traits[TOOL_PROFICIENCY] or len(self.traits[TOOL_PROFICIENCY][TOOLS]) != 1 or self.traits[TOOL_PROFICIENCY][TOOLS][0] not in ['smiths_tools', 'brewers_kit', 'masons_tools']:
             raise ValueError('Must enter a valid tool proficiency!')
         return True
 
@@ -114,8 +138,8 @@ class HillDwarf(Dwarf):
         def_asi = {ability_score.WIS: 1}
         def_traits = {
             'dwarven_toughness': {
-                'name': 'Dwarven Toughness',
-                'description': 'Your hit point maximum increases by 1, and it increases by 1 every time you gain a level.',
+                NAME: 'Dwarven Toughness',
+                DESCRIPTION: 'Your hit point maximum increases by 1, and it increases by 1 every time you gain a level.',
             },
         }
         super(HillDwarf, self).__init__(asi=def_asi,
@@ -130,18 +154,18 @@ class Gnome(Race):
         def_asi = {ability_score.INT: 2}
         def_traits = {
                 'darkvision': {
-                    'name': 'Darkvision',
+                    NAME: 'Darkvision',
+                    DESCRIPTION: 'Accustomed to life underground, you have superior vision in dark and dim Conditions. You can see in dim light within 60 feet of you as if it were bright light, and in Darkness as if it were dim light. You can''t discern color in Darkness, only shades of gray.',
                     'range': 60,
-                    'description': 'Accustomed to life underground, you have superior vision in dark and dim Conditions. You can see in dim light within 60 feet of you as if it were bright light, and in Darkness as if it were dim light. You can’t discern color in Darkness, only shades of gray.',
                 },
                 'gnome_cunning': {
-                    'name': 'Gnome Cunning',
-                    'description': 'You have advantage on all Intelligence, Wisdom, and Charisma Saving Throws against magic.',
+                    NAME: 'Gnome Cunning',
+                    DESCRIPTION: 'You have advantage on all Intelligence, Wisdom, and Charisma Saving Throws against magic.',
                 },
             }
         super(Gnome, self).__init__(name='Gnome',
                                     asi={**def_asi, **asi},
-                                    size='small',
+                                    size=SMALL,
                                     speed=25,
                                     languages=[language.COMMON, language.GNOMISH],
                                     traits={**def_traits, **traits})
@@ -151,12 +175,12 @@ class RockGnome(Gnome):
     def __init__(self):
         traits = {
             'artificers_lore': {
-                'name': 'Artificer''s Lore',
-                'description': 'Whenever you make an Intelligence (History) check related to Magic Items, alchemical Objects, or technological devices, you can add twice your Proficiency Bonus, instead of any Proficiency Bonus you normally apply.',
+                NAME: 'Artificer''s Lore',
+                DESCRIPTION: 'Whenever you make an Intelligence (History) check related to Magic Items, alchemical Objects, or technological devices, you can add twice your Proficiency Bonus, instead of any Proficiency Bonus you normally apply.',
             },
             'tinker': {
-                'name': 'Tinker',
-                'description': 'You have proficiency with artisan''s tools (tinker''s tools). ...',
+                NAME: 'Tinker',
+                DESCRIPTION: 'You have proficiency with artisan''s tools (tinker''s tools). ...',
             }
         }
         super(RockGnome, self).__init__(asi={ability_score.CON: 1},
@@ -166,7 +190,7 @@ class RockGnome(Gnome):
     @property
     def proficiencies(self):
         return {
-            'tools': ['tinkers_tools'],
+            TOOLS: ['tinkers_tools'],
         }
 
 
@@ -186,17 +210,16 @@ class Human(Race):
         def_languages = [language.COMMON]
         super(Human, self).__init__(name='Human',
                                     asi=def_asi,
-                                    size='medium',
-                                    speed=25,
+                                    size=MEDIUM,
+                                    speed=30,
                                     languages=def_languages+languages,
                                     traits=def_traits)
     
     def _required_customization(self):
         return {
-                'languages': {
-                    'languages': language.LANGUAGES,
-                    'description': 'choose any one language',
-                    'choice': 1,
+                LANGUAGES: {
+                    LANGUAGES: language.LANGUAGES,
+                    CHOICES: 1,
                 }
             }
 

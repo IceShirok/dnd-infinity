@@ -1,5 +1,16 @@
 
-from ddddd.entity import skills
+from ddddd.entity import proficiency
+
+BACKGROUND = 'background'
+FEATURES = 'features'
+PROFICIENCIES = 'proficiencies'
+LANGUAGES = 'languages'
+
+SKILLS = 'skills'
+TOOLS = 'tools'
+
+NAME = 'name'
+DESCRIPTION = 'description'
 
 
 class PlayerBackground(object):
@@ -18,16 +29,16 @@ class PlayerBackground(object):
 
     def __json__(self):
         j = {
-                'background': self.name,
-                'feature': self.feature,
-                'proficiencies': self.__proficiencies,
-                'languages': self.languages,
+                BACKGROUND: self.name,
+                FEATURES: self.feature,
+                PROFICIENCIES: self.__proficiencies,
+                LANGUAGES: self.languages,
         }
         return j
 
     @property
     def skills(self):
-        return self.__proficiencies['skills']
+        return self.__proficiencies[SKILLS]
 
     @property
     def background_proficiencies(self):
@@ -37,7 +48,7 @@ class PlayerBackground(object):
     @property
     def proficiencies(self):
         p = {**self.background_proficiencies}
-        p.pop('skills')
+        p.pop(SKILLS)
         return p
 
 
@@ -45,13 +56,13 @@ class Criminal(PlayerBackground):
     def __init__(self):
         feature = {
             'criminal_contact': {
-                'name': 'Criminal Contact',
-                'description': 'You have a reliable and trustworthy contact who acts as your liaison to a network of other criminals. ...',
+                NAME: 'Criminal Contact',
+                DESCRIPTION: 'You have a reliable and trustworthy contact who acts as your liaison to a network of other criminals. ...',
             }
         }
         proficiencies = {
-            'skills': [skills.DECEPTION, skills.STEALTH],
-            'tools': ['thieves_tools', 'bone_dice'],
+            SKILLS: [proficiency.DECEPTION, proficiency.STEALTH],
+            TOOLS: ['thieves_tools', 'bone_dice'],
         }
         super(Criminal, self).__init__(name='criminal',
                                        feature=feature,
