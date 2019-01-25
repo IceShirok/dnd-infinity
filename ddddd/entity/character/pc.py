@@ -1,7 +1,7 @@
 
 import math
 
-from ddddd.entity import skills, ability_scores
+from ddddd.entity import skills, ability_score
 
 
 class PlayerBase(object):
@@ -32,12 +32,12 @@ class PlayerBase(object):
         Return the base ability scores.
         """
         return {
-            ability_scores.STR: self._str,
-            ability_scores.DEX: self._dex,
-            ability_scores.CON: self._con,
-            ability_scores.INT: self._int,
-            ability_scores.WIS: self._wis,
-            ability_scores.CHA: self._cha,
+            ability_score.STR: self._str,
+            ability_score.DEX: self._dex,
+            ability_score.CON: self._con,
+            ability_score.INT: self._int,
+            ability_score.WIS: self._wis,
+            ability_score.CHA: self._cha,
         }
 
     def __json__(self):
@@ -114,27 +114,27 @@ class PlayerCharacter(object):
             score = ability_scores_raw[a]
             ability_scores_p[a] = {
                 'score': score,
-                'modifier': ability_scores.modifier(score),
+                'modifier': ability_score.modifier(score),
             }
 
         return ability_scores_p
 
     @property
     def armor_class(self):
-        return 10 + ability_scores.modifier(self.base._dex)
+        return 10 + self.ability_scores[ability_score.DEX]['modifier']
 
     @property
     def initiative(self):
-        return ability_scores.modifier(self.base._dex)
+        return self.ability_scores[ability_score.DEX]['modifier']
 
     @property
     def max_hit_points(self):
         hit_points = 0
         for c in self.classes:
             if hit_points <= 0:
-                hit_points = c.hit_die + ability_scores.modifier(self.base._con)
+                hit_points = c.hit_die + self.ability_scores[ability_score.CON]['modifier']
             else:
-                hit_points += math.ceil(c.hit_die/2) + ability_scores.modifier(self.base._con)
+                hit_points += math.ceil(c.hit_die/2) + self.ability_scores[ability_score.CON]['modifier']
         return hit_points
     
     @property
@@ -157,7 +157,7 @@ class PlayerCharacter(object):
         saving_throws_p = {}
         _ability_scores = self.ability_scores
         for a in _ability_scores.keys():
-            saving_throws_p[a] = { 'modifier': _ability_scores[a]['modifier'] }
+            saving_throws_p[a] = {'modifier': _ability_scores[a]['modifier']}
             saving_throws_p[a]['is_proficient'] = False
             if a in saving_throws:
                 saving_throws_p[a]['modifier'] += self.proficiency_bonus
@@ -167,7 +167,7 @@ class PlayerCharacter(object):
     @property
     def skill_proficiencies(self):
         skill_proficiencies = (self.race.skills + self.background.skills)
-        for c in  self.classes:
+        for c in self.classes:
             skill_proficiencies = skill_proficiencies + c.skills
 
         _ability_scores = self.ability_scores
@@ -213,12 +213,9 @@ class PlayerCharacter(object):
     @property
     def features(self):
         return {
-            #'size': self.size,
             'racial_traits': self.race.traits,
             'class_features': self.class_features,
-            #'class_proficiencies': self.class_proficiencies,
             'background_feature': self.background.feature,
-            #'background_proficiencies': self.background.background_proficiencies,
         }
     
     def get_spellcasting(self):

@@ -1,5 +1,5 @@
 
-from ddddd.entity import ability_scores, skills
+from ddddd.entity import ability_score, skills
 from ddddd.entity.character.spells import SpellcastingAbility
 
 
@@ -180,7 +180,7 @@ class RangerFactory(PlayerClassFactory):
                     'choices': 1,
                 },
                 'spellcasting': {
-                    'spellcasting_ability': ability_scores.WIS,
+                    'spellcasting_ability': ability_score.WIS,
                     'spells_known': 2,
                     'spell_slots': {
                         '1st': 2
@@ -207,7 +207,7 @@ class Ranger(PlayerClass):
                                          'weapons': ['simple', 'martial'],
                                          'tools': [],
                                      },
-                                     saving_throws=[ability_scores.STR, ability_scores.DEX],
+                                     saving_throws=[ability_score.STR, ability_score.DEX],
                                      skill_proficiencies=skill_proficiencies,
                                      features=features,
                                      spellcasting=spellcasting)

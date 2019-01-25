@@ -1,5 +1,5 @@
 
-from ddddd.entity import ability_scores, language
+from ddddd.entity import ability_score, language
 
 
 class Race(object):
@@ -14,7 +14,13 @@ class Race(object):
         self.size = size
         self.speed = speed
         self.languages = languages if languages else []  # Change this for races like Kenku
-        self.traits = traits if traits else {}
+        def_traits = {
+            'size': {
+                'name': 'Size',
+                'description': 'Your size is {}.'.format(self.size.capitalize()),
+            },
+        }
+        self.traits = {**traits, **def_traits}
         
         self._verify()
 
@@ -51,7 +57,7 @@ class Race(object):
 # DWARF
 class Dwarf(Race):
     def __init__(self, asi, traits):
-        def_asi = {ability_scores.CON: 2}
+        def_asi = {ability_score.CON: 2}
         def_traits = {
                 'darkvision': {
                     'name': 'Darkvision',
@@ -105,7 +111,7 @@ class Dwarf(Race):
 
 class HillDwarf(Dwarf):
     def __init__(self, traits):
-        def_asi = {ability_scores.WIS: 1}
+        def_asi = {ability_score.WIS: 1}
         def_traits = {
             'dwarven_toughness': {
                 'name': 'Dwarven Toughness',
@@ -121,7 +127,7 @@ class HillDwarf(Dwarf):
 
 class Gnome(Race):
     def __init__(self, asi, traits):
-        def_asi = {ability_scores.INT: 2}
+        def_asi = {ability_score.INT: 2}
         def_traits = {
                 'darkvision': {
                     'name': 'Darkvision',
@@ -150,10 +156,10 @@ class RockGnome(Gnome):
             },
             'tinker': {
                 'name': 'Tinker',
-                'description': 'You have proficiency with artisan’s tools (tinker’s tools). ...',
+                'description': 'You have proficiency with artisan''s tools (tinker''s tools). ...',
             }
         }
-        super(RockGnome, self).__init__(asi={ability_scores.CON: 1},
+        super(RockGnome, self).__init__(asi={ability_score.CON: 1},
                                         traits=traits)
         self.name = 'Rock Gnome'
     
@@ -169,12 +175,12 @@ class RockGnome(Gnome):
 class Human(Race):
     def __init__(self, languages):
         def_asi = {
-            ability_scores.STR: 1,
-            ability_scores.DEX: 1,
-            ability_scores.CON: 1,
-            ability_scores.INT: 1,
-            ability_scores.WIS: 1,
-            ability_scores.CHA: 1
+            ability_score.STR: 1,
+            ability_score.DEX: 1,
+            ability_score.CON: 1,
+            ability_score.INT: 1,
+            ability_score.WIS: 1,
+            ability_score.CHA: 1
         }
         def_traits = {}
         def_languages = [language.COMMON]
