@@ -227,6 +227,6 @@ class Human(Race):
         # TODO try to de-dupe a lot of this proficiency stuff
         if len(self.languages) != 2:
             raise ValueError('Must input one custom language!')
-        if not set(self.languages).issubset(self._required_customization()['languages']['languages']):
+        if not set(self.languages).issubset(self._required_customization()[LANGUAGES][LANGUAGES]):
             raise ValueError('Must input a valid language!')
         return True
