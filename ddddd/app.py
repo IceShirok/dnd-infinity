@@ -2,8 +2,8 @@
 import json
 import sys
 
-from ddddd.entity.character import race, cclass, background, pc, equipment
 from ddddd.entity import skills
+from ddddd.entity.character import race, cclass, background, pc, equipment
 
 
 def main():

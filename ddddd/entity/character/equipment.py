@@ -1,8 +1,5 @@
 
-from ddddd.entity.base import Jsonable
-
-
-class Backpack(Jsonable):
+class Backpack(object):
     """
     A player character's (PC) backpack, or equipment.
     Currently a work-in-progress, since this particular
@@ -15,13 +12,13 @@ class Backpack(Jsonable):
                  silver_pieces=0,
                  gold_pieces=0,
                  platnium_pieces=0,
-                 items=[]):
+                 items=None):
         self.copper_pieces = copper_pieces
         self.silver_pieces = silver_pieces
         self.gold_pieces = gold_pieces
         self.platnium_pieces = platnium_pieces
 
-        self.items = items
+        self.items = items if items else []
 
     def add_item(self, item):
         self.items.append(item)
@@ -32,17 +29,17 @@ class Backpack(Jsonable):
             items_p.append(i.__json__())
         j = {
             'money': {
-            'CP': self.copper_pieces,
-            'SP': self.silver_pieces,
-            'GP': self.gold_pieces,
-            'PP': self.platnium_pieces,
+                'CP': self.copper_pieces,
+                'SP': self.silver_pieces,
+                'GP': self.gold_pieces,
+                'PP': self.platnium_pieces,
             },
             'items': items_p,
         }
         return j
 
 
-class Item(Jsonable):
+class Item(object):
     """
     An item in D&D.
     The price will assume that it is in copper pieces (CP),

@@ -1,9 +1,8 @@
 
-from ddddd.entity.base import Jsonable, Requireable
 from ddddd.entity import ability_scores
 
 
-class Race(Jsonable, Requireable):
+class Race(object):
     """
     A player character's (PC) race.
     A PC's race does not change for the most part, although
@@ -29,6 +28,16 @@ class Race(Jsonable, Requireable):
                 'traits': self.traits,
             }
         return j
+
+    def _verify(self):
+        """
+        Verify to see whether the race is properly init'd with valid values
+        :return: True if valid, otherwise it'll throw an exception
+        """
+        return True
+
+    def _required_customization(self):
+        return None
 
     @property
     def skills(self):
@@ -69,10 +78,6 @@ class Dwarf(Race):
                                     speed=25,
                                     languages=['common', 'dwarvish'],
                                     traits={**def_traits, **traits})
-    
-    @property
-    def skills(self):
-        return []
     
     @property
     def proficiencies(self):
@@ -139,15 +144,6 @@ class Gnome(Race):
                                     languages=['common', 'gnomish'],
                                     traits={**def_traits, **traits})
 
-    @property
-    def skills(self):
-        return []
-    
-    @property
-    def proficiencies(self):
-        p = {}
-        return p
-
 
 class RockGnome(Gnome):
     def __init__(self):
@@ -167,10 +163,9 @@ class RockGnome(Gnome):
     
     @property
     def proficiencies(self):
-        p = {
+        return {
             'tools': ['tinkers_tools'],
         }
-        return p
 
 
 # HUMAN
@@ -210,12 +205,3 @@ class Human(Race):
         if len(self.languages) != 2:
             raise ValueError('Must input one custom language!')
         return True
-
-    @property
-    def skills(self):
-        return []
-    
-    @property
-    def proficiencies(self):
-        p = {}
-        return p

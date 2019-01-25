@@ -1,9 +1,8 @@
 
-from ddddd.entity.base import Jsonable
 from ddddd.entity import skills
 
 
-class PlayerBackground(Jsonable):
+class PlayerBackground(object):
     """
     A player character's (PC) background.
     This doesn't change after a PC is created, but this is created
@@ -28,7 +27,7 @@ class PlayerBackground(Jsonable):
 
     @property
     def skills(self):
-        return self.__proficiencies['skill_proficiencies']
+        return self.__proficiencies['skills']
 
     @property
     def background_proficiencies(self):
@@ -38,7 +37,7 @@ class PlayerBackground(Jsonable):
     @property
     def proficiencies(self):
         p = {**self.background_proficiencies}
-        p.pop('skill_proficiencies')
+        p.pop('skills')
         return p
 
 

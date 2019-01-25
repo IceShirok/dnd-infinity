@@ -1,11 +1,9 @@
 
-from ddddd.entity.base import Jsonable
+from ddddd.entity import ability_scores, skills
 from ddddd.entity.character.spells import SpellcastingAbility
 
-from ddddd.entity import ability_scores, skills
 
-
-class PlayerClass(Jsonable):
+class PlayerClass(object):
     """
     A player character's (PC) class.
     This particular feature is going to be modelled by aggregating
@@ -16,7 +14,9 @@ class PlayerClass(Jsonable):
     ..., ranger_10 objects. Whereas a barbarian 2/druid 2 PC
     will have a total of 4 objects, 2 from each class.
     """
-    def __init__(self, name, level, hit_die, proficiencies, saving_throws, skill_proficiencies, features, spellcasting=None):
+    def __init__(self, name, level, hit_die,
+                 proficiencies, saving_throws, skill_proficiencies, features,
+                 spellcasting=None):
         self.name = name
         self.level = level
         self.hit_die = hit_die

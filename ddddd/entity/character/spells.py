@@ -1,7 +1,5 @@
-from ddddd.entity.base import Jsonable
 
-
-class Spell(Jsonable):
+class Spell(object):
     """
     A singular spell in D&D.
     I will very likely keep the majority of the information in a database
@@ -21,7 +19,7 @@ class Spell(Jsonable):
         self.description = description
     
     def __json__(self):
-        j = {
+        return {
             'spell': self.name,
             'level': self.level,
             'magic_school': self.magic_school,
@@ -31,7 +29,6 @@ class Spell(Jsonable):
             'duration': self.duration,
             'description': self.description,
         }
-        return j
 
 
 # Cantrips (level 0 spells)
@@ -55,7 +52,7 @@ BLESS = Spell(name='Bless',
               description='You bless up to three creatures of your choice within range.')
 
 
-class SpellcastingAbility(Jsonable):
+class SpellcastingAbility(object):
     """
     An object representing a character's ability to cast spells.
     This is likely going to be delegated to the class factory, as each class
@@ -68,8 +65,7 @@ class SpellcastingAbility(Jsonable):
         self.spell_slots = spell_slots
 
     def __json__(self):
-        j = {
+        return {
             'list_spells_known': self.list_spells_known,
             'spell_slots': self.spell_slots,
         }
-        return j
