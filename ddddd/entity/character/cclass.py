@@ -16,13 +16,13 @@ class PlayerClass(Jsonable):
     ..., ranger_10 objects. Whereas a barbarian 2/druid 2 PC
     will have a total of 4 objects, 2 from each class.
     """
-    def __init__(self, name, level, hit_die, proficiencies, saving_throws, skills, features, spellcasting=None):
+    def __init__(self, name, level, hit_die, proficiencies, saving_throws, skill_proficiencies, features, spellcasting=None):
         self.name = name
         self.level = level
         self.hit_die = hit_die
         self.proficiencies = proficiencies
         self.saving_throws = saving_throws
-        self.skills = skills
+        self.skills = skill_proficiencies
         self.features = features
         self.spellcasting = spellcasting
 
@@ -67,7 +67,7 @@ class PlayerClassFactory(object):
             print('not a valid level!')
             return None
 
-    def _generate_class_1(self):
+    def _generate_class_1(self, **kwargs):
         pass
 
     def _req_class_1(self):
@@ -76,7 +76,7 @@ class PlayerClassFactory(object):
     def _validate_class_1(self, **kwargs):
         pass
 
-    def _generate_class_2(self):
+    def _generate_class_2(self, **kwargs):
         pass
 
     def _req_class_2(self):
@@ -87,9 +87,9 @@ class PlayerClassFactory(object):
 
 
 class RangerFactory(PlayerClassFactory):
-    def _generate_class_1(self, skills=[], favored_enemy=None, languages=None, favored_terrain=None):
+    def _generate_class_1(self, skill_proficiencies=None, favored_enemy=None, languages=None, favored_terrain=None):
         # validation
-        self._validate_class_1(skills=skills, favored_enemy=favored_enemy, languages=languages, favored_terrain=favored_terrain)
+        self._validate_class_1(skill_proficiencies=skill_proficiencies, favored_enemy=favored_enemy, languages=languages, favored_terrain=favored_terrain)
 
         def_features = {
                 'favored_enemy': {
@@ -105,7 +105,7 @@ class RangerFactory(PlayerClassFactory):
                 },
         }
         return Ranger(level=1,
-                      skills=skills,
+                      skill_proficiencies=skill_proficiencies,
                       features=def_features,
                       spellcasting=None)
 
@@ -131,12 +131,12 @@ class RangerFactory(PlayerClassFactory):
         return req
     
     def _validate_class_1(self, **kwargs):
-        skills = kwargs['skills']
-        if len(skills) != 3:
+        skill_proficiencies = kwargs['skill_proficiencies']
+        if len(skill_proficiencies) != 3:
             raise ValueError('You must pick 3 skill proficiencies!')
 
         def_skills = set(self._req_class_1()['skill_proficiency']['skills'])
-        if not set(skills).issubset(def_skills):
+        if not set(skill_proficiencies).issubset(def_skills):
             raise ValueError('You must pick valid skill proficiencies!')
 
         favored_enemy = kwargs['favored_enemy']
@@ -166,8 +166,8 @@ class RangerFactory(PlayerClassFactory):
 
         # TODO make this a bit more elegant...
         spellcasting = SpellcastingAbility(list_spells_known=['hunters_mark', 'cure_wounds'],
-                                           spell_slots={ "1st": 2 })
-        return Ranger(level=2, skills=[], features=features, spellcasting=spellcasting)
+                                           spell_slots={"1st": 2})
+        return Ranger(level=2, skill_proficiencies=[], features=features, spellcasting=spellcasting)
 
     def _req_class_2(self):
         req = {
@@ -194,7 +194,7 @@ class RangerFactory(PlayerClassFactory):
 
 
 class Ranger(PlayerClass):
-    def __init__(self, level, skills, features, spellcasting):
+    def __init__(self, level, skill_proficiencies, features, spellcasting):
         super(Ranger, self).__init__(name='Ranger',
                                      level=level,
                                      hit_die=10,
@@ -204,6 +204,6 @@ class Ranger(PlayerClass):
                                          'tools': [],
                                      },
                                      saving_throws=[ability_scores.STR, ability_scores.DEX],
-                                     skills=skills,
+                                     skill_proficiencies=skill_proficiencies,
                                      features=features,
                                      spellcasting=spellcasting)

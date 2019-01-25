@@ -35,7 +35,7 @@ def create_dorian():
     }
     dorian_race = race.HillDwarf(traits=tool_prof)
     dorian_classes = [
-            cclass.RangerFactory().generate_by_level(1, skills=[skills.ATHLETICS, skills.ANIMAL_HANDLING, skills.SURVIVAL], favored_enemy='plants', languages='elvish', favored_terrain='forest'),
+            cclass.RangerFactory().generate_by_level(1, skill_proficiencies=[skills.ATHLETICS, skills.ANIMAL_HANDLING, skills.SURVIVAL], favored_enemy='plants', languages='elvish', favored_terrain='forest'),
             cclass.RangerFactory().generate_by_level(2, fighting_style=['two_weapon_fighting'])
             ]
     dorian_background = background.Criminal()

@@ -28,17 +28,17 @@ class PlayerBackground(Jsonable):
 
     @property
     def skills(self):
-        return self.__proficiencies['skills']
+        return self.__proficiencies['skill_proficiencies']
 
     @property
     def background_proficiencies(self):
-        p = { **self.__proficiencies }
+        p = {**self.__proficiencies}
         return p
 
     @property
     def proficiencies(self):
-        p = { **self.background_proficiencies }
-        p.pop('skills')
+        p = {**self.background_proficiencies}
+        p.pop('skill_proficiencies')
         return p
 
 

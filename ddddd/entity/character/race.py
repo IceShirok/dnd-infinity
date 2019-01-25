@@ -9,13 +9,13 @@ class Race(Jsonable, Requireable):
     A PC's race does not change for the most part, although
     some features may scale up with a PC's level.
     """
-    def __init__(self, name, asi, size, speed, languages=['common'], traits={}):
+    def __init__(self, name, asi, size, speed, languages=None, traits=None):
         self.name = name
         self.asi = asi
         self.size = size
         self.speed = speed
-        self.languages = languages
-        self.traits = traits
+        self.languages = languages if languages else ['common']
+        self.traits = traits if traits else {}
         
         self._verify()
 
@@ -32,11 +32,11 @@ class Race(Jsonable, Requireable):
 
     @property
     def skills(self):
-        pass
+        return []
 
     @property
     def proficiencies(self):
-        pass
+        return {}
 
 
 # DWARF
@@ -162,7 +162,7 @@ class RockGnome(Gnome):
             }
         }
         super(RockGnome, self).__init__(asi={ability_scores.CON: 1},
-                                            traits=traits)
+                                        traits=traits)
         self.name = 'Rock Gnome'
     
     @property
