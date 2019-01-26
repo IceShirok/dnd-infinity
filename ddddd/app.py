@@ -67,13 +67,36 @@ def test_pc():
 
 
 def test_stuff():
-    backpack = equipment.Backpack(gold_pieces=15)
-    print(backpack)
-    backpack.add_item(equipment.Weapon('dagger', '1d4 piercing', 200, 1, ['finesse', 'light', 'thrown (range 20/60)'])
-)
-    backpack.add_item(equipment.Item('crowbar'))
-    backpack.add_item(equipment.Item('clothes', description='A set of dark common clothes including a hood.'))
-    print(backpack)
+    print('Displaying equipment in backpack')
+    backpack = equipment.Backpack(copper_pieces=0, silver_pieces=0, gold_pieces=15, platnium_pieces=0, items=None)
+    backpack.add_item(equipment.Item('Ball Bearings', price=1, weight=2))
+    backpack.add_item(equipment.Item('String', price=0, weight=0, description='10 ft of string'))
+    backpack.add_item(equipment.Item('Bell', price=1, weight=0))
+    backpack.add_item(equipment.Item('Candle', price=0, weight=0, quantity=5))
+    backpack.add_item(equipment.Item('Crowbar', price=2, weight=5, quantity=2))
+    backpack.add_item(equipment.Item('Hammer', price=1, weight=3))
+    backpack.add_item(equipment.Item('Piton', price=0, weight=1, quantity=10))
+    backpack.add_item(equipment.Item('Hooded Lantern', price=4, weight=2))
+    backpack.add_item(equipment.Item('Flask of Oil', price=1, weight=1, quantity=2))
+    backpack.add_item(equipment.Item('Rations', price=0.5, weight=2, quantity=5))
+    backpack.add_item(equipment.Item('Tinderbox', price=1, weight=1))
+    backpack.add_item(equipment.Item('Waterskin', price=1, weight=5))
+    backpack.add_item(equipment.Item('Hempen Rope', price=1, weight=10, description='50 ft of rope'))
+    print(json.dumps(backpack.__json__(), indent=4))
+
+    print('-----')
+
+    print('Displaying worn items')
+    worn_items = equipment.WornItems()
+    armor = equipment.Armor('Chain Mail', price=75, weight=55, armor_class=16, strength=15, stealth='disadvantage')
+    rondel = equipment.Weapon('Handaxe', damage='1d6 slashing', price=5, weight=2, properties=['light', 'thrown (range 20/60)'])
+    lefon = equipment.Weapon('Handaxe', damage='1d6 slashing', price=5, weight=2, properties=['light', 'thrown (range 20/60)'])
+    longbow = equipment.Weapon('Longbow', damage='1d8 piercing', price=50, weight=2, properties=['ammunition (range 150/600)', 'heavy', 'two-handed'])
+    worn_items.don_armor(armor)
+    worn_items.equip_weapon(rondel)
+    worn_items.equip_weapon(lefon)
+    worn_items.equip_weapon(longbow)
+    print(json.dumps(worn_items.__json__(), indent=4))
 
 
 if __name__ == '__main__':
