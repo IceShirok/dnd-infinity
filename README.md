@@ -6,7 +6,10 @@ This project is currently written in Python 3.5. I'm writing this in Python for 
 while modelling, and also because I just want to practice Python.
 
 ## Project hit list
-* Flesh out the spellcasting stuff
+* Don't throw error within object if verification doesn't pass, let outside program determine
+    * As in, let the verify function return the object containing the list of required things
+* Write a small application to get input and generate the webapp as you go
+    * Need to start writing application code, APIs and all that shizzz
 * Add attack bonuses to equipment
 * Create higher level classes to test aggregations
 * Clean up the PC class
