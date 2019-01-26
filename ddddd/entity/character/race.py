@@ -12,11 +12,19 @@ NAME = 'name'
 DESCRIPTION = 'description'
 CHOICES = 'choices'
 
+TINY = 'tiny'
 SMALL = 'small'
 MEDIUM = 'medium'
-SIZES = {
-    SMALL,
-    MEDIUM,
+LARGE = 'large'
+HUGE = 'huge'
+GARGANTUAN = 'gargantuan'
+SIZE_TO_CARRYING_CAPACITY = {
+    TINY: 0.5,
+    SMALL: 1,
+    MEDIUM: 1,
+    LARGE: 2,
+    HUGE: 4,
+    GARGANTUAN: 8,
 }
 
 WEAPONS = 'weapons'
@@ -47,6 +55,10 @@ class Race(object):
         self.traits = {**traits, **def_traits}
         
         self._verify()
+
+    @property
+    def str_movement_multiplier(self):
+        return SIZE_TO_CARRYING_CAPACITY[self.size]
 
     def __json__(self):
         j = {

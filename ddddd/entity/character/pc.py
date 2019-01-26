@@ -275,6 +275,10 @@ class PlayerCharacter(object):
     def carrying_weight(self):
         return self.worn_items.total_weight + self.backpack.total_weight
 
+    @property
+    def carrying_capacity(self):
+        return self.ability_scores[ability_score.STR][SCORE] * 15 * self.race.str_movement_multiplier
+
     def __json__(self):
         j_classes = []
         for c in self.classes:
@@ -317,6 +321,7 @@ class PlayerCharacter(object):
             SPELLCASTING: self.get_spellcasting(),
             EQUIPMENT: {
                 CARRYING_WEIGHT: self.carrying_weight,
+                CARRYING_CAPACITY: self.carrying_capacity,
                 WORN_ITEMS: self.worn_items.__json__(),
                 BACKPACK: self.backpack.__json__(),
             },
