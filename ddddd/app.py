@@ -10,17 +10,7 @@ def main():
     """
     Testing playground for D&D Infinity.
     """
-    if len(sys.argv) < 2:
-        print('put in argument pls')
-        print('"pc" for testing pc')
-        print('"stuff" for testing equipment')
-    elif sys.argv[1] == 'pc':
-        test_pc()
-    elif sys.argv[1] == 'stuff':
-        test_stuff()
-    else:
-        print('not sure what you put in')
-        print('try something else')
+    test_pc()
     print('bye')
 
 
@@ -39,34 +29,13 @@ def create_dorian():
             cclass.RangerFactory().generate_by_level(2, fighting_style=['two_weapon_fighting'])
             ]
     dorian_background = background.Criminal()
-    dorian_pc = pc.PlayerCharacter(dorian_base, dorian_race, dorian_classes, dorian_background)
+    dorian_equip = generate_equipment()
+    dorian_backpack = generate_backpack()
+    dorian_pc = pc.PlayerCharacter(dorian_base, dorian_race, dorian_classes, dorian_background, dorian_equip, dorian_backpack)
     return dorian_pc
 
 
-def test_pc():
-    dorian_pc = create_dorian()
-    print(dorian_pc.__str__())
-
-    print('-----')
-
-    ttt_base = pc.PlayerBase("Tamiphi Tockentell", 10, 11, 16, 18, 20, 7, level=8)
-    gnome = race.RockGnome()
-    print(ttt_base)
-    print(gnome)
-
-    print('-----')
-
-    lok_base = pc.PlayerBase("Lok", 15, 18, 10, 12, 16, 9, level=4)
-    human = race.Human(languages=[language.DRACONIC])
-    print(lok_base)
-    print(human)
-
-    print('-----')
-
-    print(json.dumps(dorian_pc.generate_character_sheet(), indent=4))
-
-
-def test_stuff():
+def generate_backpack():
     print('Displaying equipment in backpack')
     backpack = equipment.Backpack(copper_pieces=0, silver_pieces=0, gold_pieces=15, platnium_pieces=0, items=None)
     backpack.add_item(equipment.Item('Ball Bearings', price=1, weight=2))
@@ -83,9 +52,10 @@ def test_stuff():
     backpack.add_item(equipment.Item('Waterskin', price=1, weight=5))
     backpack.add_item(equipment.Item('Hempen Rope', price=1, weight=10, description='50 ft of rope'))
     print(json.dumps(backpack.__json__(), indent=4))
+    return backpack
 
-    print('-----')
 
+def generate_equipment():
     print('Displaying worn items')
     worn_items = equipment.WornItems()
     armor = equipment.Armor('Chain Mail', price=75, weight=55, armor_class=16, strength=15, stealth='disadvantage')
@@ -97,6 +67,31 @@ def test_stuff():
     worn_items.equip_weapon(lefon)
     worn_items.equip_weapon(longbow)
     print(json.dumps(worn_items.__json__(), indent=4))
+    return worn_items
+
+
+def test_pc():
+
+    ttt_base = pc.PlayerBase("Tamiphi Tockentell", 10, 11, 16, 18, 20, 7, level=8)
+    gnome = race.RockGnome()
+    print(ttt_base)
+    print(gnome)
+
+    print('-----')
+
+    lok_base = pc.PlayerBase("Lok", 15, 18, 10, 12, 16, 9, level=4)
+    human = race.Human(languages=[language.DRACONIC])
+    print(lok_base)
+    print(human)
+
+    print('-----')
+
+    dorian_pc = create_dorian()
+    print(dorian_pc.__str__())
+
+    print('-----')
+
+    print(json.dumps(dorian_pc.generate_character_sheet(), indent=4))
 
 
 if __name__ == '__main__':

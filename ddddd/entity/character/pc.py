@@ -1,7 +1,9 @@
 
 import math
+import json
 
 from ddddd.entity import proficiency, ability_score
+from ddddd.entity.character import equipment
 
 ABILITY = 'ability'
 SCORE = 'score'
@@ -35,6 +37,12 @@ RACIAL_TRAITS = 'racial_traits'
 CLASS_FEATURES = 'class_features'
 BACKGROUND_FEATURES = 'background_feature'
 SPELLCASTING = 'spellcasting'
+
+EQUIPMENT = 'equipment'
+WORN_ITEMS = 'worn_items'
+BACKPACK = 'backpack'
+CARRYING_WEIGHT = 'carrying_weight'
+CARRYING_CAPACITY = 'carrying_capacity'
 
 
 class PlayerBase(object):
@@ -82,6 +90,9 @@ class PlayerBase(object):
             }
         return j
 
+    def __str__(self):
+        return json.dumps(self.__json__())
+
     @property
     def proficiency_bonus(self):
         # Proficiency bonus is based on a character's level.
@@ -94,11 +105,13 @@ class PlayerCharacter(object):
     A PC consists of some base characteristics, a race, a class, and
     a background.
     """
-    def __init__(self, base, race=None, classes=None, background=None):
+    def __init__(self, base, race=None, classes=None, background=None, worn_items=None, backpack=None):
         self.base = base
         self.race = race
         self.classes = classes
         self.background = background
+        self.worn_items = worn_items if worn_items else equipment.WornItems()
+        self.backpack = backpack if backpack else equipment.Backpack()
     
     @property
     def name(self):
@@ -258,6 +271,10 @@ class PlayerCharacter(object):
                 spellcasting_p = c.spellcasting.__json__()
         return spellcasting_p
 
+    @property
+    def carrying_weight(self):
+        return self.worn_items.total_weight + self.backpack.total_weight
+
     def __json__(self):
         j_classes = []
         for c in self.classes:
@@ -298,5 +315,10 @@ class PlayerCharacter(object):
             },
             TRAITS_AND_FEATURES: self.features,
             SPELLCASTING: self.get_spellcasting(),
+            EQUIPMENT: {
+                CARRYING_WEIGHT: self.carrying_weight,
+                WORN_ITEMS: self.worn_items.__json__(),
+                BACKPACK: self.backpack.__json__(),
+            },
         }
         return j
