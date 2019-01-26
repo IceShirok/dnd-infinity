@@ -263,13 +263,10 @@ class PlayerCharacter(object):
             CLASS_FEATURES: self.class_features,
             BACKGROUND_FEATURES: self.background.feature,
         }
-    
-    def get_spellcasting(self):
-        spellcasting_p = {}
-        for c in self.classes:
-            if c.spellcasting:
-                spellcasting_p = c.spellcasting.__json__()
-        return spellcasting_p
+
+    @property
+    def spellcasting(self):
+        return self.classes[-1].spellcasting
 
     @property
     def carrying_weight(self):
@@ -318,7 +315,7 @@ class PlayerCharacter(object):
                 TOTAL_HIT_DICE: self.total_hit_dice,
             },
             TRAITS_AND_FEATURES: self.features,
-            SPELLCASTING: self.get_spellcasting(),
+            SPELLCASTING: self.spellcasting.__json__(),
             EQUIPMENT: {
                 CARRYING_WEIGHT: self.carrying_weight,
                 CARRYING_CAPACITY: self.carrying_capacity,

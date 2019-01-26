@@ -3,6 +3,7 @@ import json
 
 from ddddd.entity import ability_score
 from ddddd import app
+from ddddd.entity.character import spells
 
 
 def main():
@@ -103,11 +104,22 @@ def generate_attacks_html(player_character):
     html_page = ''
     html_page += '<div>'
     html_page += '<h2>Attacks & Spellcasting</h2>'
+    html_page += '<h3>Attacks</h3>'
     html_page += '<table>'
     html_page += '<tr><th>Name</th><th>Attack Bonus</th><th>Damage</th></tr>'
     for weapon in player_character.worn_items.weapons:
         html_page += '<tr><td>{}</td><td>{}</td><td>{}</td></tr>'.format(weapon.name, 0, weapon.damage)
     html_page += '</table>'
+
+    html_page += '<h3>Spellcasting</h3>'
+    for spell_type in spells.ORD_TO_NUM:
+        if spell_type in player_character.spellcasting.spell_slots:
+            num_spell_slots = player_character.spellcasting.spell_slots[spell_type]
+            html_page += '<h4>{} ({} spell slots)</h4>'.format(spell_type, num_spell_slots)
+            spellz = list(filter(lambda x: x.level == spells.ORD_TO_NUM[spell_type], player_character.spellcasting.list_spells_known))
+            for spell in spellz:
+                html_page += '<p>{}</p>'.format(spell.name)
+
     html_page += '</div>'
     return html_page
 
