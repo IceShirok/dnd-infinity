@@ -108,7 +108,6 @@ class SpellcastingAbility(object):
         self.spellcasting_ability = spellcasting_ability
         self.spell_slots = spell_slots
         self.list_spells_known = list_spells_known
-        self._verify()
 
     def spell_save_dc(self, ability_scores, proficiency_bonus):
         return 8 + ability_scores[self.spellcasting_ability][MODIFIER] + proficiency_bonus
@@ -118,9 +117,12 @@ class SpellcastingAbility(object):
 
     def _verify(self):
         cantrips = list(filter(lambda x: x.level == 0, self.list_spells_known))
-        num_cantrips_know = self.spell_slots[CANTRIPS]
-        if len(cantrips) != num_cantrips_know:
-            raise ValueError('Must have {} cantrips but inputted {} cantrips!'.format(num_cantrips_know, len(cantrips)))
+        if len(cantrips) > 0:
+            if CANTRIPS not in self.spell_slots:
+                raise ValueError('Cannot learn cantrips!')
+            num_cantrips_know = self.spell_slots[CANTRIPS]
+            if len(cantrips) != num_cantrips_know:
+                raise ValueError('Must have {} cantrips but inputted {} cantrips!'.format(num_cantrips_know, len(cantrips)))
 
         spells = list(filter(lambda x: x.level > 0, self.list_spells_known))
         for s in spells:
@@ -144,6 +146,29 @@ class SpellcastingAbility(object):
 
     def __str__(self):
         return json.dumps(self.__json__(), indent=4)
+
+
+class RangerSpellcastingAbility(SpellcastingAbility):
+    def __init__(self, spellcasting_ability, spell_slots, list_spells_known, num_spells_known):
+        super(RangerSpellcastingAbility, self).__init__(spellcasting_ability, spell_slots, list_spells_known)
+        self.num_spells_known = num_spells_known
+        self._verify()
+
+    def _verify(self):
+        super(RangerSpellcastingAbility, self)._verify()
+        spells = list(filter(lambda x: x.level > 0, self.list_spells_known))
+        if len(spells) != self.num_spells_known:
+            raise ValueError('Must have {} spells but inputted {} spells!'.format(self.num_spells_known, len(spells)))
+
+
+def generate_simple_spell(name, level):
+    return Spell(name=name, level=level,
+                 magic_school='',
+                 casting_time='',
+                 spell_range='',
+                 components=['verbal', 'somatic'],
+                 duration='',
+                 description='')
 
 
 def test_spells():
@@ -181,13 +206,7 @@ def test_spells():
         ('Banishment', 4),
     ]
     for name, level in simple_spell_list:
-        list_spells.append(Spell(name=name, level=level,
-                                 magic_school='',
-                                 casting_time='',
-                                 spell_range='',
-                                 components=['verbal', 'somatic'],
-                                 duration='',
-                                 description=''))
+        list_spells.append(generate_simple_spell(name, level))
     spellcasting_ability = SpellcastingAbility(spellcasting_ability=ability_score.WIS,
                                                spell_slots=spell_slots,
                                                list_spells_known=list_spells)

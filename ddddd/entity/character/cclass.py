@@ -1,5 +1,6 @@
 
 from ddddd.entity import ability_score, proficiency, language
+from ddddd.entity.character import spells
 from ddddd.entity.character.spells import SpellcastingAbility
 
 CLASS = 'class'
@@ -192,8 +193,17 @@ class RangerFactory(PlayerClassFactory):
         }
 
         # TODO make this a bit more elegant...
-        spellcasting = SpellcastingAbility(list_spells_known=['hunters_mark', 'cure_wounds'],
-                                           spell_slots={"1st": 2})
+        list_spells = []
+        simple_spell_list = [
+            ('Hunters Mark', 1),
+            ('Animal Friendship', 1),
+        ]
+        for name, level in simple_spell_list:
+            list_spells.append(spells.generate_simple_spell(name, level))
+        spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=ability_score.WIS,
+                                                        list_spells_known=list_spells,
+                                                        spell_slots={spells.FIRST: 2},
+                                                        num_spells_known=2)
         return Ranger(level=2, skill_proficiencies=[], features=features, spellcasting=spellcasting)
 
     def _req_class_2(self):
