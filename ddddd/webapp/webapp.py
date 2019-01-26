@@ -99,6 +99,19 @@ def generate_health_html(player_character):
     return html_page
 
 
+def generate_attacks_html(player_character):
+    html_page = ''
+    html_page += '<div>'
+    html_page += '<h2>Attacks & Spellcasting</h2>'
+    html_page += '<table>'
+    html_page += '<tr><th>Name</th><th>Attack Bonus</th><th>Damage</th></tr>'
+    for weapon in player_character.worn_items.weapons:
+        html_page += '<tr><td>{}</td><td>{}</td><td>{}</td></tr>'.format(weapon.name, 0, weapon.damage)
+    html_page += '</table>'
+    html_page += '</div>'
+    return html_page
+
+
 def generate_proficiencies(player_character):
     html_page = ''
     html_page += '<div>'
@@ -153,6 +166,7 @@ def write_html_page(player_character):
     html_page += '<div class="column">'
     html_page += generate_basic_combat_html(player_character)
     html_page += generate_health_html(player_character)
+    html_page += generate_attacks_html(player_character)
     html_page += '</div>'
     
     html_page += '<div class="column">'
