@@ -2,13 +2,14 @@
 
 Practicing Domain-Driven Design (DDD) using 5e Dungeons & Dragons (D&D) as the domain, AKA try to replicate D&D Beyond.
 
-This project is currently written in Python 3.5. I'm writing this in Python for its flexibility to prototype while modelling, and also because I just want to practice Python.
+This project is currently written in Python 3.5. I'm writing this in Python for its flexibility to prototype
+while modelling, and also because I just want to practice Python.
 
 ## Project hit list
-* Flesh out equipment
-* Start adding combat-related stuff
 * Flesh out the spellcasting stuff
+* Add attack bonuses to equipment
 * Create higher level classes to test aggregations
+* Clean up the PC class
 * Figure out how to factor traits into stats (i.e. dwarven toughness -> more HP)
 * Add feats
 
