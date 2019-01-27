@@ -192,10 +192,10 @@ class RangerFactory(PlayerClassFactory):
                 base.CHOICES: 1,
             },
             base.SPELLCASTING: {
-                'spellcasting_ability': AbilityScores.WIS,
-                'spells_known': 2,
-                'spell_slots': {
-                    '1st': 2
+                base.SPELLCASTING_ABILITY: AbilityScores.WIS,
+                base.NUM_SPELLS_KNOWN: 2,
+                base.SPELL_SLOTS: {
+                    SpellTypes.FIRST: 2
                 }
             }
         }

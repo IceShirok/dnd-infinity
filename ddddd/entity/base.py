@@ -120,6 +120,7 @@ STEALTH_PENALTY = 'stealth'
 SPELL = 'spell'
 SPELLCASTING_ABILITY = 'spellcasting_ability'
 LIST_SPELLS_KNOWN = 'list_spells_known'
+NUM_SPELLS_KNOWN = 'num_spells_known'
 SPELL_SLOTS = 'spell_slots'
 RANGE = 'range'
 
