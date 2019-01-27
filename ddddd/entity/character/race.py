@@ -22,8 +22,6 @@ class Race(base.Jsonable):
             },
         }
         self.traits = {**traits, **def_traits}
-        
-        self._verify()
 
     @property
     def str_movement_multiplier(self):

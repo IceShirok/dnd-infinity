@@ -8,7 +8,7 @@ from ddddd.entity.character import race, cclass, background, pc, equipment
 
 import logging
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
@@ -28,8 +28,8 @@ def create_dorian():
     tool_prof = {
         'tool_proficiency': {
             'name': 'Tool Proficiency',
-            'tools': ['brewers_kit'],
-            'description': 'You gain proficiency with the artisan’s tools of your choice: smith’s tools, brewer’s supplies, or mason’s tools.',
+            'tools': [],
+            'description': 'You gain proficiency with the artisan''s tools of your choice: smith''s tools, brewer''s supplies, or mason''s tools.',
         }
     }
     dorian_race = race.HillDwarf(traits=tool_prof)
@@ -84,24 +84,25 @@ def test_pc():
 
     ttt_base = pc.PlayerBase("Tamiphi Tockentell", 10, 11, 16, 18, 20, 7, level=8)
     gnome = race.RockGnome()
-    print(ttt_base)
-    print(gnome)
+    logger.info(ttt_base)
+    logger.info(gnome)
 
-    print('-----')
+    logger.info('-----')
 
     lok_base = pc.PlayerBase("Lok", 15, 18, 10, 12, 16, 9, level=4)
     human = race.Human(languages=[Languages.DRACONIC])
-    print(lok_base)
-    print(human)
+    logger.info(lok_base)
+    logger.info(human)
 
-    print('-----')
+    logger.info('-----')
 
     dorian_pc = create_dorian()
-    print(dorian_pc.__str__())
+    logger.info(json.dumps(dorian_pc.__json__(), indent=4))
+    dorian_pc.race._verify()
 
-    print('-----')
-
-    print(json.dumps(dorian_pc.generate_character_sheet(), indent=4))
+    # print('-----')
+    #
+    # print(json.dumps(dorian_pc.generate_character_sheet(), indent=4))
 
 
 if __name__ == '__main__':

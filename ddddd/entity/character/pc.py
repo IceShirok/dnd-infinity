@@ -264,9 +264,15 @@ class PlayerCharacter(base.Jsonable):
 
         if self.race:
             j[base.RACE] = self.race.__json__()
-        
+
         if self.background:
             j[base.BACKGROUND] = self.background.__json__()
+
+        if self.worn_items:
+            j[base.WORN_ITEMS] = self.worn_items.__json__()
+
+        if self.backpack:
+            j[base.BACKPACK] = self.backpack.__json__()
     
         return j
 
