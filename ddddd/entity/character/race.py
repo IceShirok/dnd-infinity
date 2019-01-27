@@ -1,21 +1,6 @@
 
 from ddddd.entity import base
-from ddddd.entity.base import AbilityScores, Languages
-
-TINY = 'tiny'
-SMALL = 'small'
-MEDIUM = 'medium'
-LARGE = 'large'
-HUGE = 'huge'
-GARGANTUAN = 'gargantuan'
-SIZE_TO_CARRYING_CAPACITY = {
-    TINY: 0.5,
-    SMALL: 1,
-    MEDIUM: 1,
-    LARGE: 2,
-    HUGE: 4,
-    GARGANTUAN: 8,
-}
+from ddddd.entity.base import AbilityScores, Languages, Sizes
 
 
 class Race(base.Jsonable):
@@ -42,7 +27,7 @@ class Race(base.Jsonable):
 
     @property
     def str_movement_multiplier(self):
-        return SIZE_TO_CARRYING_CAPACITY[self.size]
+        return Sizes.SIZE_TO_CARRYING_CAPACITY[self.size]
 
     def __json__(self):
         j = {
@@ -100,7 +85,7 @@ class Dwarf(Race):
             }
         super(Dwarf, self).__init__(name='Dwarf',
                                     asi={**def_asi, **asi},
-                                    size=MEDIUM,
+                                    size=Sizes.MEDIUM,
                                     speed=25,
                                     languages=[Languages.COMMON, Languages.DWARVISH],
                                     traits={**def_traits, **traits})
@@ -163,7 +148,7 @@ class Gnome(Race):
             }
         super(Gnome, self).__init__(name='Gnome',
                                     asi={**def_asi, **asi},
-                                    size=SMALL,
+                                    size=Sizes.SMALL,
                                     speed=25,
                                     languages=[Languages.COMMON, Languages.GNOMISH],
                                     traits={**def_traits, **traits})
@@ -208,7 +193,7 @@ class Human(Race):
         def_languages = [Languages.COMMON]
         super(Human, self).__init__(name='Human',
                                     asi=def_asi,
-                                    size=MEDIUM,
+                                    size=Sizes.MEDIUM,
                                     speed=30,
                                     languages=def_languages+languages,
                                     traits=def_traits)

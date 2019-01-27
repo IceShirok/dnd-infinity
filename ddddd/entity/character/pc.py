@@ -6,6 +6,14 @@ from ddddd.entity import base
 from ddddd.entity.base import AbilityScores, Skills
 from ddddd.entity.character import equipment
 
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+
 
 class PlayerBase(base.Jsonable):
     """
@@ -194,7 +202,16 @@ class PlayerCharacter(base.Jsonable):
     
     @property
     def proficiencies(self):
-        p = {**self.race.proficiencies, **self.class_proficiencies, **self.background.proficiencies}
+        logger.debug('Racial proficiencies: {}'.format(self.race.proficiencies))
+        logger.debug('Class proficiencies: {}'.format(self.class_proficiencies))
+        logger.debug('Background proficiencies: {}'.format(self.background.proficiencies))
+        p = {}
+        for prof_group in [self.race.proficiencies, self.class_proficiencies, self.background.proficiencies]:
+            for prof in prof_group.keys():
+                if prof in p:
+                    p[prof] = p[prof] + prof_group[prof]
+                else:
+                    p[prof] = prof_group[prof]
         return p
 
     @property

@@ -6,6 +6,14 @@ from ddddd.entity import base
 from ddddd.entity.base import Skills, Languages
 from ddddd.entity.character import race, cclass, background, pc, equipment
 
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+
 
 def main():
     """
@@ -38,7 +46,7 @@ def create_dorian():
 
 
 def generate_backpack():
-    print('Displaying equipment in backpack')
+    logger.debug('Displaying equipment in backpack')
     backpack = equipment.Backpack(copper_pieces=0, silver_pieces=0, gold_pieces=15, platnium_pieces=0, items=None)
     backpack.add_item(equipment.Item('Ball Bearings', price=1, weight=2))
     backpack.add_item(equipment.Item('String', price=0, weight=0, description='10 ft of string'))
@@ -53,12 +61,12 @@ def generate_backpack():
     backpack.add_item(equipment.Item('Tinderbox', price=1, weight=1))
     backpack.add_item(equipment.Item('Waterskin', price=1, weight=5))
     backpack.add_item(equipment.Item('Hempen Rope', price=1, weight=10, description='50 ft of rope'))
-    print(json.dumps(backpack.__json__(), indent=4))
+    logger.debug(json.dumps(backpack.__json__(), indent=4))
     return backpack
 
 
 def generate_equipment():
-    print('Displaying worn items')
+    logger.debug('Displaying worn items')
     worn_items = equipment.WornItems()
     armor = equipment.Armor('Chain Mail', price=75, weight=55, armor_class=16, strength=15, stealth='disadvantage')
     rondel = equipment.Weapon('Handaxe', damage='1d6 slashing', price=5, weight=2, properties=['light', 'thrown (range 20/60)'])
@@ -68,7 +76,7 @@ def generate_equipment():
     worn_items.equip_weapon(rondel)
     worn_items.equip_weapon(lefon)
     worn_items.equip_weapon(longbow)
-    print(json.dumps(worn_items.__json__(), indent=4))
+    logger.debug(json.dumps(worn_items.__json__(), indent=4))
     return worn_items
 
 

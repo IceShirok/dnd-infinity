@@ -5,13 +5,21 @@ from ddddd.entity import base
 from ddddd import app
 from ddddd.entity.character import spells
 
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+
 
 def main():
     """
     Testing playground for D&D Infinity.
     """
     dorian = app.create_dorian()
-    print(json.dumps(dorian.generate_character_sheet(), indent=4))
+    logger.debug(json.dumps(dorian.generate_character_sheet(), indent=4))
     write_html_page(dorian)
 
 
