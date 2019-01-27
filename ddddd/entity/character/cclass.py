@@ -1,33 +1,10 @@
 
-from ddddd.entity import ability_score, proficiency, language
+from ddddd.entity import base
+from ddddd.entity.base import AbilityScores, Skills, Languages, SpellTypes
 from ddddd.entity.character import spells
-from ddddd.entity.base import Jsonable
-
-CLASS = 'class'
-LEVEL = 'level'
-HIT_DIE = 'hit_die'
-PROFICIENCIES = 'proficiencies'
-SAVING_THROWS = 'saving_throws'
-SKILLS = 'skills'
-FEATURES = 'features'
-SPELLCASTING = 'spellcasting'
-
-LANGUAGES = 'languages'
-SKILL_PROF = 'skill_proficiency'
-SKILL_PROFS = 'skill_proficiencies'
-
-WEAPONS = 'weapons'
-WEAPON_PROFICIENCY = 'weapon_proficiency'
-ARMOR = 'armor'
-TOOLS = 'tools'
-TOOL_PROFICIENCY = 'tool_proficiency'
-
-NAME = 'name'
-DESCRIPTION = 'description'
-CHOICES = 'choices'
 
 
-class PlayerClass(Jsonable):
+class PlayerClass(base.Jsonable):
     """
     A player character's (PC) class.
     This particular feature is going to be modelled by aggregating
@@ -55,21 +32,21 @@ class PlayerClass(Jsonable):
         if spellcasting_p:
             spellcasting_p = spellcasting_p.__json__()
         j = {
-                CLASS: self.name,
-                LEVEL: self.level,
-                HIT_DIE: 'd{}'.format(self.hit_die),
-                PROFICIENCIES: self.proficiencies,
-                SAVING_THROWS: self.saving_throws,
-                SKILLS: self.skills,
-                FEATURES: self.features,
-                SPELLCASTING: spellcasting_p,
-            }
+            base.CLASS: self.name,
+            base.LEVEL: self.level,
+            base.HIT_DIE: 'd{}'.format(self.hit_die),
+            base.PROFICIENCIES: self.proficiencies,
+            base.SAVING_THROWS: self.saving_throws,
+            base.SKILLS: self.skills,
+            base.FEATURES: self.features,
+            base.SPELLCASTING: spellcasting_p,
+        }
         return j
     
     @property
     def languages(self):
-        if LANGUAGES in self.features:
-            return self.features[LANGUAGES][LANGUAGES]
+        if base.LANGUAGES in self.features:
+            return self.features[base.LANGUAGES][base.LANGUAGES]
         return []
 
 
@@ -116,21 +93,21 @@ class RangerFactory(PlayerClassFactory):
         self._validate_class_1(skill_proficiencies=skill_proficiencies, favored_enemy=favored_enemy, languages=languages, favored_terrain=favored_terrain)
 
         def_features = {
-                'favored_enemy': {
-                    NAME: 'Favored Enemy',
-                    DESCRIPTION: 'Beginning at 1st level, you have significant experience studying, tracking, hunting, and even talking to a certain type of enemy. ...',
-                    'enemies': [favored_enemy],
-                },
-                LANGUAGES: {
-                    NAME: 'Favored Enemy Languages',
-                    DESCRIPTION: 'You learn a language that your favored enemy would typically know.',
-                    LANGUAGES: [languages],
-                },
-                'natural_explorer': {
-                    NAME: 'Natural Explorer',
-                    DESCRIPTION: 'You are particularly familiar with one type of natural environment and are adept at traveling and surviving in such regions. ...',
-                    'terrains': [favored_terrain]
-                },
+            'favored_enemy': {
+                base.NAME: 'Favored Enemy',
+                base.DESCRIPTION: 'Beginning at 1st level, you have significant experience studying, tracking, hunting, and even talking to a certain type of enemy. ...',
+                'enemies': [favored_enemy],
+            },
+            base.LANGUAGES: {
+                base.NAME: 'Favored Enemy Languages',
+                base.DESCRIPTION: 'You learn a language that your favored enemy would typically know.',
+                base.LANGUAGES: [languages],
+            },
+            'natural_explorer': {
+                base.NAME: 'Natural Explorer',
+                base.DESCRIPTION: 'You are particularly familiar with one type of natural environment and are adept at traveling and surviving in such regions. ...',
+                'terrains': [favored_terrain]
+            },
         }
         return Ranger(level=1,
                       skill_proficiencies=skill_proficiencies,
@@ -139,31 +116,33 @@ class RangerFactory(PlayerClassFactory):
 
     def _req_class_1(self):
         req = {
-            SKILL_PROF: {
-                SKILLS: [proficiency.ANIMAL_HANDLING, proficiency.ATHLETICS, proficiency.INSIGHT, proficiency.INVESTIGATION, proficiency.NATURE, proficiency.PERCEPTION, proficiency.STEALTH, proficiency.SURVIVAL],
-                CHOICES: 3,
+            base.SKILL_PROF: {
+                base.SKILLS: [Skills.ANIMAL_HANDLING, Skills.ATHLETICS,
+                              Skills.INSIGHT, Skills.INVESTIGATION, Skills.NATURE,
+                              Skills.PERCEPTION, Skills.STEALTH, Skills.SURVIVAL],
+                base.CHOICES: 3,
             },
             'favored_enemy': {
                 'enemies': ['aberrations', 'fey', 'elementals', 'plants'],
-                CHOICES: 1,
+                base.CHOICES: 1,
             },
-            LANGUAGES: {
-                LANGUAGES: language.LANGUAGES,
-                CHOICES: 1,
+            base.LANGUAGES: {
+                base.LANGUAGES: Languages.LANGUAGES,
+                base.CHOICES: 1,
             },
             'favored_terrain': {
                 'terrains': ['forest', 'grassland', 'swamp'],
-                CHOICES: 1,
+                base.CHOICES: 1,
             }
         }
         return req
     
     def _validate_class_1(self, **kwargs):
-        skill_proficiencies = kwargs[SKILL_PROFS]
+        skill_proficiencies = kwargs[base.SKILL_PROFS]
         if len(skill_proficiencies) != 3:
             raise ValueError('You must pick 3 skill proficiencies!')
 
-        def_skills = set(self._req_class_1()[SKILL_PROF][SKILLS])
+        def_skills = set(self._req_class_1()[base.SKILL_PROF][base.SKILLS])
         if not set(skill_proficiencies).issubset(def_skills):
             raise ValueError('You must pick valid skill proficiencies!')
 
@@ -171,7 +150,7 @@ class RangerFactory(PlayerClassFactory):
         if not favored_enemy or favored_enemy not in self._req_class_1()['favored_enemy']['enemies']:
             raise ValueError('You must select a favored enemy!')
 
-        languages = kwargs[LANGUAGES]
+        languages = kwargs[base.LANGUAGES]
         if not languages:
             raise ValueError('You must select a language!')
 
@@ -186,8 +165,8 @@ class RangerFactory(PlayerClassFactory):
 
         features = {
             'fighting_style': {
-                NAME: 'Fighting Style',
-                DESCRIPTION: 'At 2nd level, you adopt a particular style of fighting as your specialty.',
+                base.NAME: 'Fighting Style',
+                base.DESCRIPTION: 'At 2nd level, you adopt a particular style of fighting as your specialty.',
                 'style': [fighting_style],
             }
         }
@@ -200,25 +179,25 @@ class RangerFactory(PlayerClassFactory):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=ability_score.WIS,
+        spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScores.WIS,
                                                         list_spells_known=list_spells,
-                                                        spell_slots={spells.FIRST: 2},
+                                                        spell_slots={SpellTypes.FIRST: 2},
                                                         num_spells_known=2)
         return Ranger(level=2, skill_proficiencies=[], features=features, spellcasting=spellcasting)
 
     def _req_class_2(self):
         req = {
-                'fighting_style': {
-                    'styles': ['archery', 'defense', 'dueling', 'two_weapon_fighting'],
-                    CHOICES: 1,
-                },
-                SPELLCASTING: {
-                    'spellcasting_ability': ability_score.WIS,
-                    'spells_known': 2,
-                    'spell_slots': {
-                        '1st': 2
-                    }
+            'fighting_style': {
+                'styles': ['archery', 'defense', 'dueling', 'two_weapon_fighting'],
+                base.CHOICES: 1,
+            },
+            base.SPELLCASTING: {
+                'spellcasting_ability': AbilityScores.WIS,
+                'spells_known': 2,
+                'spell_slots': {
+                    '1st': 2
                 }
+            }
         }
         return req
     
@@ -236,11 +215,11 @@ class Ranger(PlayerClass):
                                      level=level,
                                      hit_die=10,
                                      proficiencies={
-                                         ARMOR: ['light', 'medium', 'shields'],
-                                         WEAPONS: ['simple', 'martial'],
-                                         TOOLS: [],
+                                         base.ARMOR: ['light', 'medium', 'shields'],
+                                         base.WEAPONS: ['simple', 'martial'],
+                                         base.TOOLS: [],
                                      },
-                                     saving_throws=[ability_score.STR, ability_score.DEX],
+                                     saving_throws=[AbilityScores.STR, AbilityScores.DEX],
                                      skill_proficiencies=skill_proficiencies,
                                      features=features,
                                      spellcasting=spellcasting)

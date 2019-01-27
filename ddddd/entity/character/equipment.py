@@ -1,8 +1,8 @@
 
-from ddddd.entity.base import Jsonable
+from ddddd.entity import base
 
 
-class WornItems(Jsonable):
+class WornItems(base.Jsonable):
     """
     The items that are currently equipped on the
     player character (PC). This differs from the backpack,
@@ -52,14 +52,14 @@ class WornItems(Jsonable):
         for i in self.weapons:
             weapons_p.append(i.__json__())
         j = {
-            'weapons': weapons_p,
-            'armor': self.armor.__json__() if self.armor else 'none',
-            'total_weight': self.total_weight,
+            base.WEAPONS: weapons_p,
+            base.ARMOR: self.armor.__json__() if self.armor else 'none',
+            base.TOTAL_WEIGHT: self.total_weight,
         }
         return j
 
 
-class Backpack(Jsonable):
+class Backpack(base.Jsonable):
     """
     A player character's (PC) backpack, or equipment.
     Currently a work-in-progress, since this particular
@@ -102,20 +102,20 @@ class Backpack(Jsonable):
         for i in self.items:
             items_p.append(i.__json__())
         j = {
-            'money': {
-                'CP': self.copper_pieces,
-                'SP': self.silver_pieces,
-                'GP': self.gold_pieces,
-                'PP': self.platnium_pieces,
+            base.MONEY: {
+                base.COPPER_PIECES: self.copper_pieces,
+                base.SILVER_PIECES: self.silver_pieces,
+                base.GOLD_PIECES: self.gold_pieces,
+                base.PLATNIUM_PIECES: self.platnium_pieces,
             },
-            'total_weight': self.total_weight,
-            'total_item_worth': self.total_item_worth,
-            'items': items_p,
+            base.TOTAL_WEIGHT: self.total_weight,
+            base.TOTAL_ITEM_WORTH: self.total_item_worth,
+            base.ITEMS: items_p,
         }
         return j
 
 
-class Item(Jsonable):
+class Item(base.Jsonable):
     """
     An item in D&D.
     The price will assume that it is in copper pieces (CP),
@@ -133,14 +133,14 @@ class Item(Jsonable):
 
     def __json__(self):
         j = {
-            'name': self.name,
-            'price': self.price,
-            'weight': self.weight,
+            base.NAME: self.name,
+            base.PRICE: self.price,
+            base.WEIGHT: self.weight,
         }
         if self.description:
-            j['description'] = self.description
+            j[base.DESCRIPTION] = self.description
         if self.quantity > 1:
-            j['quantity'] = self.quantity
+            j[base.QUANTITY] = self.quantity
         return j
 
 
@@ -158,8 +158,8 @@ class Weapon(Item):
     def __json__(self):
         j = {
             **super(Weapon, self).__json__(),
-            'damage': self.damage,
-            'properties': self.properties,
+            base.DAMAGE: self.damage,
+            base.PROPERTIES: self.properties,
         }
         return j
 
@@ -175,3 +175,12 @@ class Armor(Item):
         self.armor_class = armor_class
         self.strength = strength
         self.stealth = stealth
+
+    def __json__(self):
+        # TODO implement JSON, a little bit weird with dynamic armor classes
+        j = {
+            **super(Armor, self).__json__(),
+            base.STRENGTH_PREREQ: self.strength,
+            base.STEALTH_PENALTY: self.stealth,
+        }
+        return j

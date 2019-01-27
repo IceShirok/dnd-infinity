@@ -2,51 +2,12 @@
 import math
 import json
 
-from ddddd.entity import proficiency, ability_score
+from ddddd.entity import base
+from ddddd.entity.base import AbilityScores, Skills
 from ddddd.entity.character import equipment
-from ddddd.entity.base import Jsonable
-
-ABILITY = 'ability'
-SCORE = 'score'
-MODIFIER = 'modifier'
-IS_PROFICIENT = 'is_proficient'
-
-NAME = 'name'
-BASE_ABILITY_SCORES = 'base_ability_scores'
-LEVEL = 'level'
-PROF_BONUS = 'proficiency_bonus'
-
-RACE = 'race'
-CLASS = 'class'
-CLASSES = 'classes'
-BACKGROUND = 'background'
-
-BASIC = 'basic'
-ABILITY_SCORES = 'ability_scores'
-SAVING_THROWS = 'saving_throws'
-SKILLS = 'skills'
-PROFICIENCIES = 'proficiencies'
-COMBAT = 'combat'
-ARMOR_CLASS = 'armor_class'
-INITIATIVE = 'initiative'
-SPEED = 'speed'
-HIT_POINTS = 'hit_points'
-MAX_HP = 'max_hp'
-TOTAL_HIT_DICE = 'total_hit_dice'
-TRAITS_AND_FEATURES = 'traits_and_features'
-RACIAL_TRAITS = 'racial_traits'
-CLASS_FEATURES = 'class_features'
-BACKGROUND_FEATURES = 'background_feature'
-SPELLCASTING = 'spellcasting'
-
-EQUIPMENT = 'equipment'
-WORN_ITEMS = 'worn_items'
-BACKPACK = 'backpack'
-CARRYING_WEIGHT = 'carrying_weight'
-CARRYING_CAPACITY = 'carrying_capacity'
 
 
-class PlayerBase(Jsonable):
+class PlayerBase(base.Jsonable):
     """
     A player character (PC) base will consist of the PC's name,
     base ability scores, and level by experience. Features that
@@ -74,21 +35,21 @@ class PlayerBase(Jsonable):
         Return the base ability scores.
         """
         return {
-            ability_score.STR: self._str,
-            ability_score.DEX: self._dex,
-            ability_score.CON: self._con,
-            ability_score.INT: self._int,
-            ability_score.WIS: self._wis,
-            ability_score.CHA: self._cha,
+            AbilityScores.STR: self._str,
+            AbilityScores.DEX: self._dex,
+            AbilityScores.CON: self._con,
+            AbilityScores.INT: self._int,
+            AbilityScores.WIS: self._wis,
+            AbilityScores.CHA: self._cha,
         }
 
     def __json__(self):
         j = {
-                NAME: self.name,
-                BASE_ABILITY_SCORES: self.ability_scores,
-                LEVEL: self.level,
-                PROF_BONUS: self.proficiency_bonus,
-            }
+            base.NAME: self.name,
+            base.BASE_ABILITY_SCORES: self.ability_scores,
+            base.LEVEL: self.level,
+            base.PROF_BONUS: self.proficiency_bonus,
+        }
         return j
 
     def __str__(self):
@@ -100,7 +61,7 @@ class PlayerBase(Jsonable):
         return math.floor((self.level + 3) / 4) + 1
 
 
-class PlayerCharacter(Jsonable):
+class PlayerCharacter(base.Jsonable):
     """
     A player character (PC) in D&D.
     A PC consists of some base characteristics, a race, a class, and
@@ -160,28 +121,28 @@ class PlayerCharacter(Jsonable):
         for a in ability_scores_raw.keys():
             score = ability_scores_raw[a]
             ability_scores_p[a] = {
-                SCORE: score,
-                MODIFIER: ability_score.modifier(score),
+                base.SCORE: score,
+                base.MODIFIER: base.modifier(score),
             }
 
         return ability_scores_p
 
     @property
     def armor_class(self):
-        return 10 + self.ability_scores[ability_score.DEX][MODIFIER]
+        return 10 + self.ability_scores[AbilityScores.DEX][base.MODIFIER]
 
     @property
     def initiative(self):
-        return self.ability_scores[ability_score.DEX][MODIFIER]
+        return self.ability_scores[AbilityScores.DEX][base.MODIFIER]
 
     @property
     def max_hit_points(self):
         hit_points = 0
         for c in self.classes:
             if hit_points <= 0:
-                hit_points = c.hit_die + self.ability_scores[ability_score.CON][MODIFIER]
+                hit_points = c.hit_die + self.ability_scores[AbilityScores.CON][base.MODIFIER]
             else:
-                hit_points += math.ceil(c.hit_die/2) + self.ability_scores[ability_score.CON][MODIFIER]
+                hit_points += math.ceil(c.hit_die/2) + self.ability_scores[AbilityScores.CON][base.MODIFIER]
         return hit_points
     
     @property
@@ -204,11 +165,11 @@ class PlayerCharacter(Jsonable):
         saving_throws_p = {}
         _ability_scores = self.ability_scores
         for a in _ability_scores.keys():
-            saving_throws_p[a] = {MODIFIER: _ability_scores[a][MODIFIER]}
-            saving_throws_p[a][IS_PROFICIENT] = False
+            saving_throws_p[a] = {base.MODIFIER: _ability_scores[a][base.MODIFIER]}
+            saving_throws_p[a][base.IS_PROFICIENT] = False
             if a in saving_throws:
-                saving_throws_p[a][MODIFIER] += self.proficiency_bonus
-                saving_throws_p[a][IS_PROFICIENT] = True
+                saving_throws_p[a][base.MODIFIER] += self.proficiency_bonus
+                saving_throws_p[a][base.IS_PROFICIENT] = True
         return saving_throws_p
     
     @property
@@ -219,16 +180,16 @@ class PlayerCharacter(Jsonable):
 
         _ability_scores = self.ability_scores
         skill_proficiencies_p = {}
-        for ability in proficiency.SKILL_PROFICIENCIES_BY_ABILITY_SCORE.keys():
-            for skill in proficiency.SKILL_PROFICIENCIES_BY_ABILITY_SCORE[ability]:
+        for ability in Skills.SKILL_PROFICIENCIES_BY_ABILITY_SCORE.keys():
+            for skill in Skills.SKILL_PROFICIENCIES_BY_ABILITY_SCORE[ability]:
                 skill_proficiencies_p[skill] = {
-                    ABILITY: ability,
-                    IS_PROFICIENT: False,
+                    base.ABILITY: ability,
+                    base.IS_PROFICIENT: False,
                 }
-                skill_proficiencies_p[skill][MODIFIER] = _ability_scores[ability][MODIFIER]
+                skill_proficiencies_p[skill][base.MODIFIER] = _ability_scores[ability][base.MODIFIER]
                 if skill in skill_proficiencies:
-                    skill_proficiencies_p[skill][IS_PROFICIENT] = True
-                    skill_proficiencies_p[skill][MODIFIER] += self.proficiency_bonus
+                    skill_proficiencies_p[skill][base.IS_PROFICIENT] = True
+                    skill_proficiencies_p[skill][base.MODIFIER] += self.proficiency_bonus
         return skill_proficiencies_p
     
     @property
@@ -260,9 +221,9 @@ class PlayerCharacter(Jsonable):
     @property
     def features(self):
         return {
-            RACIAL_TRAITS: self.race.traits,
-            CLASS_FEATURES: self.class_features,
-            BACKGROUND_FEATURES: self.background.feature,
+            base.RACIAL_TRAITS: self.race.traits,
+            base.CLASS_FEATURES: self.class_features,
+            base.BACKGROUND_FEATURES: self.background.feature,
         }
 
     @property
@@ -275,53 +236,53 @@ class PlayerCharacter(Jsonable):
 
     @property
     def carrying_capacity(self):
-        return self.ability_scores[ability_score.STR][SCORE] * 15 * self.race.str_movement_multiplier
+        return self.ability_scores[AbilityScores.STR][base.SCORE] * 15 * self.race.str_movement_multiplier
 
     def __json__(self):
         j_classes = []
         for c in self.classes:
             j_classes.append(c.__json__())
         j = self.base.__json__()
-        j[CLASSES] = j_classes
+        j[base.CLASSES] = j_classes
 
         if self.race:
-            j[RACE] = self.race.__json__()
+            j[base.RACE] = self.race.__json__()
         
         if self.background:
-            j[BACKGROUND] = self.background.__json__()
+            j[base.BACKGROUND] = self.background.__json__()
     
         return j
 
     def generate_character_sheet(self):
         j = {
-            NAME: self.name,
-            BASIC: {
-                RACE: self.race_name,
-                CLASS: self.class_name,
-                LEVEL: self.level,
-                BACKGROUND: self.background_name,
+            base.NAME: self.name,
+            base.BASIC: {
+                base.RACE: self.race_name,
+                base.CLASS: self.class_name,
+                base.LEVEL: self.level,
+                base.BACKGROUND: self.background_name,
             },
-            PROF_BONUS: self.proficiency_bonus,
-            ABILITY_SCORES: self.ability_scores,
-            SAVING_THROWS: self.saving_throws,
-            SKILLS: self.skill_proficiencies,
-            PROFICIENCIES: self.proficiencies,
-            COMBAT: {
-                ARMOR_CLASS: self.armor_class,
-                INITIATIVE: self.initiative,
-                SPEED: self.speed,
+            base.PROF_BONUS: self.proficiency_bonus,
+            base.ABILITY_SCORES: self.ability_scores,
+            base.SAVING_THROWS: self.saving_throws,
+            base.SKILLS: self.skill_proficiencies,
+            base.PROFICIENCIES: self.proficiencies,
+            base.COMBAT: {
+                base.ARMOR_CLASS: self.armor_class,
+                base.INITIATIVE: self.initiative,
+                base.SPEED: self.speed,
             },
-            HIT_POINTS: {
-                MAX_HP: self.max_hit_points,
-                TOTAL_HIT_DICE: self.total_hit_dice,
+            base.HIT_POINTS: {
+                base.MAX_HP: self.max_hit_points,
+                base.TOTAL_HIT_DICE: self.total_hit_dice,
             },
-            TRAITS_AND_FEATURES: self.features,
-            SPELLCASTING: self.spellcasting.__json__(),
-            EQUIPMENT: {
-                CARRYING_WEIGHT: self.carrying_weight,
-                CARRYING_CAPACITY: self.carrying_capacity,
-                WORN_ITEMS: self.worn_items.__json__(),
-                BACKPACK: self.backpack.__json__(),
+            base.TRAITS_AND_FEATURES: self.features,
+            base.SPELLCASTING: self.spellcasting.__json__(),
+            base.EQUIPMENT: {
+                base.CARRYING_WEIGHT: self.carrying_weight,
+                base.CARRYING_CAPACITY: self.carrying_capacity,
+                base.WORN_ITEMS: self.worn_items.__json__(),
+                base.BACKPACK: self.backpack.__json__(),
             },
         }
         return j

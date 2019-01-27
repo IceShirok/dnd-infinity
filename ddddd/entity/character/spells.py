@@ -1,11 +1,11 @@
 
 import json
 
-from ddddd.entity import ability_score
-from ddddd.entity.base import Jsonable
+from ddddd.entity import base
+from ddddd.entity.base import AbilityScores
 
 
-class Spell(Jsonable):
+class Spell(base.Jsonable):
     """
     A singular spell in D&D.
     I will very likely keep the majority of the information in a database
@@ -26,7 +26,7 @@ class Spell(Jsonable):
     
     def __json__(self):
         return {
-            'spell': self.name,
+            base.SPELL: self.name,
             # 'level': self.level,
             # 'magic_school': self.magic_school,
             # 'casting_time': self.casting_time,
@@ -70,33 +70,33 @@ COMMAND = Spell(name='Command',
                 description='You speak a one-word command to a creature you can see within range.')
 
 
-SPELLCASTING_ABILITY = 'spellcasting_ability'
-LIST_SPELLS_KNOWN = 'list_spells_known'
-SPELL_SLOTS = 'spell_slots'
-
-MODIFIER = 'modifier'
-
-CANTRIPS = 'cantrips'
-FIRST = '1st'
-SECOND = '2nd'
-THIRD = '3rd'
-FOURTH = '4th'
-FIFTH = '5th'
-SIXTH = '6th'
-SEVENTH = '7th'
-EIGHTH = '8th'
-NINTH = '9th'
 ORD_TO_NUM = {
-    CANTRIPS: 0, FIRST: 1, SECOND: 2, THIRD: 3, FOURTH: 4,
-    FIFTH: 5, SIXTH: 6, SEVENTH: 7, EIGHTH: 8, NINTH: 9,
+    base.SpellTypes.CANTRIPS: 0,
+    base.SpellTypes.FIRST: 1,
+    base.SpellTypes.SECOND: 2,
+    base.SpellTypes.THIRD: 3,
+    base.SpellTypes.FOURTH: 4,
+    base.SpellTypes.FIFTH: 5,
+    base.SpellTypes.SIXTH: 6,
+    base.SpellTypes.SEVENTH: 7,
+    base.SpellTypes.EIGHTH: 8,
+    base.SpellTypes.NINTH: 9,
 }
 NUM_TO_ORD = {
-    0: CANTRIPS, 1: FIRST, 2: SECOND, 3: THIRD, 4: FOURTH,
-    5: FIFTH, 6: SIXTH, 7: SEVENTH, 8: EIGHTH, 9: NINTH,
+    0: base.SpellTypes.CANTRIPS,
+    1: base.SpellTypes.FIRST,
+    2: base.SpellTypes.SECOND,
+    3: base.SpellTypes.THIRD,
+    4: base.SpellTypes.FOURTH,
+    5: base.SpellTypes.FIFTH,
+    6: base.SpellTypes.SIXTH,
+    7: base.SpellTypes.SEVENTH,
+    8: base.SpellTypes.EIGHTH,
+    9: base.SpellTypes.NINTH,
 }
 
 
-class SpellcastingAbility(Jsonable):
+class SpellcastingAbility(base.Jsonable):
     """
     An object representing a character's ability to cast spells.
     This is likely going to be delegated to the class factory, as each class
@@ -110,17 +110,17 @@ class SpellcastingAbility(Jsonable):
         self.list_spells_known = list_spells_known
 
     def spell_save_dc(self, ability_scores, proficiency_bonus):
-        return 8 + ability_scores[self.spellcasting_ability][MODIFIER] + proficiency_bonus
+        return 8 + ability_scores[self.spellcasting_ability][base.MODIFIER] + proficiency_bonus
 
     def spell_attack_bonus(self, ability_scores, proficiency_bonus):
-        return ability_scores[self.spellcasting_ability][MODIFIER] + proficiency_bonus
+        return ability_scores[self.spellcasting_ability][base.MODIFIER] + proficiency_bonus
 
     def _verify(self):
         cantrips = list(filter(lambda x: x.level == 0, self.list_spells_known))
         if len(cantrips) > 0:
-            if CANTRIPS not in self.spell_slots:
+            if base.SpellTypes.CANTRIPS not in self.spell_slots:
                 raise ValueError('Cannot learn cantrips!')
-            num_cantrips_know = self.spell_slots[CANTRIPS]
+            num_cantrips_know = self.spell_slots[base.SpellTypes.CANTRIPS]
             if len(cantrips) != num_cantrips_know:
                 raise ValueError('Must have {} cantrips but inputted {} cantrips!'.format(num_cantrips_know, len(cantrips)))
 
@@ -139,9 +139,9 @@ class SpellcastingAbility(Jsonable):
                 spells_p[lvl_ord] = [s.__json__()]
 
         return {
-            SPELLCASTING_ABILITY: self.spellcasting_ability,
-            LIST_SPELLS_KNOWN: spells_p,
-            SPELL_SLOTS: self.spell_slots,
+            base.SPELLCASTING_ABILITY: self.spellcasting_ability,
+            base.LIST_SPELLS_KNOWN: spells_p,
+            base.SPELL_SLOTS: self.spell_slots,
         }
 
     def __str__(self):
@@ -172,14 +172,14 @@ def generate_simple_spell(name, level):
 
 
 def test_spells():
-    ability_scores = {'WIS': {'modifier': 5}}
+    ability_scores = {base.AbilityScores.WIS: {base.MODIFIER: 5}}
     proficiency_bonus = 3
     spell_slots = {
-        CANTRIPS: 4,
-        FIRST: 4,
-        SECOND: 3,
-        THIRD: 3,
-        FOURTH: 2,
+        base.SpellTypes.CANTRIPS: 4,
+        base.SpellTypes.FIRST: 4,
+        base.SpellTypes.SECOND: 3,
+        base.SpellTypes.THIRD: 3,
+        base.SpellTypes.FOURTH: 2,
     }
     list_spells = []
     simple_spell_list = [
@@ -207,7 +207,7 @@ def test_spells():
     ]
     for name, level in simple_spell_list:
         list_spells.append(generate_simple_spell(name, level))
-    spellcasting_ability = SpellcastingAbility(spellcasting_ability=ability_score.WIS,
+    spellcasting_ability = SpellcastingAbility(spellcasting_ability=AbilityScores.WIS,
                                                spell_slots=spell_slots,
                                                list_spells_known=list_spells)
     print(spellcasting_ability)

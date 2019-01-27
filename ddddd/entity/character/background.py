@@ -1,20 +1,9 @@
 
-from ddddd.entity import proficiency
-from ddddd.entity.base import Jsonable
-
-BACKGROUND = 'background'
-FEATURES = 'features'
-PROFICIENCIES = 'proficiencies'
-LANGUAGES = 'languages'
-
-SKILLS = 'skills'
-TOOLS = 'tools'
-
-NAME = 'name'
-DESCRIPTION = 'description'
+from ddddd.entity import base
+from ddddd.entity.base import Skills
 
 
-class PlayerBackground(Jsonable):
+class PlayerBackground(base.Jsonable):
     """
     A player character's (PC) background.
     This doesn't change after a PC is created, but this is created
@@ -30,16 +19,16 @@ class PlayerBackground(Jsonable):
 
     def __json__(self):
         j = {
-                BACKGROUND: self.name,
-                FEATURES: self.feature,
-                PROFICIENCIES: self.__proficiencies,
-                LANGUAGES: self.languages,
+            base.BACKGROUND: self.name,
+            base.FEATURES: self.feature,
+            base.PROFICIENCIES: self.__proficiencies,
+            base.LANGUAGES: self.languages,
         }
         return j
 
     @property
     def skills(self):
-        return self.__proficiencies[SKILLS]
+        return self.__proficiencies[base.SKILLS]
 
     @property
     def background_proficiencies(self):
@@ -49,7 +38,7 @@ class PlayerBackground(Jsonable):
     @property
     def proficiencies(self):
         p = {**self.background_proficiencies}
-        p.pop(SKILLS)
+        p.pop(base.SKILLS)
         return p
 
 
@@ -57,13 +46,13 @@ class Criminal(PlayerBackground):
     def __init__(self):
         feature = {
             'criminal_contact': {
-                NAME: 'Criminal Contact',
-                DESCRIPTION: 'You have a reliable and trustworthy contact who acts as your liaison to a network of other criminals. ...',
+                base.NAME: 'Criminal Contact',
+                base.DESCRIPTION: 'You have a reliable and trustworthy contact who acts as your liaison to a network of other criminals. ...',
             }
         }
         proficiencies = {
-            SKILLS: [proficiency.DECEPTION, proficiency.STEALTH],
-            TOOLS: ['thieves_tools', 'bone_dice'],
+            base.SKILLS: [Skills.DECEPTION, Skills.STEALTH],
+            base.TOOLS: ['thieves_tools', 'bone_dice'],
         }
         super(Criminal, self).__init__(name='criminal',
                                        feature=feature,

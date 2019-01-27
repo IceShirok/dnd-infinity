@@ -1,7 +1,7 @@
 
 import json
 
-from ddddd.entity import ability_score
+from ddddd.entity import base
 from ddddd import app
 from ddddd.entity.character import spells
 
@@ -33,7 +33,7 @@ def generate_ability_scores_html(player_character):
     html_page += '<div>Proficiency bonus: {}</div>'.format(player_character.proficiency_bonus)
 
     def generate_ability_score_html(ability, score):
-        mod = ability_score.prettify_modifier(ability_score.modifier(score))
+        mod = base.prettify_modifier(base.modifier(score))
         return '<div style="margin: 5px"><p>{}</p><h3>{}</h3><p>{}</p></div>'.format(ability, score, mod)
     for ability in ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA']:
         html_page += generate_ability_score_html(ability, player_character.base.ability_scores[ability])
@@ -48,7 +48,7 @@ def generate_saving_throws_html(player_character):
 
     def generate_saving_throw_html(ability, modifier, is_proficient):
         tick = 'v' if is_proficient else '-'
-        return '<div style="margin: 5px"><p>{} {}: {}</p></div>'.format(tick, ability, ability_score.prettify_modifier(modifier))
+        return '<div style="margin: 5px"><p>{} {}: {}</p></div>'.format(tick, ability, base.prettify_modifier(modifier))
     for save in player_character.saving_throws:
         s_details = player_character.saving_throws[save]
         html_page += generate_saving_throw_html(save, s_details['modifier'], s_details['is_proficient'])
@@ -63,7 +63,7 @@ def generate_skills_html(player_character):
 
     def generate_skill_html(skill, is_proficient, modifier, ability):
         tick = 'v' if is_proficient else '-'
-        return '<div style="margin: 5px"><p>{} {}: {} ({})</p></div>'.format(tick, skill, ability_score.prettify_modifier(modifier), ability)
+        return '<div style="margin: 5px"><p>{} {}: {} ({})</p></div>'.format(tick, skill, base.prettify_modifier(modifier), ability)
     for skill in player_character.skill_proficiencies:
         s_details = player_character.skill_proficiencies[skill]
         html_page += generate_skill_html(skill, s_details['is_proficient'], s_details['modifier'], s_details['ability'])
