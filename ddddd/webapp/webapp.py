@@ -124,6 +124,22 @@ def generate_attacks_html(player_character):
     return html_page
 
 
+def generate_equipment_html(player_character):
+    html_page = ''
+    html_page += '<div>'
+    html_page += '<h2>Equipment</h2>'
+    html_page += 'Carrying capacity: {} / {}'.format(player_character.carrying_weight, player_character.carrying_capacity)
+    if player_character.worn_items.armor:
+        html_page += '<p>{} (equipped, armor)</p>'.format(player_character.worn_items.armor.name)
+    for weapon in player_character.worn_items.weapons:
+        html_page += '<p>{} (equipped, weapon)</p>'.format(weapon.name)
+    for item in player_character.backpack.items:
+        quantity = ' ({})'.format(item.quantity) if item.quantity > 1 else ''
+        html_page += '<p>{}{}</p>'.format(item.name, quantity)
+    html_page += '</div>'
+    return html_page
+
+
 def generate_proficiencies(player_character):
     html_page = ''
     html_page += '<div>'
@@ -179,6 +195,7 @@ def write_html_page(player_character):
     html_page += generate_basic_combat_html(player_character)
     html_page += generate_health_html(player_character)
     html_page += generate_attacks_html(player_character)
+    html_page += generate_equipment_html(player_character)
     html_page += '</div>'
     
     html_page += '<div class="column">'
