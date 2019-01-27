@@ -1,5 +1,6 @@
 
 from ddddd.entity import ability_score, language
+from ddddd.entity.base import Jsonable
 
 RACE = 'race'
 SIZE = 'size'
@@ -34,7 +35,7 @@ TOOLS = 'tools'
 TOOL_PROFICIENCY = 'tool_proficiency'
 
 
-class Race(object):
+class Race(Jsonable):
     """
     A player character's (PC) race.
     A PC's race does not change for the most part, although

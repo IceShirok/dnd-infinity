@@ -2,10 +2,10 @@
 import json
 
 from ddddd.entity import ability_score
-from ddddd.entity.character import pc
+from ddddd.entity.base import Jsonable
 
 
-class Spell(object):
+class Spell(Jsonable):
     """
     A singular spell in D&D.
     I will very likely keep the majority of the information in a database
@@ -96,7 +96,7 @@ NUM_TO_ORD = {
 }
 
 
-class SpellcastingAbility(object):
+class SpellcastingAbility(Jsonable):
     """
     An object representing a character's ability to cast spells.
     This is likely going to be delegated to the class factory, as each class

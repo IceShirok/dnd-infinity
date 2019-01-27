@@ -1,6 +1,8 @@
 
+from ddddd.entity.base import Jsonable
 
-class WornItems(object):
+
+class WornItems(Jsonable):
     """
     The items that are currently equipped on the
     player character (PC). This differs from the backpack,
@@ -57,7 +59,7 @@ class WornItems(object):
         return j
 
 
-class Backpack(object):
+class Backpack(Jsonable):
     """
     A player character's (PC) backpack, or equipment.
     Currently a work-in-progress, since this particular
@@ -113,7 +115,7 @@ class Backpack(object):
         return j
 
 
-class Item(object):
+class Item(Jsonable):
     """
     An item in D&D.
     The price will assume that it is in copper pieces (CP),

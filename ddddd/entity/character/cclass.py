@@ -1,7 +1,7 @@
 
 from ddddd.entity import ability_score, proficiency, language
 from ddddd.entity.character import spells
-from ddddd.entity.character.spells import SpellcastingAbility
+from ddddd.entity.base import Jsonable
 
 CLASS = 'class'
 LEVEL = 'level'
@@ -27,7 +27,7 @@ DESCRIPTION = 'description'
 CHOICES = 'choices'
 
 
-class PlayerClass(object):
+class PlayerClass(Jsonable):
     """
     A player character's (PC) class.
     This particular feature is going to be modelled by aggregating

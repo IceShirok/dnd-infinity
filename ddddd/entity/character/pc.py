@@ -4,6 +4,7 @@ import json
 
 from ddddd.entity import proficiency, ability_score
 from ddddd.entity.character import equipment
+from ddddd.entity.base import Jsonable
 
 ABILITY = 'ability'
 SCORE = 'score'
@@ -45,7 +46,7 @@ CARRYING_WEIGHT = 'carrying_weight'
 CARRYING_CAPACITY = 'carrying_capacity'
 
 
-class PlayerBase(object):
+class PlayerBase(Jsonable):
     """
     A player character (PC) base will consist of the PC's name,
     base ability scores, and level by experience. Features that
@@ -99,7 +100,7 @@ class PlayerBase(object):
         return math.floor((self.level + 3) / 4) + 1
 
 
-class PlayerCharacter(object):
+class PlayerCharacter(Jsonable):
     """
     A player character (PC) in D&D.
     A PC consists of some base characteristics, a race, a class, and

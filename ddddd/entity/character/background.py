@@ -1,5 +1,6 @@
 
 from ddddd.entity import proficiency
+from ddddd.entity.base import Jsonable
 
 BACKGROUND = 'background'
 FEATURES = 'features'
@@ -13,7 +14,7 @@ NAME = 'name'
 DESCRIPTION = 'description'
 
 
-class PlayerBackground(object):
+class PlayerBackground(Jsonable):
     """
     A player character's (PC) background.
     This doesn't change after a PC is created, but this is created
