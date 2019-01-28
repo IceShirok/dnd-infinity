@@ -21,6 +21,7 @@ class Race(base.Jsonable):
                 base.DESCRIPTION: 'Your size is {}.'.format(self.size.capitalize()),
             },
         }
+        traits = traits if traits else {}
         self.traits = {**traits, **def_traits}
 
     @property
@@ -81,6 +82,7 @@ class Dwarf(Race):
                     base.DESCRIPTION: 'Whenever you make an Intelligence (History) check related to the Origin of stonework, you are considered proficient in the History skill and add double your Proficiency Bonus to the check, instead of your normal Proficiency Bonus.',
                 },
             }
+        traits = traits if traits else {}
         super(Dwarf, self).__init__(name='Dwarf',
                                     asi={**def_asi, **asi},
                                     size=Sizes.MEDIUM,

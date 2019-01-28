@@ -14,8 +14,8 @@ class PlayerBackground(base.Jsonable):
     def __init__(self, name, feature, proficiencies, languages):
         self.name = name
         self.feature = feature
-        self.__proficiencies = proficiencies
-        self.languages = languages
+        self.__proficiencies = proficiencies if proficiencies else {}
+        self.languages = languages if languages else []
 
     def __json__(self):
         j = {
@@ -28,7 +28,9 @@ class PlayerBackground(base.Jsonable):
 
     @property
     def skills(self):
-        return self.__proficiencies[base.SKILLS]
+        if base.SKILLS in self.__proficiencies:
+            return self.__proficiencies[base.SKILLS]
+        return []
 
     @property
     def background_proficiencies(self):
@@ -38,7 +40,8 @@ class PlayerBackground(base.Jsonable):
     @property
     def proficiencies(self):
         p = {**self.background_proficiencies}
-        p.pop(base.SKILLS)
+        if base.SKILLS in p:
+            p.pop(base.SKILLS)
         return p
 
 
