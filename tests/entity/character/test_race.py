@@ -37,18 +37,18 @@ class TestDwarfRace(unittest.TestCase):
         self.assertEqual('brewers_kit', prof['tools'][0])
 
     def test_required(self):
-        req = self.dorian._required_customization()
+        req = self.dorian.required()
         self.assertEqual(1, len(req.keys()))
 
     def test_verify_good(self):
-        self.assertEqual(True, self.dorian._verify())
+        self.assertEqual(True, self.dorian.verify())
 
     def test_verify_bad(self):
         no_tool = race.Dwarf(asi={}, traits=None)
-        self.assertRaises(ValueError, no_tool._verify)
+        self.assertRaises(ValueError, no_tool.verify)
 
         invalid_tool = race.Dwarf(asi={}, traits={'tool_proficiency': {'tools': []}})
-        self.assertRaises(ValueError, invalid_tool._verify)
+        self.assertRaises(ValueError, invalid_tool.verify)
 
 
 class TestHillDwarfRace(unittest.TestCase):

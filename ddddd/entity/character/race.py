@@ -50,15 +50,29 @@ class Race(base.Jsonable):
         }
         return j
 
-    def _verify(self):
+    def verify(self):
         """
         Verify to see whether the race is properly init'd with valid values
         :return: True if valid, otherwise it'll throw an exception
         """
+        for required_k in self.required():
+            # Go through the list of traits and verify based on specifications
+            if required_k not in self.traits:
+                raise ValueError('Required trait {} not inputted!'.format(required_k))
+
+            trait_req_details = self.required()[required_k]
+            input_details = self.traits[required_k]
+
+            choices_list_k = set(trait_req_details.keys()).intersection(set(input_details.keys())).pop()
+            input_list = input_details[choices_list_k]
+            if len(input_list) != trait_req_details[base.CHOICES] \
+                    or not set(input_list).issubset(trait_req_details[choices_list_k]):
+                raise ValueError('Required trait {} is invalid.'.format(required_k))
+
         return True
 
-    def _required_customization(self):
-        return None
+    def required(self):
+        return {}
 
 
 # DWARF
@@ -100,23 +114,13 @@ class Dwarf(Race):
             base.TOOLS: self.traits[base.TOOL_PROFICIENCY][base.TOOLS],
         }
 
-    def _required_customization(self):
+    def required(self):
         return {
             base.TOOL_PROFICIENCY: {
                 base.TOOLS: ['smiths_tools', 'brewers_kit', 'masons_tools'],
                 base.CHOICES: 1,
             }
         }
-
-    def _verify(self):
-        # TODO try to de-dupe a lot of this proficiency stuff
-        if base.TOOL_PROFICIENCY not in self.traits:
-            raise ValueError('Must input a tool proficiency!')
-        if base.TOOLS not in self.traits[base.TOOL_PROFICIENCY] \
-                or len(self.traits[base.TOOL_PROFICIENCY][base.TOOLS]) != 1 \
-                or self.traits[base.TOOL_PROFICIENCY][base.TOOLS][0] not in ['smiths_tools', 'brewers_kit', 'masons_tools']:
-            raise ValueError('Must enter a valid tool proficiency!')
-        return True
 
 
 class HillDwarf(Dwarf):
@@ -201,7 +205,7 @@ class Human(Race):
                                     languages=def_languages+languages,
                                     traits=def_traits)
     
-    def _required_customization(self):
+    def required(self):
         return {
             base.LANGUAGES: {
                 base.LANGUAGES: Languages.LANGUAGES,
@@ -209,10 +213,10 @@ class Human(Race):
             }
         }
 
-    def _verify(self):
-        # TODO try to de-dupe a lot of this proficiency stuff
-        if len(self.languages) != 2:
-            raise ValueError('Must input one custom language!')
-        if not set(self.languages).issubset(self._required_customization()[base.LANGUAGES][base.LANGUAGES]):
-            raise ValueError('Must input a valid language!')
+    def verify(self):
+        language_details = self.required()[base.LANGUAGES]
+        language_list = self.languages
+        if len(language_list) != language_details[base.CHOICES] \
+                or not set(language_list).issubset(language_details[base.LANGUAGES]):
+            raise ValueError('Required trait {} is invalid.'.format(base.LANGUAGES))
         return True
