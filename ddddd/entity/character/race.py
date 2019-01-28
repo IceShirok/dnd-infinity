@@ -15,18 +15,29 @@ class Race(base.Jsonable):
         self.size = size
         self.speed = speed
         self.languages = languages if languages else []  # Change this for races like Kenku
+        self.__traits = traits if traits else {}
+
+    @property
+    def traits(self):
         def_traits = {
             base.SIZE: {
                 base.NAME: 'Size',
                 base.DESCRIPTION: 'Your size is {}.'.format(self.size.capitalize()),
             },
         }
-        traits = traits if traits else {}
-        self.traits = {**traits, **def_traits}
+        return {**self.__traits, **def_traits}
 
     @property
     def str_movement_multiplier(self):
         return Sizes.SIZE_TO_CARRYING_CAPACITY[self.size]
+
+    @property
+    def skills(self):
+        return []
+
+    @property
+    def proficiencies(self):
+        return {}
 
     def __json__(self):
         j = {
@@ -35,7 +46,7 @@ class Race(base.Jsonable):
             base.SIZE: self.size,
             base.SPEED: self.speed,
             base.LANGUAGES: self.languages,
-            base.TRAITS: self.traits,
+            base.TRAITS: self.__traits,
         }
         return j
 
@@ -48,14 +59,6 @@ class Race(base.Jsonable):
 
     def _required_customization(self):
         return None
-
-    @property
-    def skills(self):
-        return []
-
-    @property
-    def proficiencies(self):
-        return {}
 
 
 # DWARF
