@@ -1,8 +1,6 @@
 
 import json
-import sys
 
-from ddddd.entity import base
 from ddddd.entity.base import Skills, Languages
 from ddddd.entity.character import race, cclass, background, pc, equipment
 
@@ -33,15 +31,15 @@ def create_dorian():
         }
     }
     dorian_race = race.HillDwarf(traits=tool_prof)
-    dorian_classes = [
-            cclass.RangerFactory().generate_by_level(1, skill_proficiencies=[Skills.ATHLETICS, Skills.ANIMAL_HANDLING, Skills.SURVIVAL],
-                                                     favored_enemy='plants', languages='elvish', favored_terrain='forest'),
-            cclass.RangerFactory().generate_by_level(2, fighting_style=['two_weapon_fighting'])
-            ]
+    dorian_class = cclass.Ranger(skill_proficiencies=[Skills.ATHLETICS, Skills.ANIMAL_HANDLING, Skills.SURVIVAL],
+                                 favored_enemy='plants',
+                                 languages='elvish',
+                                 favored_terrain='forest')
+    dorian_class._add_level_2_features(fighting_style='two_weapon_fighting')
     dorian_background = background.Criminal()
     dorian_equip = generate_equipment()
     dorian_backpack = generate_backpack()
-    dorian_pc = pc.PlayerCharacter(dorian_base, dorian_race, dorian_classes, dorian_background, dorian_equip, dorian_backpack)
+    dorian_pc = pc.PlayerCharacter(dorian_base, dorian_race, dorian_class, dorian_background, dorian_equip, dorian_backpack)
     return dorian_pc
 
 
@@ -98,7 +96,7 @@ def test_pc():
 
     dorian_pc = create_dorian()
     logger.info(json.dumps(dorian_pc.__json__(), indent=4))
-    dorian_pc.race.verify()
+    # dorian_pc.race.verify()
 
     # print('-----')
     #

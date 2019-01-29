@@ -95,7 +95,7 @@ class PlayerCharacter(base.Jsonable):
     def class_name(self):
         # TODO maybe this will be aggregated to a class/level thing
         # this is more important with multiclassing so we can delay this
-        return self.classes[0].name
+        return self.classes.name
     
     @property
     def level(self):
@@ -146,30 +146,22 @@ class PlayerCharacter(base.Jsonable):
     @property
     def max_hit_points(self):
         hit_points = 0
-        for c in self.classes:
+        hit_die = self.classes.hit_die
+        for i in range(1, self.classes.level):
             if hit_points <= 0:
-                hit_points = c.hit_die + self.ability_scores[AbilityScores.CON][base.MODIFIER]
+                hit_points = hit_die + self.ability_scores[AbilityScores.CON][base.MODIFIER]
             else:
-                hit_points += math.ceil(c.hit_die/2) + self.ability_scores[AbilityScores.CON][base.MODIFIER]
+                hit_points += math.ceil(hit_die/2) + self.ability_scores[AbilityScores.CON][base.MODIFIER]
         return hit_points
     
     @property
     def total_hit_dice(self):
         # A bit more complex because of multiclassing feature
-        hit_dice = {}
-        for c in self.classes:
-            hit_die = 'd{}'.format(c.hit_die)
-            if hit_die not in hit_dice:
-                hit_dice[hit_die] = 1
-            else:
-                hit_dice[hit_die] += 1
-        return hit_dice
+        return {'d{}'.format(self.classes.hit_die): self.classes.level}
     
     @property
     def saving_throws(self):
-        saving_throws = []
-        for c in self.classes:
-            saving_throws += c.saving_throws
+        saving_throws = self.classes.saving_throws
         saving_throws_p = {}
         _ability_scores = self.ability_scores
         for a in _ability_scores.keys():
@@ -182,9 +174,7 @@ class PlayerCharacter(base.Jsonable):
     
     @property
     def skill_proficiencies(self):
-        skill_proficiencies = (self.race.skills + self.background.skills)
-        for c in self.classes:
-            skill_proficiencies = skill_proficiencies + c.skills
+        skill_proficiencies = (self.race.skills + self.classes.skills + self.background.skills)
 
         _ability_scores = self.ability_scores
         skill_proficiencies_p = {}
@@ -216,24 +206,16 @@ class PlayerCharacter(base.Jsonable):
 
     @property
     def class_proficiencies(self):
-        p = {}
-        for c in self.classes:
-            p = {**p, **c.proficiencies}
-        return p
+        return self.classes.proficiencies
     
     @property
     def languages(self):
-        lang = (self.race.languages + self.background.languages)
-        for c in self.classes:
-            lang = lang + c.languages
+        lang = (self.race.languages + self.classes.languages + self.background.languages)
         return lang
 
     @property
     def class_features(self):
-        skill_features = {}
-        for c in self.classes:
-            skill_features = {**skill_features, **c.features}
-        return skill_features
+        return self.classes.features
 
     @property
     def features(self):
@@ -245,7 +227,7 @@ class PlayerCharacter(base.Jsonable):
 
     @property
     def spellcasting(self):
-        return self.classes[-1].spellcasting
+        return self.classes.spellcasting
 
     @property
     def carrying_weight(self):
@@ -256,14 +238,13 @@ class PlayerCharacter(base.Jsonable):
         return self.ability_scores[AbilityScores.STR][base.SCORE] * 15 * self.race.str_movement_multiplier
 
     def __json__(self):
-        j_classes = []
-        for c in self.classes:
-            j_classes.append(c.__json__())
         j = self.base.__json__()
-        j[base.CLASSES] = j_classes
 
         if self.race:
             j[base.RACE] = self.race.__json__()
+
+        if self.classes:
+            j[base.CLASS] = self.classes.__json__()
 
         if self.background:
             j[base.BACKGROUND] = self.background.__json__()
