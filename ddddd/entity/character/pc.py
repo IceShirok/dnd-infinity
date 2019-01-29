@@ -237,6 +237,21 @@ class PlayerCharacter(base.Jsonable):
     def carrying_capacity(self):
         return self.ability_scores[AbilityScores.STR][base.SCORE] * 15 * self.race.str_movement_multiplier
 
+    def calculate_weapon_bonuses(self):
+        bonuses = {}
+        weapons = self.worn_items.weapons
+        weapon_proficiencies = self.proficiencies['weapons']
+        for weapon in weapons:
+            damage_bonus = self.ability_scores[base.AbilityScores.STR][base.MODIFIER]
+            attack_prof = 0
+            if weapon.name in weapon_proficiencies:
+                attack_prof = self.proficiency_bonus
+            bonuses[weapon.name] = {
+                'attack_bonus': damage_bonus + attack_prof,
+                'damage': '{} + {}'.format(weapon.damage, damage_bonus),
+            }
+        return bonuses
+
     def __json__(self):
         j = self.base.__json__()
 

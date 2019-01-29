@@ -115,8 +115,11 @@ def generate_attacks_html(player_character):
     html_page += '<h3>Attacks</h3>'
     html_page += '<table>'
     html_page += '<tr><th>Name</th><th>Attack Bonus</th><th>Damage</th></tr>'
+    bonuses = player_character.calculate_weapon_bonuses()
     for weapon in player_character.worn_items.weapons:
-        html_page += '<tr><td>{}</td><td>{}</td><td>{}</td></tr>'.format(weapon.name, 0, weapon.damage)
+        html_page += '<tr><td>{}</td><td>{}</td><td>{}</td></tr>'.format(weapon.name,
+                                                                         base.prettify_modifier(bonuses[weapon.name]['attack_bonus']),
+                                                                         bonuses[weapon.name]['damage'])
     html_page += '</table>'
 
     html_page += '<h3>Spellcasting</h3>'
