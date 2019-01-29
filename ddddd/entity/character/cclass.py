@@ -62,16 +62,30 @@ class PlayerClass(base.Jsonable, metaclass=abc.ABCMeta):
     def _level_2_requirements(self):
         return {}
 
+    @abc.abstractmethod
+    def _level_3_requirements(self):
+        return {}
+
     def level_to(self, level, **kwargs):
         if level <= self.level:
             raise ValueError('This class is already larger than requested!')
-        if level == 1:
-            return self._add_level_2_features(kwargs)
-        else:
-            raise ValueError('Invalid level!')
+
+        start, end = (self.level+1, level+1)
+        for i in range(start, end):
+            self.level = i
+            if i == 2:
+                self._add_level_2_features(**kwargs)
+            elif i == 3:
+                self._add_level_3_features(**kwargs)
+            else:
+                raise ValueError('Invalid level!')
 
     @abc.abstractmethod
-    def _add_level_2_features(self, kwargs):
+    def _add_level_2_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_3_features(self, **kwargs):
         return {}
 
 
@@ -172,3 +186,47 @@ class Ranger(PlayerClass):
                                                              list_spells_known=list_spells,
                                                              spell_slots={SpellTypes.FIRST: 2},
                                                              num_spells_known=2)
+
+    def _level_3_requirements(self):
+        req = {
+            'archetype_feature': {
+                'name': 'Hunter',
+                'features': ['colossus_slayer', 'giant_killer', 'horde_breaker'],
+                base.CHOICES: 1,
+            },
+            base.SPELLCASTING: {
+                base.SPELLCASTING_ABILITY: AbilityScores.WIS,
+                base.NUM_SPELLS_KNOWN: 3,
+                base.SPELL_SLOTS: {
+                    SpellTypes.FIRST: 3
+                }
+            }
+        }
+        return req
+
+    def _add_level_3_features(self, **kwargs):
+        self.features['primeval_awareness'] = {
+            base.NAME: 'Primeval Awareness',
+            base.DESCRIPTION: 'Beginning at 3rd level, you can use your action and expend one Ranger spell slot to focus your awareness on the region around you..',
+        }
+
+        archetype_feature = kwargs['archetype_feature']
+        self.features['archetype_feature'] = {
+            base.NAME: 'Ranger Archetype',
+            base.DESCRIPTION: 'Emulating the Hunter archetype means accepting your place as a bulwark between civilization and the terrors of The Wilderness.',
+            'archetype_feature': archetype_feature,
+        }
+
+        # TODO make this a bit more elegant...
+        list_spells = []
+        simple_spell_list = [
+            ('Hunters Mark', 1),
+            ('Animal Friendship', 1),
+            ('Longstrider', 1),
+        ]
+        for name, level in simple_spell_list:
+            list_spells.append(spells.generate_simple_spell(name, level))
+        self.spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScores.WIS,
+                                                             list_spells_known=list_spells,
+                                                             spell_slots={SpellTypes.FIRST: 3},
+                                                             num_spells_known=3)

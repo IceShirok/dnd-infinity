@@ -147,7 +147,7 @@ class PlayerCharacter(base.Jsonable):
     def max_hit_points(self):
         hit_points = 0
         hit_die = self.classes.hit_die
-        for i in range(1, self.classes.level):
+        for i in range(1, self.classes.level+1):
             if hit_points <= 0:
                 hit_points = hit_die + self.ability_scores[AbilityScores.CON][base.MODIFIER]
             else:
