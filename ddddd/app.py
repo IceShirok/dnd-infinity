@@ -1,14 +1,12 @@
 
 import json
-import sys
 
-from ddddd.entity import base
 from ddddd.entity.base import Skills, Languages
 from ddddd.entity.character import race, cclass, background, pc, equipment
 
 import logging
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
@@ -24,24 +22,24 @@ def main():
 
 
 def create_dorian():
-    dorian_base = pc.PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=2)
+    dorian_base = pc.PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=3)
     tool_prof = {
         'tool_proficiency': {
             'name': 'Tool Proficiency',
-            'tools': ['brewers_kit'],
-            'description': 'You gain proficiency with the artisan’s tools of your choice: smith’s tools, brewer’s supplies, or mason’s tools.',
+            'tools': [],
+            'description': 'You gain proficiency with the artisan''s tools of your choice: smith''s tools, brewer''s supplies, or mason''s tools.',
         }
     }
     dorian_race = race.HillDwarf(traits=tool_prof)
-    dorian_classes = [
-            cclass.RangerFactory().generate_by_level(1, skill_proficiencies=[Skills.ATHLETICS, Skills.ANIMAL_HANDLING, Skills.SURVIVAL],
-                                                     favored_enemy='plants', languages='elvish', favored_terrain='forest'),
-            cclass.RangerFactory().generate_by_level(2, fighting_style=['two_weapon_fighting'])
-            ]
+    dorian_class = cclass.Ranger(skill_proficiencies=[Skills.ATHLETICS, Skills.ANIMAL_HANDLING, Skills.SURVIVAL],
+                                 favored_enemy='plants',
+                                 languages='elvish',
+                                 favored_terrain='forest')
+    dorian_class.level_to(level=3, fighting_style='two_weapon_fighting', archetype_feature='colossus_slayer')
     dorian_background = background.Criminal()
     dorian_equip = generate_equipment()
     dorian_backpack = generate_backpack()
-    dorian_pc = pc.PlayerCharacter(dorian_base, dorian_race, dorian_classes, dorian_background, dorian_equip, dorian_backpack)
+    dorian_pc = pc.PlayerCharacter(dorian_base, dorian_race, dorian_class, dorian_background, dorian_equip, dorian_backpack)
     return dorian_pc
 
 
@@ -84,24 +82,25 @@ def test_pc():
 
     ttt_base = pc.PlayerBase("Tamiphi Tockentell", 10, 11, 16, 18, 20, 7, level=8)
     gnome = race.RockGnome()
-    print(ttt_base)
-    print(gnome)
+    logger.info(ttt_base)
+    logger.info(gnome)
 
-    print('-----')
+    logger.info('-----')
 
     lok_base = pc.PlayerBase("Lok", 15, 18, 10, 12, 16, 9, level=4)
     human = race.Human(languages=[Languages.DRACONIC])
-    print(lok_base)
-    print(human)
+    logger.info(lok_base)
+    logger.info(human)
 
-    print('-----')
+    logger.info('-----')
 
     dorian_pc = create_dorian()
-    print(dorian_pc.__str__())
+    logger.info(json.dumps(dorian_pc.__json__(), indent=4))
+    # dorian_pc.race.verify()
 
-    print('-----')
-
-    print(json.dumps(dorian_pc.generate_character_sheet(), indent=4))
+    # print('-----')
+    #
+    # print(json.dumps(dorian_pc.generate_character_sheet(), indent=4))
 
 
 if __name__ == '__main__':
