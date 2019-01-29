@@ -125,6 +125,10 @@ class PlayerCharacter(base.Jsonable):
         for a in self.race.asi.keys():
             ability_scores_raw[a] += self.race.asi[a]
 
+        for asi in self.classes.asi:
+            for a in asi:
+                ability_scores_raw[a] += asi[a]
+
         ability_scores_p = {}
         for a in ability_scores_raw.keys():
             score = ability_scores_raw[a]

@@ -22,7 +22,8 @@ def main():
 
 
 def create_dorian():
-    dorian_base = pc.PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=3)
+    level = 5
+    dorian_base = pc.PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=level)
     tool_prof = {
         'tool_proficiency': {
             'name': 'Tool Proficiency',
@@ -35,7 +36,10 @@ def create_dorian():
                                  favored_enemy='plants',
                                  languages='elvish',
                                  favored_terrain='forest')
-    dorian_class.level_to(level=3, fighting_style='two_weapon_fighting', archetype_feature='colossus_slayer')
+    dorian_class.level_to(level=level,
+                          fighting_style='two_weapon_fighting',
+                          archetype_feature='colossus_slayer',
+                          ability_score_increase={'STR': 2})
     dorian_background = background.Criminal()
     dorian_equip = generate_equipment()
     dorian_backpack = generate_backpack()

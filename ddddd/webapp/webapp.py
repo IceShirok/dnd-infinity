@@ -44,7 +44,7 @@ def generate_ability_scores_html(player_character):
         mod = base.prettify_modifier(base.modifier(score))
         return '<div style="margin: 5px"><p>{}</p><h3>{}</h3><p>{}</p></div>'.format(ability, score, mod)
     for ability in ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA']:
-        html_page += generate_ability_score_html(ability, player_character.base.ability_scores[ability])
+        html_page += generate_ability_score_html(ability, player_character.ability_scores[ability][base.SCORE])
     html_page += '</div>'
     return html_page
 

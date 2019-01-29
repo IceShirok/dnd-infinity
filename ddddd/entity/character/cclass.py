@@ -13,7 +13,7 @@ class PlayerClass(base.Jsonable, metaclass=abc.ABCMeta):
     class is fairly dumb.
     """
     def __init__(self, name, level, hit_die,
-                 proficiencies, saving_throws, skill_proficiencies, features,
+                 proficiencies, saving_throws, skill_proficiencies, features, asi,
                  spellcasting=None):
         self.name = name
         self.level = level
@@ -22,6 +22,7 @@ class PlayerClass(base.Jsonable, metaclass=abc.ABCMeta):
         self.saving_throws = saving_throws
         self.skills = skill_proficiencies
         self.features = features
+        self.asi = asi if asi else []
         self.spellcasting = spellcasting
 
     def __json__(self):
@@ -37,6 +38,7 @@ class PlayerClass(base.Jsonable, metaclass=abc.ABCMeta):
             base.SKILLS: self.skills,
             base.FEATURES: self.features,
             base.SPELLCASTING: spellcasting_p,
+            'ability_score_increase': self.asi,
         }
         return j
     
@@ -51,6 +53,12 @@ class PlayerClass(base.Jsonable, metaclass=abc.ABCMeta):
             return self._level_1_requirements()
         elif level == 2:
             return self._level_2_requirements()
+        elif level == 3:
+            return self._level_3_requirements()
+        elif level == 4:
+            return self._level_4_requirements()
+        elif level == 5:
+            return self._level_5_requirements()
         else:
             raise ValueError('Invalid level!')
 
@@ -66,6 +74,14 @@ class PlayerClass(base.Jsonable, metaclass=abc.ABCMeta):
     def _level_3_requirements(self):
         return {}
 
+    @abc.abstractmethod
+    def _level_4_requirements(self):
+        return {}
+
+    @abc.abstractmethod
+    def _level_5_requirements(self):
+        return {}
+
     def level_to(self, level, **kwargs):
         if level <= self.level:
             raise ValueError('This class is already larger than requested!')
@@ -77,6 +93,10 @@ class PlayerClass(base.Jsonable, metaclass=abc.ABCMeta):
                 self._add_level_2_features(**kwargs)
             elif i == 3:
                 self._add_level_3_features(**kwargs)
+            elif i == 4:
+                self._add_level_4_features(**kwargs)
+            elif i == 5:
+                self._add_level_5_features(**kwargs)
             else:
                 raise ValueError('Invalid level!')
 
@@ -86,6 +106,14 @@ class PlayerClass(base.Jsonable, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def _add_level_3_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_4_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_5_features(self, **kwargs):
         return {}
 
 
@@ -126,7 +154,8 @@ class Ranger(PlayerClass):
                                      saving_throws=[AbilityScores.STR, AbilityScores.DEX],
                                      skill_proficiencies=skill_proficiencies,
                                      features=def_features,
-                                     spellcasting=None)
+                                     spellcasting=None,
+                                     asi=None)
 
     def _level_1_requirements(self):
         return {
@@ -230,3 +259,50 @@ class Ranger(PlayerClass):
                                                              list_spells_known=list_spells,
                                                              spell_slots={SpellTypes.FIRST: 3},
                                                              num_spells_known=3)
+
+    def _level_4_requirements(self):
+        req = {
+            'ability_score_increase': {
+                'name': 'Ability Score Increase',
+                'description': 'You can increase one ability score of your choice by 2, or you can increase two Ability Scores of your choice by 1.',
+            },
+        }
+        return req
+
+    def _add_level_4_features(self, **kwargs):
+        ability_score_increase = kwargs['ability_score_increase']
+        self.asi.append(ability_score_increase)
+
+    def _level_5_requirements(self):
+        req = {
+            base.SPELLCASTING: {
+                base.SPELLCASTING_ABILITY: AbilityScores.WIS,
+                base.NUM_SPELLS_KNOWN: 4,
+                base.SPELL_SLOTS: {
+                    SpellTypes.FIRST: 4,
+                    SpellTypes.SECOND: 2,
+                }
+            },
+        }
+        return req
+
+    def _add_level_5_features(self, **kwargs):
+        self.features['extra_attack'] = {
+            base.NAME: 'Extra Attack',
+            base.DESCRIPTION: 'Beginning at 5th level, you can Attack twice, instead of once, whenever you take the Attack action on Your Turn.',
+        }
+
+        # TODO make this a bit more elegant...
+        list_spells = []
+        simple_spell_list = [
+            ('Hunters Mark', 1),
+            ('Animal Friendship', 1),
+            ('Longstrider', 1),
+            ('Pass without Trace', 2),
+        ]
+        for name, level in simple_spell_list:
+            list_spells.append(spells.generate_simple_spell(name, level))
+        self.spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScores.WIS,
+                                                             list_spells_known=list_spells,
+                                                             spell_slots={SpellTypes.FIRST: 4, SpellTypes.SECOND: 2},
+                                                             num_spells_known=4)
