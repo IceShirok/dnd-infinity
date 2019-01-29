@@ -137,6 +137,14 @@ class PlayerCharacter(base.Jsonable):
 
     @property
     def armor_class(self):
+        armor_obj = self.worn_items.armor
+        if armor_obj:
+            import inspect
+            check_for_args = inspect.getfullargspec(armor_obj.armor_class)
+            if check_for_args.args:
+                return armor_obj.armor_class(self.ability_scores[base.AbilityScores.DEX][base.MODIFIER])
+            else:
+                return armor_obj.armor_class()
         return 10 + self.ability_scores[AbilityScores.DEX][base.MODIFIER]
 
     @property

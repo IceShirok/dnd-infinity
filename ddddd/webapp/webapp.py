@@ -83,7 +83,10 @@ def generate_basic_combat_html(player_character):
     html_page = ''
     html_page += '<div>'
     html_page += '<h2>Basic Combat Stuff</h2>'
-    html_page += '<p>Armor Class: {}</p>'.format(player_character.armor_class)
+    armor_worn = '(dodgy stuff)'
+    if player_character.worn_items.armor:
+        armor_worn = '({})'.format(player_character.worn_items.armor.name)
+    html_page += '<p>Armor Class: {} {}</p>'.format(player_character.armor_class, armor_worn)
     html_page += '<p>Initiative: {}</p>'.format(player_character.initiative)
     html_page += '<p>Speed: {}</p>'.format(player_character.speed)
     html_page += '</div>'

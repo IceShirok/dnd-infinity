@@ -59,6 +59,17 @@ def generate_backpack():
     backpack.add_item(equipment.Item('Tinderbox', price=1, weight=1))
     backpack.add_item(equipment.Item('Waterskin', price=1, weight=5))
     backpack.add_item(equipment.Item('Hempen Rope', price=1, weight=10, description='50 ft of rope'))
+
+    def calc_light_armor_rating(dex_mod):
+        # leather armor
+        return 11 + dex_mod
+    backpack.add_item(equipment.Armor('Leather Armor', price=10, weight=10, armor_class=calc_light_armor_rating, strength=0, stealth=''))
+
+    def calc_medium_armor_rating(dex_mod):
+        # chain shirt
+        return 13 + min(dex_mod, 2)
+    backpack.add_item(equipment.Armor('Chain Shirt', price=50, weight=20, armor_class=calc_medium_armor_rating, strength=0, stealth=''))
+
     logger.debug(json.dumps(backpack.__json__(), indent=4))
     return backpack
 
@@ -66,7 +77,11 @@ def generate_backpack():
 def generate_equipment():
     logger.debug('Displaying worn items')
     worn_items = equipment.WornItems()
-    armor = equipment.Armor('Chain Mail', price=75, weight=55, armor_class=16, strength=15, stealth='disadvantage')
+
+    def calc_heavy_armor_rating():
+        # chain mail
+        return 16
+    armor = equipment.Armor('Chain Mail', price=75, weight=55, armor_class=calc_heavy_armor_rating, strength=15, stealth='disadvantage')
     rondel = equipment.Weapon('handaxe', damage='1d6 slashing', price=5, weight=2, properties=['light', 'thrown (range 20/60)'])
     lefon = equipment.Weapon('handaxe', damage='1d6 slashing', price=5, weight=2, properties=['light', 'thrown (range 20/60)'])
     longbow = equipment.Weapon('longbow', damage='1d8 piercing', price=50, weight=2, properties=['ammunition (range 150/600)', 'heavy', 'two-handed'])
