@@ -1,10 +1,12 @@
 
+import abc
+
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScores, Skills, Languages, SpellTypes
 from ddddd.entity.character import spells
 
 
-class PlayerClass(base.Jsonable):
+class PlayerClass(base.Jsonable, metaclass=abc.ABCMeta):
     """
     A representation of a player character (PC) class
     for a particular class/level combination. This particular
@@ -44,24 +46,59 @@ class PlayerClass(base.Jsonable):
             return self.features[base.LANGUAGES][base.LANGUAGES]
         return []
 
+    def get_requirements(self, level):
+        if level == 1:
+            return self._level_1_requirements()
+        elif level == 2:
+            return self._level_2_requirements()
+        else:
+            raise ValueError('Invalid level!')
+
+    @abc.abstractmethod
+    def _level_1_requirements(self):
+        return {}
+
+    @abc.abstractmethod
+    def _level_2_requirements(self):
+        return {}
+
+    def level_to(self, level, **kwargs):
+        if level <= self.level:
+            raise ValueError('This class is already larger than requested!')
+        if level == 1:
+            return self._add_level_2_features(kwargs)
+        else:
+            raise ValueError('Invalid level!')
+
+    @abc.abstractmethod
+    def _add_level_2_features(self, kwargs):
+        return {}
+
 
 class Ranger(PlayerClass):
+    FAVORED_ENEMY = 'favored_enemy'
+    ENEMIES = 'enemies'
+    NATURAL_EXPLORER = 'natural_explorer'
+    TERRAINS = 'terrains'
+    FIGHTING_STYLE = 'fighting_style'
+    STYLES = 'styles'
+
     def __init__(self, skill_proficiencies, favored_enemy=None, languages=None, favored_terrain=None):
         def_features = {
-            'favored_enemy': {
+            self.FAVORED_ENEMY: {
                 base.NAME: 'Favored Enemy',
                 base.DESCRIPTION: 'Beginning at 1st level, you have significant experience studying, tracking, hunting, and even talking to a certain type of enemy. ...',
-                'enemies': [favored_enemy],
+                self.ENEMIES: [favored_enemy],
             },
             base.LANGUAGES: {
                 base.NAME: 'Favored Enemy Languages',
                 base.DESCRIPTION: 'You learn a language that your favored enemy would typically know.',
                 base.LANGUAGES: [languages],
             },
-            'natural_explorer': {
+            self.NATURAL_EXPLORER: {
                 base.NAME: 'Natural Explorer',
                 base.DESCRIPTION: 'You are particularly familiar with one type of natural environment and are adept at traveling and surviving in such regions. ...',
-                'terrains': [favored_terrain]
+                self.TERRAINS: [favored_terrain]
             },
         }
         super(Ranger, self).__init__(name='Ranger',
@@ -77,7 +114,7 @@ class Ranger(PlayerClass):
                                      features=def_features,
                                      spellcasting=None)
 
-    def __validate_level_1(self):
+    def _level_1_requirements(self):
         return {
             base.SKILL_PROF: {
                 base.SKILLS: [Skills.ANIMAL_HANDLING, Skills.ATHLETICS,
@@ -85,25 +122,42 @@ class Ranger(PlayerClass):
                               Skills.PERCEPTION, Skills.STEALTH, Skills.SURVIVAL],
                 base.CHOICES: 3,
             },
-            'favored_enemy': {
-                'enemies': ['aberrations', 'fey', 'elementals', 'plants'],
+            self.FAVORED_ENEMY: {
+                self.ENEMIES: ['aberrations', 'fey', 'elementals', 'plants'],
                 base.CHOICES: 1,
             },
             base.LANGUAGES: {
                 base.LANGUAGES: Languages.LANGUAGES,
                 base.CHOICES: 1,
             },
-            'favored_terrain': {
-                'terrains': ['forest', 'grassland', 'swamp'],
+            self.NATURAL_EXPLORER: {
+                self.TERRAINS: ['forest', 'grassland', 'swamp'],
                 base.CHOICES: 1,
             }
         }
 
-    def _add_level_2_features(self, fighting_style):
-        self.features['fighting_style'] = {
+    def _level_2_requirements(self):
+        req = {
+            self.FIGHTING_STYLE: {
+                self.STYLES: ['archery', 'defense', 'dueling', 'two_weapon_fighting'],
+                base.CHOICES: 1,
+            },
+            base.SPELLCASTING: {
+                base.SPELLCASTING_ABILITY: AbilityScores.WIS,
+                base.NUM_SPELLS_KNOWN: 2,
+                base.SPELL_SLOTS: {
+                    SpellTypes.FIRST: 2
+                }
+            }
+        }
+        return req
+
+    def _add_level_2_features(self, **kwargs):
+        fighting_style = kwargs['fighting_style']
+        self.features[self.FIGHTING_STYLE] = {
             base.NAME: 'Fighting Style',
             base.DESCRIPTION: 'At 2nd level, you adopt a particular style of fighting as your specialty.',
-            'style': [fighting_style],
+            self.STYLES: [fighting_style],
         }
 
         # TODO make this a bit more elegant...
@@ -118,19 +172,3 @@ class Ranger(PlayerClass):
                                                              list_spells_known=list_spells,
                                                              spell_slots={SpellTypes.FIRST: 2},
                                                              num_spells_known=2)
-
-    def __validate_level_2(self):
-        req = {
-            'fighting_style': {
-                'styles': ['archery', 'defense', 'dueling', 'two_weapon_fighting'],
-                base.CHOICES: 1,
-            },
-            base.SPELLCASTING: {
-                base.SPELLCASTING_ABILITY: AbilityScores.WIS,
-                base.NUM_SPELLS_KNOWN: 2,
-                base.SPELL_SLOTS: {
-                    SpellTypes.FIRST: 2
-                }
-            }
-        }
-        return req
