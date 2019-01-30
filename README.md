@@ -12,8 +12,6 @@ while modelling, and also because I just want to practice Python.
     * AKA I don't necessarily need the JSON to work in order to allow the verification to work
 * Write a small application to get input and generate the webapp as you go
     * Need to start writing application code, APIs and all that shizzz
-* Add attack bonuses to equipment
-* Create higher level classes to test aggregations
 * Clean up the PC class
 * Figure out how to factor traits into stats (i.e. dwarven toughness -> more HP)
 * Add feats
