@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="banner"></div>
+<div class="column">
+    <div class="sheet_box">
+        <h2>{{ pc.name }}</h2>
+        <p>Class & Level: {{ pc.class_name }} {{ pc.level }}</p>
+        <p>Background: {{ pc.background_name }}</p>
+        <p>Race: {{ pc.race_name }}</p>
+    </div>
+    <div class="sheet_box">
+        <h2>Ability Scores</h2>
+        <p>Proficiency Bonus: {{ pc.proficiency_bonus }}</p>
+        {% for ability in ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'] %}
+        <div class="ability_score">
+            <p>{{ ability }}</p>
+            <h3>{{ pc.ability_scores[ability]['score'] }}</h3>
+            <p>{{ pc.ability_scores[ability]['modifier'] }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="column">
+    <div class="sheet_box">
+        <h2>Saving Throws</h2>
+        {% for save in pc.saving_throws %}
+            {% if pc.saving_throws[save]['is_proficient'] %}
+                <p>V {{ save }}: {{ pc.saving_throws[save]['modifier'] }}</p>
+            {% else %}
+                <p>O {{ save }}: {{ pc.saving_throws[save]['modifier'] }}</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="sheet_box">
+        <h2>Skills</h2>
+        {% for skill in pc.skill_proficiencies %}
+            {% if pc.skill_proficiencies[skill]['is_proficient'] %}
+                <p>V {{ skill }}: {{ pc.skill_proficiencies[skill]['modifier'] }} ({{ pc.skill_proficiencies[skill]['ability'] }})</p>
+            {% else %}
+                <p>O {{ skill }}: {{ pc.skill_proficiencies[skill]['modifier'] }} ({{ pc.skill_proficiencies[skill]['ability'] }})</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+<div class="column">
+    <div class="sheet_box">
+        <h2>Basic Combat Stuff</h2>
+        {% if pc.worn_items.armor %}
+            <p>Armor Class: {{ pc.worn_items.armor_class }} ({{ pc.worn_items.armor.name }})</p>
+        {% else %}
+            <p>Armor Class: {{ pc.worn_items.armor_class }} (dodgy stuff)</p>
+        {% endif %}
+        <p>Initiative: {{ pc.initiative }}</p>
+        <p>Speed: {{ pc.speed }}</p>
+    </div>
+    <div class="sheet_box">
+        <h2>Health Stuff</h2>
+        <p>Hit Points: {{ pc.max_hit_points }} / {{ pc.max_hit_points }}</p>
+        <p>Temporary Hit Points: 0</p>
+        <p>Total Hit Dice: {{ pc.total_hit_dice }}</p>
+        <p>Death Saves: 0 Success / 0 Failures</p>
+    </div>
+    <div class="sheet_box">
+        <h2>Attacks & Spellcasting</h2>
+
+        <h3>Attacks</h3>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Attack Bonus</th>
+                <th>Damage</th>
+            </tr>
+            {% for weapon in pc.worn_items.weapons %}
+            <tr>
+                <td>{{ weapon.name }}</td>
+                <td>{{ pc.calculate_weapon_bonuses()[weapon.name]['attack_bonus'] }}</td>
+                <td>{{  pc.calculate_weapon_bonuses()[weapon.name]['damage'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h3>Spellcasting</h3>
+        {% for spell_type in pc.spellcasting.spell_slots.keys() %}
+        <h4>{{ spell_type }} ({{ pc.spellcasting.spell_slots[spell_type] }} spell slots)</h4>
+        <p>to be done soon</p>
+        {% endfor %}
+    </div>
+    <div class="sheet_box">
+        <h2>Equipment</h2>
+        <p>Carrying capacity: {{ pc.carrying_weight }} / {{ pc.carrying_capacity }}</p>
+        {% if pc.worn_items.armor %}
+        <p>{{ pc.worn_items.armor.name }} (equipped, armor)</p>
+        {% endif %}
+        {% for weapon in pc.worn_items.weapons %}
+        <p>{{ weapon.name }} (equipped, weapon)</p>
+        {% endfor %}
+        {% for item in pc.backpack.items %}
+        <p>{{ item.name }} {{ item.quantity if item.quantity > 1 else '' }}</p>
+        {% endfor %}
+    </div>
+</div>
+<div class="column">
+    <div class="sheet_box">
+        <h2>Proficiencies</h2>
+        {% for p in pc.proficiencies %}
+        <p><strong>{{ p }}</strong>: {{ ', '.join(pc.proficiencies[p]) }}</p>
+        {% endfor %}
+        <p><strong>Languages</strong>: {{ ', '.join(pc.languages) }}</p>
+    </div>
+    <div class="sheet_box">
+        <h2>Traits & Features</h2>
+        {% for fk in pc.features %}
+            <h3>{{ fk }}</h3>
+            {% for f in pc.features[fk] %}
+                <h4>{{ pc.features[fk][f]['name'] }}</h4>
+                <p>{{ pc.features[fk][f]['description'] }}</p>
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

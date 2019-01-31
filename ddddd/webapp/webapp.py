@@ -222,7 +222,7 @@ def write_html_page(player_character):
     html_page += '</body>'
     html_page += '</html>'
 
-    f = open("index.html", "w")
+    f = open("base.html", "w")
     f.write(html_page)
     f.close()
 
