@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for
-from ddddd import app as pc
+from ddddd import pc_playground as pc
 from ddddd.entity.base import prettify_modifier
 
 app = Flask(__name__)
