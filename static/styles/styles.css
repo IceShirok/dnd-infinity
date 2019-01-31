@@ -1,0 +1,25 @@
+
+body {
+   color: #000;
+   font-family: Cambria Math !important;
+   background-color: #6d5f40;
+}
+
+#container {
+    background-color: #EEEEEE;
+    padding: 5px;
+}
+
+#banner {
+    background-color: #DDDDDD;
+    padding: 5px;
+}
+
+div.column {
+    display: inline-block;
+    vertical-align: top;
+    background-color: #DDDDDD;
+    padding: 5px;
+    width: 20%;
+    line-height: 100%;
+}
