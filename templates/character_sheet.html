@@ -9,7 +9,7 @@
 </div>
 <div class="column">
     <div class="sheet-box">
-        <h3>Ability Scores</h3>
+        <h3>Ability Scores <i class="material-icons">casino</i></h3>
         <div class="stat-box">
             <h4>Proficiency Bonus</h4>
             <p>{{ pc.proficiency_bonus }}</p>
@@ -26,21 +26,34 @@
 </div>
 <div class="column">
     <div class="sheet-box">
-        <h3>Saving Throws</h3>
+        <h3>Saving Throws <i class="material-icons">warning</i></h3>
         {% for save in pc.saving_throws %}
-        <p>{{ 'v' if pc.saving_throws[save]['is_proficient'] else 'o' }} <strong>{{ save }}</strong> : {{ pmod(pc.saving_throws[save]['modifier']) }}</p>
+        <p>
+            {% if pc.saving_throws[save]['is_proficient'] %}
+            <i class="material-icons">check_box</i>
+            {% else %}
+            <i class="material-icons">check_box_outline_blank</i>
+            {% endif %}
+            <strong>{{ save }}</strong> : {{ pmod(pc.saving_throws[save]['modifier']) }}
+        </p>
         {% endfor %}
     </div>
     <div class="sheet-box">
-        <h3>Skills</h3>
+        <h3>Skills <i class="material-icons">fitness_center</i></h3>
         {% for skill in pc.skill_proficiencies %}
-        <p>{{ 'v' if pc.skill_proficiencies[skill]['is_proficient'] else 'o' }} <strong>{{ skill }}</strong> : {{ pmod(pc.skill_proficiencies[skill]['modifier']) }} [{{ pc.skill_proficiencies[skill]['ability'] }}]</p>
+        <p>
+            {% if pc.skill_proficiencies[skill]['is_proficient'] %}
+            <i class="material-icons">check_box</i>
+            {% else %}
+            <i class="material-icons">check_box_outline_blank</i>
+            {% endif %}<strong>{{ skill }}</strong> : {{ pmod(pc.skill_proficiencies[skill]['modifier']) }} [{{ pc.skill_proficiencies[skill]['ability'] }}]
+        </p>
         {% endfor %}
     </div>
 </div>
 <div class="column">
     <div class="sheet-box">
-        <h3>Basic Combat Stuff</h3>
+        <h3>Basic Combat Stuff <i class="material-icons">disc_full</i></h3>
         <div class="stat-box">
             <h4>Armor Class</h4>
             <p>{{ pc.armor_class }} ({{ pc.worn_items.armor.name if pc.worn_items.armor else 'dodgy stuff' }})</p>
@@ -56,14 +69,17 @@
         <div class="clear"></div>
     </div>
     <div class="sheet-box">
-        <h3>Health Stuff</h3>
+        <h3>Health Stuff <i class="material-icons">local_pharmacy</i></h3>
+        <h4>Hit Points</h4>
         <p><strong>Hit Points</strong> : {{ pc.max_hit_points }} / {{ pc.max_hit_points }}</p>
         <p><strong>Temporary Hit Points</strong> : 0</p>
         <p><strong>Total Hit Dice</strong> : {{ pc.total_hit_dice_prettified }}</p>
-        <p><strong>Death Saves</strong> : 0 Success / 0 Failures</p>
+        <h4>Death Saves</h4>
+        <p>Success {% for i in range(0,3) %}<i class="material-icons">mood</i>{% endfor %}</p>
+        <p>Failure {% for i in range(0,3) %}<i class="material-icons">mood_bad</i>{% endfor %}</p>
     </div>
     <div class="sheet-box">
-        <h3>Attacks & Spellcasting</h3>
+        <h3>Attacks & Spellcasting <i class="material-icons">pan_tool</i></h3>
 
         <h4>Attacks</h4>
         <table>
@@ -83,7 +99,12 @@
 
         <h4>Spellcasting</h4>
         {% for spell_type in pc.spellcasting.spell_slots.keys() %}
-        <h5>{{ spell_type }} ({{ pc.spellcasting.spell_slots[spell_type] }} spell slots)</h5>
+        <h5>
+            {{ spell_type }}
+            {% for i in range(0, pc.spellcasting.spell_slots[spell_type]) %}
+            <i class="material-icons">all_out</i>
+            {% endfor %}
+        </h5>
         {% for spell in pc.spellcasting.list_spells_known %}
         {% if spell.level == spell_type %}
         <p>{{ spell.name }}</p>
@@ -92,8 +113,8 @@
         {% endfor %}
     </div>
     <div class="sheet-box">
-        <h3>Equipment</h3>
-        <p>Carrying capacity: {{ pc.carrying_weight }} / {{ pc.carrying_capacity }}</p>
+        <h3>Equipment <i class="material-icons">business_center</i></h3>
+        <p><strong>Carrying Capacity</strong> : {{ pc.carrying_weight }} / {{ pc.carrying_capacity }}</p>
         {% if pc.worn_items.armor %}
         <p>{{ pc.worn_items.armor.name }} (equipped, armor)</p>
         {% endif %}
@@ -111,14 +132,14 @@
 </div>
 <div class="column">
     <div class="sheet-box">
-        <h3>Proficiencies</h3>
+        <h3>Proficiencies <i class="material-icons">color_lens</i></h3>
         {% for p in pc.proficiencies %}
         <p><strong>{{ p }}</strong>: {{ ', '.join(pc.proficiencies[p]) }}</p>
         {% endfor %}
         <p><strong>Languages</strong>: {{ ', '.join(pc.languages) }}</p>
     </div>
     <div class="sheet-box">
-        <h3>Traits & Features</h3>
+        <h3>Traits & Features <i class="material-icons">style</i></h3>
         {% for fk in pc.features %}
             <h3>{{ fk }}</h3>
             {% for f in pc.features[fk] %}
