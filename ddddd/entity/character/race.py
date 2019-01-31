@@ -2,6 +2,14 @@
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScores, Languages, Sizes
 
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+
 
 class Race(base.Jsonable):
     """
@@ -55,21 +63,23 @@ class Race(base.Jsonable):
         Verify to see whether the race is properly init'd with valid values
         :return: True if valid, otherwise it'll throw an exception
         """
-        for required_k in self.required():
+        required_traits = {}
+        for req_k, trait_req_details in self.required().items():
             # Go through the list of traits and verify based on specifications
-            if required_k not in self.traits:
-                raise ValueError('Required trait {} not inputted!'.format(required_k))
+            if req_k not in self.traits:
+                required_traits[req_k] = trait_req_details
+                required_traits[req_k]['issue'] = 'Required trait {} not inputted!'.format(req_k)
 
-            trait_req_details = self.required()[required_k]
-            input_details = self.traits[required_k]
+            input_details = self.traits[req_k]
 
             choices_list_k = set(trait_req_details.keys()).intersection(set(input_details.keys())).pop()
             input_list = input_details[choices_list_k]
             if len(input_list) != trait_req_details[base.CHOICES] \
                     or not set(input_list).issubset(trait_req_details[choices_list_k]):
-                raise ValueError('Required trait {} is invalid.'.format(required_k))
+                required_traits[req_k] = trait_req_details
+                required_traits[req_k]['issue'] = 'Required trait {} is invalid.'.format(req_k)
 
-        return True
+        return required_traits
 
     def required(self):
         return {}

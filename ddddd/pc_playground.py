@@ -115,7 +115,8 @@ def test_pc():
 
     dorian_pc = create_dorian()
     logger.info(json.dumps(dorian_pc.__json__(), indent=4))
-    # dorian_pc.race.verify()
+    req = dorian_pc.race.verify()
+    logger.info(req)
 
     # print('-----')
     #
