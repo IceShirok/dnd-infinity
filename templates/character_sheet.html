@@ -95,6 +95,7 @@
             {% endfor %}
         </table>
 
+        {% if pc.spellcasting %}
         <h4>Spellcasting</h4>
         {% for spell_type in pc.spellcasting.spell_slots.keys() %}
         <h5>
@@ -109,6 +110,7 @@
         {% endif %}
         {% endfor %}
         {% endfor %}
+        {% endif %}
     </div>
     <div class="sheet-box">
         <h3>Equipment <i class="material-icons">business_center</i></h3>
