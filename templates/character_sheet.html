@@ -83,7 +83,11 @@
         <h3>Spellcasting</h3>
         {% for spell_type in pc.spellcasting.spell_slots.keys() %}
         <h4>{{ spell_type }} ({{ pc.spellcasting.spell_slots[spell_type] }} spell slots)</h4>
-        <p>to be done soon</p>
+        {% for spell in pc.spellcasting.list_spells_known %}
+        {% if spell.level == spell_type %}
+        <p>{{ spell.name }}</p>
+        {% endif %}
+        {% endfor %}
         {% endfor %}
     </div>
     <div class="sheet_box">

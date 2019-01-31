@@ -206,8 +206,8 @@ class Ranger(PlayerClass):
         # TODO make this a bit more elegant...
         list_spells = []
         simple_spell_list = [
-            ('Hunters Mark', 1),
-            ('Animal Friendship', 1),
+            ('Hunters Mark', base.SpellTypes.FIRST),
+            ('Animal Friendship', base.SpellTypes.FIRST),
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
@@ -249,9 +249,9 @@ class Ranger(PlayerClass):
         # TODO make this a bit more elegant...
         list_spells = []
         simple_spell_list = [
-            ('Hunters Mark', 1),
-            ('Animal Friendship', 1),
-            ('Longstrider', 1),
+            ('Hunters Mark', base.SpellTypes.FIRST),
+            ('Animal Friendship', base.SpellTypes.FIRST),
+            ('Longstrider', base.SpellTypes.FIRST),
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
@@ -295,10 +295,10 @@ class Ranger(PlayerClass):
         # TODO make this a bit more elegant...
         list_spells = []
         simple_spell_list = [
-            ('Hunters Mark', 1),
-            ('Animal Friendship', 1),
-            ('Longstrider', 1),
-            ('Pass without Trace', 2),
+            ('Hunters Mark', base.SpellTypes.FIRST),
+            ('Animal Friendship', base.SpellTypes.FIRST),
+            ('Longstrider', base.SpellTypes.FIRST),
+            ('Pass without Trace', base.SpellTypes.SECOND),
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
