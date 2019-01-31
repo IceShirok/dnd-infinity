@@ -1,8 +1,29 @@
 
+:root {
+    --d5-color-black: #000022;
+
+    --d5-color-red: #F06543;
+    --d5-color-white: #E8E9EB;
+    --d5-color-gray: #E0DFD5;
+    --d5-color-orange: #F09D51;
+    --d5-color-black: #313638;
+
+    --d5-color-bg: var(--d5-color-red);
+
+    --d5-color-border-banner: var(--d5-color-orange);
+    --d5-color-border-column: var(--d5-color-orange);
+
+    --d5-color-box: var(--d5-color-gray);
+    --d5-color-border-box: var(--d5-color-black);
+
+    --d5-color-stat-box: var(--d5-color-white);
+    --d5-color-border-stat-box: var(--d5-color-black);
+}
+
 body {
-   color: #000;
+   color: var(--d5-color-black);
    font-family: Cambria Math !important;
-   background-color: #6d5f40;
+   background-color: var(--d5-color-bg);
 }
 
 #header {
@@ -13,22 +34,33 @@ body {
 
 #container {
     display: block;
-    background-color: #EEEEEE;
     padding: 5px;
 }
 
 #banner {
-    background-color: #DDDDDD;
-    padding: 5px;
+    background-color: var(--d5-color-box);
+
+    margin: 5px;
+    padding: 10px;
+
+    border-style: solid;
+    border-width: 5px;
+    border-color: var(--d5-color-border-banner);
+    border-radius: 5px;
 }
 
 .column {
     display: inline-block;
     vertical-align: top;
-    background-color: #DDDDDD;
+    background-color: var(--d5-color-box);
     padding: 5px;
     width: 20%;
     line-height: 100%;
+
+    border-style: solid;
+    border-width: 5px;
+    border-color: var(--d5-color-border-column);
+    border-radius: 5px;
 }
 
 .sheet-box {
@@ -37,34 +69,33 @@ body {
 
     border-style: solid;
     border-width: 5px;
-    border-color: #000000;
+    border-color: var(--d5-color-border-box);
     border-radius: 5px;
 }
 
 .ability-score {
     text-align: center;
+    margin: 5px;
+    padding: 10px;
+    background-color: var(--d5-color-stat-box);
 
     border-style: solid;
     border-width: 3px;
-    border-color: #000000;
+    border-color: var(--d5-color-border-stat-box);
     border-radius: 5px;
 }
 
 .stat-box {
     text-align: center;
-    display: in-line;
-    float: left;
+    display: inline-block;
     margin: 5px;
     padding: 10px;
+    background-color: var(--d5-color-stat-box);
 
     border-style: solid;
     border-width: 3px;
-    border-color: #000000;
+    border-color: var(--d5-color-border-stat-box);
     border-radius: 5px;
-}
-
-.clear {
-  clear:both;
 }
 
 #footer {
