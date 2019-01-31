@@ -42,7 +42,7 @@ class Spell(base.Jsonable):
 
 # Cantrips (level 0 spells)
 CHILL_TOUCH = Spell(name='Chill Touch',
-                    level=0,
+                    level=base.SpellTypes.CANTRIPS,
                     magic_school='necromancy',
                     casting_time='1 action',
                     spell_range='120ft',
@@ -52,7 +52,7 @@ CHILL_TOUCH = Spell(name='Chill Touch',
 
 # 1st level spells
 BLESS = Spell(name='Bless',
-              level=1,
+              level=base.SpellTypes.FIRST,
               magic_school='enchantment',
               casting_time='1 action',
               spell_range='30ft',
@@ -61,39 +61,13 @@ BLESS = Spell(name='Bless',
               description='You bless up to three creatures of your choice within range.')
 
 COMMAND = Spell(name='Command',
-                level=1,
+                level=base.SpellTypes.FIRST,
                 magic_school='enchantment',
                 casting_time='1 action',
                 spell_range='60ft',
                 components=['verbal'],
                 duration='1 round',
                 description='You speak a one-word command to a creature you can see within range.')
-
-
-ORD_TO_NUM = {
-    base.SpellTypes.CANTRIPS: 0,
-    base.SpellTypes.FIRST: 1,
-    base.SpellTypes.SECOND: 2,
-    base.SpellTypes.THIRD: 3,
-    base.SpellTypes.FOURTH: 4,
-    base.SpellTypes.FIFTH: 5,
-    base.SpellTypes.SIXTH: 6,
-    base.SpellTypes.SEVENTH: 7,
-    base.SpellTypes.EIGHTH: 8,
-    base.SpellTypes.NINTH: 9,
-}
-NUM_TO_ORD = {
-    0: base.SpellTypes.CANTRIPS,
-    1: base.SpellTypes.FIRST,
-    2: base.SpellTypes.SECOND,
-    3: base.SpellTypes.THIRD,
-    4: base.SpellTypes.FOURTH,
-    5: base.SpellTypes.FIFTH,
-    6: base.SpellTypes.SIXTH,
-    7: base.SpellTypes.SEVENTH,
-    8: base.SpellTypes.EIGHTH,
-    9: base.SpellTypes.NINTH,
-}
 
 
 class SpellcastingAbility(base.Jsonable):
@@ -124,19 +98,18 @@ class SpellcastingAbility(base.Jsonable):
             if len(cantrips) != num_cantrips_know:
                 raise ValueError('Must have {} cantrips but inputted {} cantrips!'.format(num_cantrips_know, len(cantrips)))
 
-        spells = list(filter(lambda x: x.level > 0, self.list_spells_known))
+        spells = list(filter(lambda x: x.level != base.SpellTypes.CANTRIPS, self.list_spells_known))
         for s in spells:
-            if NUM_TO_ORD[s.level] not in self.spell_slots:
-                raise ValueError('Cannot cast a {}-level spell - you don''t have the spell slots for it!'.format(NUM_TO_ORD[s.level]))
+            if s.level not in self.spell_slots:
+                raise ValueError('Cannot cast a {}-level spell - you don''t have the spell slots for it!'.format(s.level))
 
     def __json__(self):
         spells_p = {}
         for s in self.list_spells_known:
-            lvl_ord = NUM_TO_ORD[s.level]
-            if lvl_ord in spells_p:
-                spells_p[lvl_ord].append(s.__json__())
+            if s.level in spells_p:
+                spells_p[s.level].append(s.__json__())
             else:
-                spells_p[lvl_ord] = [s.__json__()]
+                spells_p[s.level] = [s.__json__()]
 
         return {
             base.SPELLCASTING_ABILITY: self.spellcasting_ability,
@@ -156,7 +129,7 @@ class RangerSpellcastingAbility(SpellcastingAbility):
 
     def _verify(self):
         super(RangerSpellcastingAbility, self)._verify()
-        spells = list(filter(lambda x: x.level > 0, self.list_spells_known))
+        spells = list(filter(lambda x: x.level != base.SpellTypes.CANTRIPS, self.list_spells_known))
         if len(spells) != self.num_spells_known:
             raise ValueError('Must have {} spells but inputted {} spells!'.format(self.num_spells_known, len(spells)))
 

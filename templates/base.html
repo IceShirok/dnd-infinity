@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>D&D Infinity</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/styles.css') }}" />
+    <!-- https://material.io/tools/icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+</head>
+<body>
+    <div id="header">
+        <h1>D&D Infinity ::: {{ title }}</h1>
+    </div>
+    <div id="container">
+        {% block content %}{% endblock %}
+    </div>
+    <div id="footer">
+        <p>Created for the love of D&D and Domain-Driven Design.</p>
+    </div>
+</body>
+</html>

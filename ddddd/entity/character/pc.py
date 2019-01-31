@@ -168,8 +168,11 @@ class PlayerCharacter(base.Jsonable):
     
     @property
     def total_hit_dice(self):
-        # A bit more complex because of multiclassing feature
         return {'d{}'.format(self.classes.hit_die): self.classes.level}
+
+    @property
+    def total_hit_dice_prettified(self):
+        return '{}d{}'.format(self.classes.level, self.classes.hit_die)
     
     @property
     def saving_throws(self):

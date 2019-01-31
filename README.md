@@ -29,4 +29,4 @@ while modelling, and also because I just want to practice Python.
 * Learn Flask with a side of Javascript
 * Learn how to fit and use this in a 7" touchscreen
 
-![Dragonborn Squad](images/dragonborn_squad.png)
+![Dragonborn Squad](static/images/dragonborn_squad.png)
