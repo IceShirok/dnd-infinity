@@ -6,10 +6,13 @@ body {
 }
 
 #header {
+    display: block;
     text-align: center;
+    top: 0;
 }
 
 #container {
+    display: block;
     background-color: #EEEEEE;
     padding: 5px;
 }
@@ -19,7 +22,7 @@ body {
     padding: 5px;
 }
 
-div.column {
+.column {
     display: inline-block;
     vertical-align: top;
     background-color: #DDDDDD;
@@ -28,7 +31,41 @@ div.column {
     line-height: 100%;
 }
 
+.sheet-box {
+    border-style: solid;
+    border-width: 5px;
+    border-color: #000000;
+    border-radius: 5px;
+}
+
+.ability-score {
+    text-align: center;
+
+    border-style: solid;
+    border-width: 3px;
+    border-color: #000000;
+    border-radius: 5px;
+}
+
+.stat-box {
+    text-align: center;
+    display: in-line;
+    float: left;
+    margin: 0 auto;
+
+    border-style: solid;
+    border-width: 3px;
+    border-color: #000000;
+    border-radius: 5px;
+}
+
+.clear {
+  clear:both;
+}
+
 #footer {
+    display: block;
     text-align: center;
     font-size: 0.8em;
+    bottom: 0;
 }
