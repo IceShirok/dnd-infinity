@@ -16,7 +16,7 @@
         <div class="ability_score">
             <p>{{ ability }}</p>
             <h3>{{ pc.ability_scores[ability]['score'] }}</h3>
-            <p>{{ pc.ability_scores[ability]['modifier'] }}</p>
+            <p>{{ pmod(pc.ability_scores[ability]['modifier']) }}</p>
         </div>
         {% endfor %}
     </div>
@@ -26,20 +26,16 @@
         <h2>Saving Throws</h2>
         {% for save in pc.saving_throws %}
             {% if pc.saving_throws[save]['is_proficient'] %}
-                <p>V {{ save }}: {{ pc.saving_throws[save]['modifier'] }}</p>
+                <p>V {{ save }}: {{ pmod(pc.saving_throws[save]['modifier']) }}</p>
             {% else %}
-                <p>O {{ save }}: {{ pc.saving_throws[save]['modifier'] }}</p>
+                <p>O {{ save }}: {{ pmod(pc.saving_throws[save]['modifier']) }}</p>
             {% endif %}
         {% endfor %}
     </div>
     <div class="sheet_box">
         <h2>Skills</h2>
         {% for skill in pc.skill_proficiencies %}
-            {% if pc.skill_proficiencies[skill]['is_proficient'] %}
-                <p>V {{ skill }}: {{ pc.skill_proficiencies[skill]['modifier'] }} ({{ pc.skill_proficiencies[skill]['ability'] }})</p>
-            {% else %}
-                <p>O {{ skill }}: {{ pc.skill_proficiencies[skill]['modifier'] }} ({{ pc.skill_proficiencies[skill]['ability'] }})</p>
-            {% endif %}
+        <p>{{ 'v' if pc.skill_proficiencies[skill]['is_proficient'] else 'o' }} {{ skill }}: {{ pmod(pc.skill_proficiencies[skill]['modifier']) }} ({{ pc.skill_proficiencies[skill]['ability'] }})</p>
         {% endfor %}
     </div>
 </div>
@@ -74,8 +70,8 @@
             {% for weapon in pc.worn_items.weapons %}
             <tr>
                 <td>{{ weapon.name }}</td>
-                <td>{{ pc.calculate_weapon_bonuses()[weapon.name]['attack_bonus'] }}</td>
-                <td>{{  pc.calculate_weapon_bonuses()[weapon.name]['damage'] }}</td>
+                <td>{{ pmod(pc.calculate_weapon_bonuses()[weapon.name]['attack_bonus']) }}</td>
+                <td>{{ pc.calculate_weapon_bonuses()[weapon.name]['damage'] }}</td>
             </tr>
             {% endfor %}
         </table>
@@ -100,7 +96,11 @@
         <p>{{ weapon.name }} (equipped, weapon)</p>
         {% endfor %}
         {% for item in pc.backpack.items %}
-        <p>{{ item.name }} {{ item.quantity if item.quantity > 1 else '' }}</p>
+        {% if item.quantity > 1 %}
+        <p>{{ item.name }} ({{ item.quantity }})</p>
+        {% else %}
+        <p>{{ item.name }}</p>
+        {% endif %}
         {% endfor %}
     </div>
 </div>

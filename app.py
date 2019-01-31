@@ -1,5 +1,6 @@
 from flask import Flask, render_template, url_for
 from ddddd import app as pc
+from ddddd.entity.base import prettify_modifier
 
 app = Flask(__name__)
 
@@ -8,7 +9,8 @@ app = Flask(__name__)
 def index():
     return render_template('character_sheet.html',
                            title='D&D Character Sheet',
-                           pc=pc.create_dorian())
+                           pc=pc.create_dorian(),
+                           pmod=prettify_modifier)
 
 
 if __name__ == '__main__':
