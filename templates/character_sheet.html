@@ -36,28 +36,42 @@
     <div class="column col-3">
         <div class="sheet-box">
             <h3>Saving Throws <i class="material-icons">warning</i></h3>
+            <table>
             {% for save in pc.saving_throws %}
-            <p>
-                {% if pc.saving_throws[save]['is_proficient'] %}
-                <i class="material-icons">check_box</i>
-                {% else %}
-                <i class="material-icons">check_box_outline_blank</i>
-                {% endif %}
-                <strong>{{ save }}</strong> : {{ pmod(pc.saving_throws[save]['modifier']) }}
-            </p>
+            <tr>
+                <td>
+                    {% if pc.saving_throws[save]['is_proficient'] %}
+                    <i class="material-icons">check_box</i>
+                    {% else %}
+                    <i class="material-icons">check_box_outline_blank</i>
+                    {% endif %}
+                </td>
+                <td>{{ pmod(pc.saving_throws[save]['modifier']) }}</td>
+                <td><strong>{{ save }}</strong></td>
+            </tr>
             {% endfor %}
+            </table>
         </div>
         <div class="sheet-box">
             <h3>Skills <i class="material-icons">fitness_center</i></h3>
-            {% for skill in pc.skill_proficiencies %}
-            <p>
-                {% if pc.skill_proficiencies[skill]['is_proficient'] %}
-                <i class="material-icons">check_box</i>
-                {% else %}
-                <i class="material-icons">check_box_outline_blank</i>
-                {% endif %}<strong>{{ skill }}</strong> : {{ pmod(pc.skill_proficiencies[skill]['modifier']) }} [{{ pc.skill_proficiencies[skill]['ability'] }}]
-            </p>
-            {% endfor %}
+            <table>
+                <tbody>
+                {% for skill in pc.skill_proficiencies %}
+                <tr>
+                    <td>
+                        {% if pc.skill_proficiencies[skill]['is_proficient'] %}
+                        <i class="material-icons">check_box</i>
+                        {% else %}
+                        <i class="material-icons">check_box_outline_blank</i>
+                        {% endif %}
+                    </td>
+                    <td>{{ pmod(pc.skill_proficiencies[skill]['modifier']) }}</td>
+                    <td><strong>{{ skill }}</strong></td>
+                    <td>[{{ pc.skill_proficiencies[skill]['ability'] }}]</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
     <div class="column col-3">
