@@ -69,10 +69,10 @@ DESCRIPTION = 'description'
 CHOICES = 'choices'
 
 # Proficiency-related constants
-WEAPON_PROFICIENCY = 'weapon_proficiency'
+WEAPON_PROFICIENCY = 'Weapon Proficiency'
 TOOLS = 'tools'
-TOOL_PROFICIENCY = 'tool_proficiency'
-ARMOR_PROFICIENCY = 'armor_proficiency'
+TOOL_PROFICIENCY = 'Tool Proficiency'
+ARMOR_PROFICIENCY = 'Armor Proficiency'
 LANGUAGES = 'languages'
 SKILL_PROF = 'skill_proficiency'
 SKILL_PROFS = 'skill_proficiencies'

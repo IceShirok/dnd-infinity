@@ -34,9 +34,8 @@ def create_dorian():
     #     }
     # }
     tool_prof = [
-        trait.ProficiencyKnown(name='Tool Proficiency',
-                               proficiency_type=base.TOOL_PROFICIENCY,
-                               proficiencies=['brewers_kit'])
+        trait.ToolProficiency(name='Tool Proficiency',
+                              proficiencies=['brewers_kit'])
     ]
     dorian_race = race.HillDwarf(traits=tool_prof)
     dorian_class = cclass.Ranger(skill_proficiencies=[Skills.ATHLETICS, Skills.ANIMAL_HANDLING, Skills.SURVIVAL],

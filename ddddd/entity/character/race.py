@@ -96,10 +96,9 @@ class Dwarf(Race):
             trait.Trait(name='Dwarven Resilience',
                         description='You have advantage on Saving Throws against poison, \
                                               and you have Resistance against poison damage.'),
-            trait.ProficiencyKnown(name='Dwarven Combat Training',
-                                   proficiency_type=base.WEAPON_PROFICIENCY,
-                                   proficiencies=['battleaxe', 'handaxe',
-                                                  'light_hammer', 'warhammer']),
+            trait.WeaponProficiency(name='Dwarven Combat Training',
+                                    proficiencies=['battleaxe', 'handaxe',
+                                                   'light_hammer', 'warhammer']),
             trait.Trait(name='Stonecunning',
                         description='Whenever you make an Intelligence (History) check related \
                                         to the Origin of stonework, you are considered proficient in the \

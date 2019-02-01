@@ -18,11 +18,32 @@ class LanguagesKnown(Trait):
 
 
 class ProficiencyKnown(Trait):
-    def __init__(self, name, proficiency_type, proficiencies):
+    def __init__(self, name, proficiencies, proficiency_type):
         super(ProficiencyKnown, self).__init__(name=name,
                                                description='these are the things you''re proficient in')
-        self.proficiency_type = proficiency_type
         self.proficiencies = proficiencies
+        self.proficiency_type = proficiency_type
+
+
+class ArmorProficiency(ProficiencyKnown):
+    def __init__(self, proficiencies, name=None):
+        super(ArmorProficiency, self).__init__(name=name if name else 'Armor Proficiency',
+                                               proficiencies=proficiencies,
+                                               proficiency_type='Armor Proficiency')
+
+
+class WeaponProficiency(ProficiencyKnown):
+    def __init__(self, proficiencies, name=None):
+        super(WeaponProficiency, self).__init__(name=name if name else 'Weapon Proficiency',
+                                                proficiencies=proficiencies,
+                                                proficiency_type='Weapon Proficiency')
+
+
+class ToolProficiency(ProficiencyKnown):
+    def __init__(self, proficiencies, name=None):
+        super(ToolProficiency, self).__init__(name=name if name else 'Tool Proficiency',
+                                              proficiencies=proficiencies,
+                                              proficiency_type='Tool Proficiency')
 
 
 class Darkvision(Trait):
