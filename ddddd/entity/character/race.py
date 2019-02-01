@@ -27,6 +27,10 @@ class Race(base.Jsonable):
         self.__traits = traits if traits else []
 
     @property
+    def base_race(self):
+        return self.name
+
+    @property
     def traits(self):
         # def_traits = {
         #     base.SIZE: {
@@ -112,6 +116,10 @@ class Dwarf(Race):
                                     speed=25,
                                     languages=trait.LanguagesKnown(languages=[Languages.COMMON, Languages.DWARVISH]),
                                     traits=def_traits+traits)
+
+    @property
+    def base_race(self):
+        return 'Dwarf'
     
     @property
     def proficiencies(self):

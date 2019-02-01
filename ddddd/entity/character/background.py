@@ -56,7 +56,7 @@ class Criminal(PlayerBackground):
             base.TOOL_PROFICIENCY: trait.ToolProficiency(name='Tool Proficiency',
                                                          proficiencies=['thieves_tools', 'bone_dice']),
         }
-        super(Criminal, self).__init__(name='criminal',
+        super(Criminal, self).__init__(name='Criminal',
                                        feature=feature,
                                        proficiencies=proficiencies,
                                        languages=None)

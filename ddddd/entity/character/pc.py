@@ -90,6 +90,10 @@ class PlayerCharacter(base.Jsonable):
     @property
     def race_name(self):
         return self.race.name
+
+    @property
+    def base_race_name(self):
+        return self.race.base_race
     
     @property
     def class_name(self):
