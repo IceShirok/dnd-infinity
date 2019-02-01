@@ -16,7 +16,7 @@ class PlayerBackground(base.Jsonable):
         self.name = name
         self.feature = feature
         self.__proficiencies = proficiencies if proficiencies else {}
-        self.languages = languages if languages else []
+        self.languages = languages
 
     def __json__(self):
         j = {
@@ -59,4 +59,4 @@ class Criminal(PlayerBackground):
         super(Criminal, self).__init__(name='criminal',
                                        feature=feature,
                                        proficiencies=proficiencies,
-                                       languages=[])
+                                       languages=None)

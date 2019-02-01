@@ -18,12 +18,12 @@ class Race(base.Jsonable):
     A PC's race does not change for the most part, although
     some features may scale up with a PC's level.
     """
-    def __init__(self, name, asi, size, speed, languages: list = None, traits=None):
+    def __init__(self, name, asi, size, speed, languages=None, traits=None):
         self.name = name
         self.asi = asi
         self.size = size
         self.speed = speed
-        self.languages = languages if languages else []  # Change this for races like Kenku
+        self.languages = languages
         self.__traits = traits if traits else []
 
     @property
@@ -110,7 +110,7 @@ class Dwarf(Race):
                                     asi={**def_asi, **asi},
                                     size=Sizes.MEDIUM,
                                     speed=25,
-                                    languages=[Languages.COMMON, Languages.DWARVISH],
+                                    languages=trait.LanguagesKnown(languages=[Languages.COMMON, Languages.DWARVISH]),
                                     traits=def_traits+traits)
     
     @property
@@ -161,7 +161,7 @@ class Gnome(Race):
                                     asi={**def_asi, **asi},
                                     size=Sizes.SMALL,
                                     speed=25,
-                                    languages=[Languages.COMMON, Languages.GNOMISH],
+                                    languages=trait.LanguagesKnown(languages=[Languages.COMMON, Languages.GNOMISH]),
                                     traits={**def_traits, **traits})
 
 

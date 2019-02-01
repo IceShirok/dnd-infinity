@@ -226,8 +226,11 @@ class PlayerCharacter(base.Jsonable):
     
     @property
     def languages(self):
-        lang = (self.race.languages + self.classes.languages + self.background.languages)
-        return lang
+        langs = []
+        for lang_opt in [self.race.languages, self.classes.languages, self.background.languages]:
+            if lang_opt:
+                langs = langs + lang_opt.languages
+        return langs
 
     @property
     def class_features(self):

@@ -44,8 +44,9 @@ class PlayerClass(base.Jsonable, metaclass=abc.ABCMeta):
     
     @property
     def languages(self):
-        if base.LANGUAGES in self.features:
-            return self.features[base.LANGUAGES][base.LANGUAGES]
+        lang = list(filter(lambda f: isinstance(f, trait.LanguagesKnown), self.features))
+        if len(lang) > 0:
+            return lang[0]
         return []
 
     def get_requirements(self, level):
