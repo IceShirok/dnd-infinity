@@ -9,9 +9,11 @@ class Trait(object):
 
 
 class LanguagesKnown(Trait):
-    def __init__(self, languages):
-        super(LanguagesKnown, self).__init__(name=base.LANGUAGES,
-                                             description='these are the languages you know')
+    def __init__(self, languages, name=None, description=None):
+        name = name if name else base.LANGUAGES
+        description = description if description else 'these are the languages you know'
+        super(LanguagesKnown, self).__init__(name=name,
+                                             description=description)
         self.languages = languages
 
 

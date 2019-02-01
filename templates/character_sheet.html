@@ -140,11 +140,11 @@
     </div>
     <div class="sheet-box">
         <h3>Traits & Features <i class="material-icons">style</i></h3>
-        {% for fk in pc.features %}
-            <h3>{{ fk }}</h3>
-            {% for f in pc.features[fk] %}
-                <h4>{{ pc.features[fk][f]['name'] }}</h4>
-                <p>{{ pc.features[fk][f]['description'] }}</p>
+        {% for subfeature in pc.features %}
+            <h3>{{ subfeature }}</h3>
+            {% for feature in pc.features[subfeature] %}
+                <h4>{{ feature.name }}</h4>
+                <p>{{ feature.description }}</p>
             {% endfor %}
         {% endfor %}
     </div>
