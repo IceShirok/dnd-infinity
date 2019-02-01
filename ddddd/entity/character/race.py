@@ -1,6 +1,6 @@
 
 from ddddd.entity import base
-from ddddd.entity.base import AbilityScores, Languages, Sizes
+from ddddd.entity.base import AbilityScore, Languages, Sizes
 
 import logging
 logger = logging.getLogger(__name__)
@@ -88,7 +88,7 @@ class Race(base.Jsonable):
 # DWARF
 class Dwarf(Race):
     def __init__(self, asi, traits):
-        def_asi = {AbilityScores.CON: 2}
+        def_asi = {AbilityScore.CON: 2}
         def_traits = {
                 'darkvision': {
                     base.NAME: 'Darkvision',
@@ -135,7 +135,7 @@ class Dwarf(Race):
 
 class HillDwarf(Dwarf):
     def __init__(self, traits):
-        def_asi = {AbilityScores.WIS: 1}
+        def_asi = {AbilityScore.WIS: 1}
         def_traits = {
             'dwarven_toughness': {
                 base.NAME: 'Dwarven Toughness',
@@ -151,7 +151,7 @@ class HillDwarf(Dwarf):
 
 class Gnome(Race):
     def __init__(self, asi, traits):
-        def_asi = {AbilityScores.INT: 2}
+        def_asi = {AbilityScore.INT: 2}
         def_traits = {
                 'darkvision': {
                     base.NAME: 'Darkvision',
@@ -183,7 +183,7 @@ class RockGnome(Gnome):
                 base.DESCRIPTION: 'You have proficiency with artisan''s tools (tinker''s tools). ...',
             }
         }
-        super(RockGnome, self).__init__(asi={AbilityScores.CON: 1},
+        super(RockGnome, self).__init__(asi={AbilityScore.CON: 1},
                                         traits=traits)
         self.name = 'Rock Gnome'
     
@@ -199,12 +199,12 @@ class RockGnome(Gnome):
 class Human(Race):
     def __init__(self, languages):
         def_asi = {
-            AbilityScores.STR: 1,
-            AbilityScores.DEX: 1,
-            AbilityScores.CON: 1,
-            AbilityScores.INT: 1,
-            AbilityScores.WIS: 1,
-            AbilityScores.CHA: 1
+            AbilityScore.STR: 1,
+            AbilityScore.DEX: 1,
+            AbilityScore.CON: 1,
+            AbilityScore.INT: 1,
+            AbilityScore.WIS: 1,
+            AbilityScore.CHA: 1
         }
         def_traits = {}
         def_languages = [Languages.COMMON]

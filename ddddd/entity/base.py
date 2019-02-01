@@ -138,7 +138,7 @@ class SpellTypes(object):
     NINTH = '9th'
 
 
-class AbilityScores(object):
+class AbilityScore(object):
     STR = 'STR'
     DEX = 'DEX'
     CON = 'CON'
@@ -146,6 +146,13 @@ class AbilityScores(object):
     WIS = 'WIS'
     CHA = 'CHA'
 
+    def __init__(self, name, score):
+        self.name = name
+        self.score = score
+
+    @property
+    def modifier(self):
+        pass
 
 class Sizes(object):
     TINY = 'tiny'
@@ -189,11 +196,11 @@ class Skills(object):
     PERSUASION = 'Persuasion'
 
     SKILL_PROFICIENCIES_BY_ABILITY_SCORE = {
-        AbilityScores.STR: [ATHLETICS],
-        AbilityScores.DEX: [ACROBATICS, SLEIGHT_OF_HAND, STEALTH],
-        AbilityScores.INT: [ARCANA, HISTORY, INVESTIGATION, NATURE, RELIGION],
-        AbilityScores.WIS: [ANIMAL_HANDLING, INSIGHT, MEDICINE, PERCEPTION, SURVIVAL],
-        AbilityScores.CHA: [DECEPTION, INTIMIDATION, PERFORMANCE, PERSUASION],
+        AbilityScore.STR: [ATHLETICS],
+        AbilityScore.DEX: [ACROBATICS, SLEIGHT_OF_HAND, STEALTH],
+        AbilityScore.INT: [ARCANA, HISTORY, INVESTIGATION, NATURE, RELIGION],
+        AbilityScore.WIS: [ANIMAL_HANDLING, INSIGHT, MEDICINE, PERCEPTION, SURVIVAL],
+        AbilityScore.CHA: [DECEPTION, INTIMIDATION, PERFORMANCE, PERSUASION],
     }
 
 

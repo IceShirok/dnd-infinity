@@ -2,7 +2,7 @@
 import abc
 
 from ddddd.entity import base
-from ddddd.entity.base import AbilityScores, Skills, Languages, SpellTypes
+from ddddd.entity.base import AbilityScore, Skills, Languages, SpellTypes
 from ddddd.entity.character import spells
 
 
@@ -151,7 +151,7 @@ class Ranger(PlayerClass):
                                          base.WEAPONS: ['simple', 'martial'],
                                          base.TOOLS: [],
                                      },
-                                     saving_throws=[AbilityScores.STR, AbilityScores.DEX],
+                                     saving_throws=[AbilityScore.STR, AbilityScore.DEX],
                                      skill_proficiencies=skill_proficiencies,
                                      features=def_features,
                                      spellcasting=None,
@@ -186,7 +186,7 @@ class Ranger(PlayerClass):
                 base.CHOICES: 1,
             },
             base.SPELLCASTING: {
-                base.SPELLCASTING_ABILITY: AbilityScores.WIS,
+                base.SPELLCASTING_ABILITY: AbilityScore.WIS,
                 base.NUM_SPELLS_KNOWN: 2,
                 base.SPELL_SLOTS: {
                     SpellTypes.FIRST: 2
@@ -211,7 +211,7 @@ class Ranger(PlayerClass):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        self.spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScores.WIS,
+        self.spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
                                                              list_spells_known=list_spells,
                                                              spell_slots={SpellTypes.FIRST: 2},
                                                              num_spells_known=2)
@@ -224,7 +224,7 @@ class Ranger(PlayerClass):
                 base.CHOICES: 1,
             },
             base.SPELLCASTING: {
-                base.SPELLCASTING_ABILITY: AbilityScores.WIS,
+                base.SPELLCASTING_ABILITY: AbilityScore.WIS,
                 base.NUM_SPELLS_KNOWN: 3,
                 base.SPELL_SLOTS: {
                     SpellTypes.FIRST: 3
@@ -255,7 +255,7 @@ class Ranger(PlayerClass):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        self.spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScores.WIS,
+        self.spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
                                                              list_spells_known=list_spells,
                                                              spell_slots={SpellTypes.FIRST: 3},
                                                              num_spells_known=3)
@@ -276,7 +276,7 @@ class Ranger(PlayerClass):
     def _level_5_requirements(self):
         req = {
             base.SPELLCASTING: {
-                base.SPELLCASTING_ABILITY: AbilityScores.WIS,
+                base.SPELLCASTING_ABILITY: AbilityScore.WIS,
                 base.NUM_SPELLS_KNOWN: 4,
                 base.SPELL_SLOTS: {
                     SpellTypes.FIRST: 4,
@@ -302,7 +302,7 @@ class Ranger(PlayerClass):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        self.spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScores.WIS,
+        self.spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
                                                              list_spells_known=list_spells,
                                                              spell_slots={SpellTypes.FIRST: 4, SpellTypes.SECOND: 2},
                                                              num_spells_known=4)
