@@ -207,16 +207,12 @@ class PlayerCharacter(base.Jsonable):
     
     @property
     def proficiencies(self):
-        logger.debug('Racial proficiencies: {}'.format(self.race.proficiencies))
-        logger.debug('Class proficiencies: {}'.format(self.class_proficiencies))
-        logger.debug('Background proficiencies: {}'.format(self.background.proficiencies))
         p = {}
         for prof_group in [self.race.proficiencies, self.class_proficiencies, self.background.proficiencies]:
             for prof in prof_group.keys():
-                if prof in p:
-                    p[prof] = p[prof] + prof_group[prof].proficiencies
-                else:
-                    p[prof] = prof_group[prof].proficiencies
+                if prof not in p:
+                    p[prof] = []
+                p[prof] = p[prof] + prof_group[prof].proficiencies
         logger.debug(p)
         return p
 

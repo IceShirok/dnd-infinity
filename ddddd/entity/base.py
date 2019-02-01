@@ -153,7 +153,8 @@ class AbilityScore(object):
 
     @property
     def modifier(self):
-        pass
+        return modifier(self.score)
+
 
 class Sizes(object):
     TINY = 'tiny'
