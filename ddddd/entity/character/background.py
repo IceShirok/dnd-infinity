@@ -53,7 +53,9 @@ class Criminal(PlayerBackground):
                               your liaison to a network of other criminals. ...')
         proficiencies = {
             base.SKILLS: [Skills.DECEPTION, Skills.STEALTH],
-            base.TOOLS: ['thieves_tools', 'bone_dice'],
+            base.TOOL_PROFICIENCY: trait.ProficiencyKnown(name='Tool Proficiency',
+                                                          proficiency_type=base.TOOL_PROFICIENCY,
+                                                          proficiencies=['thieves_tools', 'bone_dice']),
         }
         super(Criminal, self).__init__(name='criminal',
                                        feature=feature,

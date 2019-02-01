@@ -136,13 +136,19 @@ class Ranger(PlayerClass):
                         description='You are particularly familiar with one type of natural environment \
                         and are adept at traveling and surviving in such regions. {}'.format(favored_terrain)),
         ]
+
         super(Ranger, self).__init__(name='Ranger',
                                      level=1,
                                      hit_die=10,
                                      proficiencies={
-                                         base.ARMOR: ['light', 'medium', 'shields'],
-                                         base.WEAPONS: ['simple', 'martial'],
-                                         base.TOOLS: [],
+                                         base.ARMOR_PROFICIENCY: trait.ProficiencyKnown(name='Armor Proficiency',
+                                                                                        proficiency_type=base.ARMOR_PROFICIENCY,
+                                                                                        proficiencies=['light',
+                                                                                                       'medium',
+                                                                                                       'shields']),
+                                         base.WEAPON_PROFICIENCY: trait.ProficiencyKnown(name='Weapon Proficiency',
+                                                                                         proficiency_type=base.WEAPON_PROFICIENCY,
+                                                                                         proficiencies=['simple', 'martial']),
                                      },
                                      saving_throws=[AbilityScore.STR, AbilityScore.DEX],
                                      skill_proficiencies=skill_proficiencies,

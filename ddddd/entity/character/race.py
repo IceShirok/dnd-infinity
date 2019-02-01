@@ -119,7 +119,7 @@ class Dwarf(Race):
         prof = {}
         for p in self.traits:
             if isinstance(p, trait.ProficiencyKnown):
-                prof[p.proficiency_type] = p.proficiencies
+                prof[p.proficiency_type] = p
         return prof
 
     def required(self):

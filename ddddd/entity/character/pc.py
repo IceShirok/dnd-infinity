@@ -214,9 +214,10 @@ class PlayerCharacter(base.Jsonable):
         for prof_group in [self.race.proficiencies, self.class_proficiencies, self.background.proficiencies]:
             for prof in prof_group.keys():
                 if prof in p:
-                    p[prof] = p[prof] + prof_group[prof]
+                    p[prof] = p[prof] + prof_group[prof].proficiencies
                 else:
-                    p[prof] = prof_group[prof]
+                    p[prof] = prof_group[prof].proficiencies
+        logger.debug(p)
         return p
 
     @property
@@ -255,7 +256,7 @@ class PlayerCharacter(base.Jsonable):
     def calculate_weapon_bonuses(self):
         bonuses = {}
         weapons = self.worn_items.weapons
-        weapon_proficiencies = self.proficiencies['weapons']
+        weapon_proficiencies = self.proficiencies[base.WEAPON_PROFICIENCY]
         for weapon in weapons:
             damage_bonus = self.ability_scores[base.AbilityScore.STR][base.MODIFIER]
             attack_prof = 0
