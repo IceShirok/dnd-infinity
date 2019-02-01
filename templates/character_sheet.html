@@ -1,39 +1,58 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <div id="banner" class="columns">
     <div class="column col-6">
         <h2>{{ pc.name }}</h2>
         <h3>{{ pc.base_race_name }} {{ pc.class_name }} {{ pc.level }}</h3>
     </div>
+
     <div class="column col-3">
         <p><strong>Class & Level</strong>: {{ pc.class_name }} {{ pc.level }}</p>
         <p><strong>Background</strong>: {{ pc.background_name }}</p>
         <p><strong>Race</strong>: {{ pc.base_race_name }} ({{ pc.race_name }})</p>
     </div>
+
     <div class="column col-3">
         <p><strong>Gender</strong>: {{ pc.base_race_name }}</p>
         <p><strong>Alignment</strong>: {{ pc.background_name }}</p>
     </div>
+
 </div>
+
 <div class="columns">
-    <div class="column col-3">
+    <div class="column col-12">
         <div class="sheet-box">
             <h3>Ability Scores <i class="material-icons">casino</i></h3>
-            <div class="stat-box">
-                <h4>Proficiency Bonus</h4>
-                <p>{{ pc.proficiency_bonus }}</p>
-            </div>
-            {% for ability in pc.ability_scores.keys() %}
-            <div class="ability-score">
-                <p>{{ ability }}</p>
-                <h3>{{ pc.ability_scores[ability]['score'] }}</h3>
-                <p>{{ pmod(pc.ability_scores[ability]['modifier']) }}</p>
-            </div>
-            {% endfor %}
+            <p><strong>Proficiency Bonus</strong>: {{ pc.proficiency_bonus }}</p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        {% for ability in pc.ability_scores.keys() %}
+                        <th>{{ ability }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% for ability in pc.ability_scores.keys() %}
+                        <td><h3>{{ pc.ability_scores[ability]['score'] }}</h3></td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for ability in pc.ability_scores.keys() %}
+                        <td>{{ pmod(pc.ability_scores[ability]['modifier']) }}</td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-    <div class="column col-3">
+</div>
+
+<div class="columns">
+    <div class="column col-4">
         <div class="sheet-box">
             <h3>Saving Throws <i class="material-icons">warning</i></h3>
             <table>
@@ -52,6 +71,9 @@
             {% endfor %}
             </table>
         </div>
+    </div>
+
+    <div class="column col-8">
         <div class="sheet-box">
             <h3>Skills <i class="material-icons">fitness_center</i></h3>
             <table>
@@ -74,7 +96,11 @@
             </table>
         </div>
     </div>
-    <div class="column col-3">
+
+</div>
+
+<div class="columns">
+    <div class="column col-4">
         <div class="sheet-box">
             <h3>Basic Combat Stuff <i class="material-icons">disc_full</i></h3>
             <div class="stat-box">
@@ -90,6 +116,7 @@
                 <p>{{ pc.speed }}</p>
             </div>
         </div>
+
         <div class="sheet-box">
             <h3>Health Stuff <i class="material-icons">local_pharmacy</i></h3>
             <h4>Hit Points</h4>
@@ -100,6 +127,10 @@
             <p>Success {% for i in range(0,3) %}<i class="material-icons">mood</i>{% endfor %}</p>
             <p>Failure {% for i in range(0,3) %}<i class="material-icons">mood_bad</i>{% endfor %}</p>
         </div>
+
+    </div>
+
+    <div class="column col-8">
         <div class="sheet-box">
             <h3>Attacks & Spellcasting <i class="material-icons">pan_tool</i></h3>
 
@@ -140,6 +171,36 @@
             {% endfor %}
             {% endif %}
         </div>
+    </div>
+
+</div>
+
+<div class="columns">
+    <div class="column col-4">
+        <div class="sheet-box">
+            <h3>Proficiencies <i class="material-icons">color_lens</i></h3>
+            {% for p in pc.proficiencies %}
+            <p><strong>{{ p }}</strong>: {{ ', '.join(pc.proficiencies[p]) }}</p>
+            {% endfor %}
+            <p><strong>Languages</strong>: {{ ', '.join(pc.languages) }}</p>
+        </div>
+    </div>
+    <div class="column col-8">
+        <div class="sheet-box">
+            <h3>Traits & Features <i class="material-icons">style</i></h3>
+            {% for subfeature in pc.features %}
+                <h4>{{ subfeature }}</h4>
+                {% for feature in pc.features[subfeature] %}
+                    <h5>{{ feature.name }}</h5>
+                    <p>{{ feature.description }}</p>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="columns">
+    <div class="column col-12">
         <div class="sheet-box">
             <h3>Equipment <i class="material-icons">business_center</i></h3>
             <ul>
@@ -158,25 +219,6 @@
             {% endfor %}
             </ul>
             <p><strong>Carrying Capacity</strong> : {{ pc.carrying_weight }} / {{ pc.carrying_capacity }}</p>
-        </div>
-    </div>
-    <div class="column col-3">
-        <div class="sheet-box">
-            <h3>Proficiencies <i class="material-icons">color_lens</i></h3>
-            {% for p in pc.proficiencies %}
-            <p><strong>{{ p }}</strong>: {{ ', '.join(pc.proficiencies[p]) }}</p>
-            {% endfor %}
-            <p><strong>Languages</strong>: {{ ', '.join(pc.languages) }}</p>
-        </div>
-        <div class="sheet-box">
-            <h3>Traits & Features <i class="material-icons">style</i></h3>
-            {% for subfeature in pc.features %}
-                <h4>{{ subfeature }}</h4>
-                {% for feature in pc.features[subfeature] %}
-                    <h5>{{ feature.name }}</h5>
-                    <p>{{ feature.description }}</p>
-                {% endfor %}
-            {% endfor %}
         </div>
     </div>
 </div>
