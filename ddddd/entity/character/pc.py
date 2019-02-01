@@ -235,7 +235,7 @@ class PlayerCharacter(base.Jsonable):
     @property
     def features(self):
         return {
-            base.RACIAL_TRAITS: self.race.traits,
+            # base.RACIAL_TRAITS: self.race.traits,
             base.CLASS_FEATURES: self.class_features,
             base.BACKGROUND_FEATURES: self.background.feature,
         }

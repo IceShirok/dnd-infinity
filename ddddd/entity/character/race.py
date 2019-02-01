@@ -1,5 +1,6 @@
 
 from ddddd.entity import base
+from ddddd.entity.character import trait
 from ddddd.entity.base import AbilityScore, Languages, Sizes
 
 import logging
@@ -23,17 +24,18 @@ class Race(base.Jsonable):
         self.size = size
         self.speed = speed
         self.languages = languages if languages else []  # Change this for races like Kenku
-        self.__traits = traits if traits else {}
+        self.__traits = traits if traits else []
 
     @property
     def traits(self):
-        def_traits = {
-            base.SIZE: {
-                base.NAME: 'Size',
-                base.DESCRIPTION: 'Your size is {}.'.format(self.size.capitalize()),
-            },
-        }
-        return {**self.__traits, **def_traits}
+        # def_traits = {
+        #     base.SIZE: {
+        #         base.NAME: 'Size',
+        #         base.DESCRIPTION: 'Your size is {}.'.format(self.size.capitalize()),
+        #     },
+        # }
+        # return {**self.__traits, **def_traits}
+        return self.__traits
 
     @property
     def str_movement_multiplier(self):
@@ -64,20 +66,20 @@ class Race(base.Jsonable):
         :return: True if valid, otherwise it'll throw an exception
         """
         required_traits = {}
-        for req_k, trait_req_details in self.required().items():
-            # Go through the list of traits and verify based on specifications
-            if req_k not in self.traits:
-                required_traits[req_k] = trait_req_details
-                required_traits[req_k]['issue'] = 'Required trait {} not inputted!'.format(req_k)
-
-            input_details = self.traits[req_k]
-
-            choices_list_k = set(trait_req_details.keys()).intersection(set(input_details.keys())).pop()
-            input_list = input_details[choices_list_k]
-            if len(input_list) != trait_req_details[base.CHOICES] \
-                    or not set(input_list).issubset(trait_req_details[choices_list_k]):
-                required_traits[req_k] = trait_req_details
-                required_traits[req_k]['issue'] = 'Required trait {} is invalid.'.format(req_k)
+        # for req_k, trait_req_details in self.required().items():
+        #     # Go through the list of traits and verify based on specifications
+        #     if req_k not in self.traits:
+        #         required_traits[req_k] = trait_req_details
+        #         required_traits[req_k]['issue'] = 'Required trait {} not inputted!'.format(req_k)
+        #
+        #     input_details = self.traits[req_k]
+        #
+        #     choices_list_k = set(trait_req_details.keys()).intersection(set(input_details.keys())).pop()
+        #     input_list = input_details[choices_list_k]
+        #     if len(input_list) != trait_req_details[base.CHOICES] \
+        #             or not set(input_list).issubset(trait_req_details[choices_list_k]):
+        #         required_traits[req_k] = trait_req_details
+        #         required_traits[req_k]['issue'] = 'Required trait {} is invalid.'.format(req_k)
 
         return required_traits
 
@@ -89,40 +91,36 @@ class Race(base.Jsonable):
 class Dwarf(Race):
     def __init__(self, asi, traits):
         def_asi = {AbilityScore.CON: 2}
-        def_traits = {
-                'darkvision': {
-                    base.NAME: 'Darkvision',
-                    base.DESCRIPTION: 'Accustomed to life underground, you have superior vision in dark and dim Conditions. You can see in dim light within 60 feet of you as if it were bright light, and in Darkness as if it were dim light. You can''t discern color in Darkness, only shades of gray.',
-                    base.RANGE: 60,
-                },
-                'dwarven_resilience': {
-                    base.NAME: 'Dwarven Resilience',
-                    base.DESCRIPTION: 'You have advantage on Saving Throws against poison, and you have Resistance against poison damage.',
-                },
-                'dwarven_combat_training': {
-                    base.NAME: 'Dwarven Combat Training',
-                    base.DESCRIPTION: 'You have proficiency with the Battleaxe, Handaxe, Light Hammer, and Warhammer.',
-                    base.WEAPON_PROFICIENCY: ['battleaxe', 'handaxe', 'light_hammer', 'warhammer'],
-                },
-                'stonecunning': {
-                    base.NAME: 'Stonecunning',
-                    base.DESCRIPTION: 'Whenever you make an Intelligence (History) check related to the Origin of stonework, you are considered proficient in the History skill and add double your Proficiency Bonus to the check, instead of your normal Proficiency Bonus.',
-                },
-            }
+        def_traits = [
+            trait.Darkvision(range=60),
+            trait.Trait(name='Dwarven Resilience',
+                        description='You have advantage on Saving Throws against poison, \
+                                              and you have Resistance against poison damage.'),
+            trait.ProficiencyKnown(name='Dwarven Combat Training',
+                                   proficiency_type=base.WEAPON_PROFICIENCY,
+                                   proficiencies=['battleaxe', 'handaxe',
+                                                  'light_hammer', 'warhammer']),
+            trait.Trait(name='Stonecunning',
+                        description='Whenever you make an Intelligence (History) check related \
+                                        to the Origin of stonework, you are considered proficient in the \
+                                        History skill and add double your Proficiency Bonus to the check, \
+                                        instead of your normal Proficiency Bonus.'),
+        ]
         traits = traits if traits else {}
         super(Dwarf, self).__init__(name='Dwarf',
                                     asi={**def_asi, **asi},
                                     size=Sizes.MEDIUM,
                                     speed=25,
                                     languages=[Languages.COMMON, Languages.DWARVISH],
-                                    traits={**def_traits, **traits})
+                                    traits=def_traits+traits)
     
     @property
     def proficiencies(self):
-        return {
-            base.WEAPONS: self.traits['dwarven_combat_training'][base.WEAPON_PROFICIENCY],
-            base.TOOLS: self.traits[base.TOOL_PROFICIENCY][base.TOOLS],
-        }
+        prof = {}
+        for p in self.traits:
+            if isinstance(p, trait.ProficiencyKnown):
+                prof[p.proficiency_type] = p.proficiencies
+        return prof
 
     def required(self):
         return {
@@ -136,14 +134,11 @@ class Dwarf(Race):
 class HillDwarf(Dwarf):
     def __init__(self, traits):
         def_asi = {AbilityScore.WIS: 1}
-        def_traits = {
-            'dwarven_toughness': {
-                base.NAME: 'Dwarven Toughness',
-                base.DESCRIPTION: 'Your hit point maximum increases by 1, and it increases by 1 every time you gain a level.',
-            },
-        }
+        def_traits = [
+            trait.Toughness(name='Dwarven Toughness'),
+        ]
         super(HillDwarf, self).__init__(asi=def_asi,
-                                        traits={**def_traits, **traits})
+                                        traits=def_traits+traits)
         self.name = 'Hill Dwarf'
 
 
