@@ -3,7 +3,7 @@ import math
 import json
 
 from ddddd.entity import base
-from ddddd.entity.base import AbilityScores, Skills
+from ddddd.entity.base import AbilityScore, Skills
 from ddddd.entity.character import equipment
 
 import logging
@@ -43,12 +43,12 @@ class PlayerBase(base.Jsonable):
         Return the base ability scores.
         """
         return {
-            AbilityScores.STR: self._str,
-            AbilityScores.DEX: self._dex,
-            AbilityScores.CON: self._con,
-            AbilityScores.INT: self._int,
-            AbilityScores.WIS: self._wis,
-            AbilityScores.CHA: self._cha,
+            AbilityScore.STR: self._str,
+            AbilityScore.DEX: self._dex,
+            AbilityScore.CON: self._con,
+            AbilityScore.INT: self._int,
+            AbilityScore.WIS: self._wis,
+            AbilityScore.CHA: self._cha,
         }
 
     def __json__(self):
@@ -146,14 +146,14 @@ class PlayerCharacter(base.Jsonable):
             import inspect
             check_for_args = inspect.getfullargspec(armor_obj.armor_class)
             if check_for_args.args:
-                return armor_obj.armor_class(self.ability_scores[base.AbilityScores.DEX][base.MODIFIER])
+                return armor_obj.armor_class(self.ability_scores[base.AbilityScore.DEX][base.MODIFIER])
             else:
                 return armor_obj.armor_class()
-        return 10 + self.ability_scores[AbilityScores.DEX][base.MODIFIER]
+        return 10 + self.ability_scores[AbilityScore.DEX][base.MODIFIER]
 
     @property
     def initiative(self):
-        return self.ability_scores[AbilityScores.DEX][base.MODIFIER]
+        return self.ability_scores[AbilityScore.DEX][base.MODIFIER]
 
     @property
     def max_hit_points(self):
@@ -161,9 +161,9 @@ class PlayerCharacter(base.Jsonable):
         hit_die = self.classes.hit_die
         for i in range(1, self.classes.level+1):
             if hit_points <= 0:
-                hit_points = hit_die + self.ability_scores[AbilityScores.CON][base.MODIFIER]
+                hit_points = hit_die + self.ability_scores[AbilityScore.CON][base.MODIFIER]
             else:
-                hit_points += math.ceil(hit_die/2) + self.ability_scores[AbilityScores.CON][base.MODIFIER]
+                hit_points += math.ceil(hit_die/2) + self.ability_scores[AbilityScore.CON][base.MODIFIER]
         return hit_points
     
     @property
@@ -207,16 +207,13 @@ class PlayerCharacter(base.Jsonable):
     
     @property
     def proficiencies(self):
-        logger.debug('Racial proficiencies: {}'.format(self.race.proficiencies))
-        logger.debug('Class proficiencies: {}'.format(self.class_proficiencies))
-        logger.debug('Background proficiencies: {}'.format(self.background.proficiencies))
         p = {}
         for prof_group in [self.race.proficiencies, self.class_proficiencies, self.background.proficiencies]:
             for prof in prof_group.keys():
-                if prof in p:
-                    p[prof] = p[prof] + prof_group[prof]
-                else:
-                    p[prof] = prof_group[prof]
+                if prof not in p:
+                    p[prof] = []
+                p[prof] = p[prof] + prof_group[prof].proficiencies
+        logger.debug(p)
         return p
 
     @property
@@ -225,8 +222,11 @@ class PlayerCharacter(base.Jsonable):
     
     @property
     def languages(self):
-        lang = (self.race.languages + self.classes.languages + self.background.languages)
-        return lang
+        langs = []
+        for lang_opt in [self.race.languages, self.classes.languages, self.background.languages]:
+            if lang_opt:
+                langs = langs + lang_opt.languages
+        return langs
 
     @property
     def class_features(self):
@@ -237,7 +237,7 @@ class PlayerCharacter(base.Jsonable):
         return {
             base.RACIAL_TRAITS: self.race.traits,
             base.CLASS_FEATURES: self.class_features,
-            base.BACKGROUND_FEATURES: self.background.feature,
+            base.BACKGROUND_FEATURES: [self.background.feature],
         }
 
     @property
@@ -250,14 +250,14 @@ class PlayerCharacter(base.Jsonable):
 
     @property
     def carrying_capacity(self):
-        return self.ability_scores[AbilityScores.STR][base.SCORE] * 15 * self.race.str_movement_multiplier
+        return self.ability_scores[AbilityScore.STR][base.SCORE] * 15 * self.race.str_movement_multiplier
 
     def calculate_weapon_bonuses(self):
         bonuses = {}
         weapons = self.worn_items.weapons
-        weapon_proficiencies = self.proficiencies['weapons']
+        weapon_proficiencies = self.proficiencies[base.WEAPON_PROFICIENCY]
         for weapon in weapons:
-            damage_bonus = self.ability_scores[base.AbilityScores.STR][base.MODIFIER]
+            damage_bonus = self.ability_scores[base.AbilityScore.STR][base.MODIFIER]
             attack_prof = 0
             if weapon.name in weapon_proficiencies:
                 attack_prof = self.proficiency_bonus

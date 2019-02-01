@@ -2,8 +2,8 @@
 import abc
 
 from ddddd.entity import base
-from ddddd.entity.base import AbilityScores, Skills, Languages, SpellTypes
-from ddddd.entity.character import spells
+from ddddd.entity.base import AbilityScore, Skills, Languages, SpellTypes
+from ddddd.entity.character import spells, trait
 
 
 class PlayerClass(base.Jsonable, metaclass=abc.ABCMeta):
@@ -44,8 +44,9 @@ class PlayerClass(base.Jsonable, metaclass=abc.ABCMeta):
     
     @property
     def languages(self):
-        if base.LANGUAGES in self.features:
-            return self.features[base.LANGUAGES][base.LANGUAGES]
+        lang = list(filter(lambda f: isinstance(f, trait.LanguagesKnown), self.features))
+        if len(lang) > 0:
+            return lang[0]
         return []
 
     def get_requirements(self, level):
@@ -126,32 +127,30 @@ class Ranger(PlayerClass):
     STYLES = 'styles'
 
     def __init__(self, skill_proficiencies, favored_enemy=None, languages=None, favored_terrain=None):
-        def_features = {
-            self.FAVORED_ENEMY: {
-                base.NAME: 'Favored Enemy',
-                base.DESCRIPTION: 'Beginning at 1st level, you have significant experience studying, tracking, hunting, and even talking to a certain type of enemy. ...',
-                self.ENEMIES: [favored_enemy],
-            },
-            base.LANGUAGES: {
-                base.NAME: 'Favored Enemy Languages',
-                base.DESCRIPTION: 'You learn a language that your favored enemy would typically know.',
-                base.LANGUAGES: [languages],
-            },
-            self.NATURAL_EXPLORER: {
-                base.NAME: 'Natural Explorer',
-                base.DESCRIPTION: 'You are particularly familiar with one type of natural environment and are adept at traveling and surviving in such regions. ...',
-                self.TERRAINS: [favored_terrain]
-            },
-        }
+        def_features = [
+            trait.Trait(name='Favored Enemy',
+                        description='Beginning at 1st level, you have significant experience studying, tracking, \
+                        hunting, and even talking to a certain type of enemy. {}'.format(favored_enemy)),
+            trait.LanguagesKnown(languages=[languages], name='Favored Enemy Languages',
+                                 description='You learn a language that your favored enemy would typically know.'),
+            trait.Trait(name='Natural Explorer',
+                        description='You are particularly familiar with one type of natural environment \
+                        and are adept at traveling and surviving in such regions. {}'.format(favored_terrain)),
+        ]
+
         super(Ranger, self).__init__(name='Ranger',
                                      level=1,
                                      hit_die=10,
                                      proficiencies={
-                                         base.ARMOR: ['light', 'medium', 'shields'],
-                                         base.WEAPONS: ['simple', 'martial'],
-                                         base.TOOLS: [],
+                                         base.ARMOR_PROFICIENCY: trait.ArmorProficiency(name='Armor Proficiency',
+                                                                                        proficiencies=['light',
+                                                                                                       'medium',
+                                                                                                       'shields']),
+                                         base.WEAPON_PROFICIENCY: trait.WeaponProficiency(name='Weapon Proficiency',
+                                                                                          proficiencies=['simple',
+                                                                                                         'martial']),
                                      },
-                                     saving_throws=[AbilityScores.STR, AbilityScores.DEX],
+                                     saving_throws=[AbilityScore.STR, AbilityScore.DEX],
                                      skill_proficiencies=skill_proficiencies,
                                      features=def_features,
                                      spellcasting=None,
@@ -186,7 +185,7 @@ class Ranger(PlayerClass):
                 base.CHOICES: 1,
             },
             base.SPELLCASTING: {
-                base.SPELLCASTING_ABILITY: AbilityScores.WIS,
+                base.SPELLCASTING_ABILITY: AbilityScore.WIS,
                 base.NUM_SPELLS_KNOWN: 2,
                 base.SPELL_SLOTS: {
                     SpellTypes.FIRST: 2
@@ -197,11 +196,11 @@ class Ranger(PlayerClass):
 
     def _add_level_2_features(self, **kwargs):
         fighting_style = kwargs['fighting_style']
-        self.features[self.FIGHTING_STYLE] = {
-            base.NAME: 'Fighting Style',
-            base.DESCRIPTION: 'At 2nd level, you adopt a particular style of fighting as your specialty.',
-            self.STYLES: [fighting_style],
-        }
+        self.features.append(
+            trait.Trait(name='Fighting Style',
+                        description='At 2nd level, you adopt a particular style of fighting \
+                        as your specialty. {}'.format(fighting_style))
+        )
 
         # TODO make this a bit more elegant...
         list_spells = []
@@ -211,7 +210,7 @@ class Ranger(PlayerClass):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        self.spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScores.WIS,
+        self.spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
                                                              list_spells_known=list_spells,
                                                              spell_slots={SpellTypes.FIRST: 2},
                                                              num_spells_known=2)
@@ -224,7 +223,7 @@ class Ranger(PlayerClass):
                 base.CHOICES: 1,
             },
             base.SPELLCASTING: {
-                base.SPELLCASTING_ABILITY: AbilityScores.WIS,
+                base.SPELLCASTING_ABILITY: AbilityScore.WIS,
                 base.NUM_SPELLS_KNOWN: 3,
                 base.SPELL_SLOTS: {
                     SpellTypes.FIRST: 3
@@ -234,17 +233,18 @@ class Ranger(PlayerClass):
         return req
 
     def _add_level_3_features(self, **kwargs):
-        self.features['primeval_awareness'] = {
-            base.NAME: 'Primeval Awareness',
-            base.DESCRIPTION: 'Beginning at 3rd level, you can use your action and expend one Ranger spell slot to focus your awareness on the region around you..',
-        }
+        self.features.append(
+            trait.Trait(name='Primeval Awareness',
+                        description='Beginning at 3rd level, you can use your action and expend one Ranger spell slot \
+                        to focus your awareness on the region around you..')
+        )
 
         archetype_feature = kwargs['archetype_feature']
-        self.features['archetype_feature'] = {
-            base.NAME: 'Ranger Archetype',
-            base.DESCRIPTION: 'Emulating the Hunter archetype means accepting your place as a bulwark between civilization and the terrors of The Wilderness.',
-            'archetype_feature': archetype_feature,
-        }
+        self.features.append(
+            trait.Trait(name='Ranger Archetype',
+                        description='Emulating the Hunter archetype means accepting your place as a bulwark \
+                        between civilization and the terrors of The Wilderness.'.format(archetype_feature))
+        )
 
         # TODO make this a bit more elegant...
         list_spells = []
@@ -255,7 +255,7 @@ class Ranger(PlayerClass):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        self.spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScores.WIS,
+        self.spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
                                                              list_spells_known=list_spells,
                                                              spell_slots={SpellTypes.FIRST: 3},
                                                              num_spells_known=3)
@@ -276,7 +276,7 @@ class Ranger(PlayerClass):
     def _level_5_requirements(self):
         req = {
             base.SPELLCASTING: {
-                base.SPELLCASTING_ABILITY: AbilityScores.WIS,
+                base.SPELLCASTING_ABILITY: AbilityScore.WIS,
                 base.NUM_SPELLS_KNOWN: 4,
                 base.SPELL_SLOTS: {
                     SpellTypes.FIRST: 4,
@@ -287,10 +287,11 @@ class Ranger(PlayerClass):
         return req
 
     def _add_level_5_features(self, **kwargs):
-        self.features['extra_attack'] = {
-            base.NAME: 'Extra Attack',
-            base.DESCRIPTION: 'Beginning at 5th level, you can Attack twice, instead of once, whenever you take the Attack action on Your Turn.',
-        }
+        self.features.append(
+            trait.Trait(name='Extra Attack',
+                        description='Beginning at 5th level, you can Attack twice, instead of once, \
+                        whenever you take the Attack action on Your Turn.')
+        )
 
         # TODO make this a bit more elegant...
         list_spells = []
@@ -302,7 +303,7 @@ class Ranger(PlayerClass):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        self.spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScores.WIS,
+        self.spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
                                                              list_spells_known=list_spells,
                                                              spell_slots={SpellTypes.FIRST: 4, SpellTypes.SECOND: 2},
                                                              num_spells_known=4)

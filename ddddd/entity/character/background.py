@@ -1,6 +1,7 @@
 
 from ddddd.entity import base
 from ddddd.entity.base import Skills
+from ddddd.entity.character import trait
 
 
 class PlayerBackground(base.Jsonable):
@@ -15,7 +16,7 @@ class PlayerBackground(base.Jsonable):
         self.name = name
         self.feature = feature
         self.__proficiencies = proficiencies if proficiencies else {}
-        self.languages = languages if languages else []
+        self.languages = languages
 
     def __json__(self):
         j = {
@@ -47,17 +48,15 @@ class PlayerBackground(base.Jsonable):
 
 class Criminal(PlayerBackground):
     def __init__(self):
-        feature = {
-            'criminal_contact': {
-                base.NAME: 'Criminal Contact',
-                base.DESCRIPTION: 'You have a reliable and trustworthy contact who acts as your liaison to a network of other criminals. ...',
-            }
-        }
+        feature = trait.Trait(name='Criminal Contact',
+                              description='You have a reliable and trustworthy contact who acts as \
+                              your liaison to a network of other criminals. ...')
         proficiencies = {
             base.SKILLS: [Skills.DECEPTION, Skills.STEALTH],
-            base.TOOLS: ['thieves_tools', 'bone_dice'],
+            base.TOOL_PROFICIENCY: trait.ToolProficiency(name='Tool Proficiency',
+                                                         proficiencies=['thieves_tools', 'bone_dice']),
         }
         super(Criminal, self).__init__(name='criminal',
                                        feature=feature,
                                        proficiencies=proficiencies,
-                                       languages=[])
+                                       languages=None)

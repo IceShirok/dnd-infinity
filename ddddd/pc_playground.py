@@ -1,8 +1,10 @@
 
 import json
 
+from ddddd.entity import base
 from ddddd.entity.base import Skills, Languages
 from ddddd.entity.character import race, cclass, background, pc, equipment
+from ddddd.entity.character import trait
 
 import logging
 logger = logging.getLogger(__name__)
@@ -24,13 +26,17 @@ def main():
 def create_dorian():
     level = 5
     dorian_base = pc.PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=level)
-    tool_prof = {
-        'tool_proficiency': {
-            'name': 'Tool Proficiency',
-            'tools': [],
-            'description': 'You gain proficiency with the artisan''s tools of your choice: smith''s tools, brewer''s supplies, or mason''s tools.',
-        }
-    }
+    # tool_prof = {
+    #     'tool_proficiency': {
+    #         'name': 'Tool Proficiency',
+    #         'tools': [],
+    #         'description': 'You gain proficiency with the artisan''s tools of your choice: smith''s tools, brewer''s supplies, or mason''s tools.',
+    #     }
+    # }
+    tool_prof = [
+        trait.ToolProficiency(name='Tool Proficiency',
+                              proficiencies=['brewers_kit'])
+    ]
     dorian_race = race.HillDwarf(traits=tool_prof)
     dorian_class = cclass.Ranger(skill_proficiencies=[Skills.ATHLETICS, Skills.ANIMAL_HANDLING, Skills.SURVIVAL],
                                  favored_enemy='plants',
@@ -114,9 +120,9 @@ def test_pc():
     logger.info('-----')
 
     dorian_pc = create_dorian()
-    logger.info(json.dumps(dorian_pc.__json__(), indent=4))
-    req = dorian_pc.race.verify()
-    logger.info(req)
+    # logger.info(json.dumps(dorian_pc.__json__(), indent=4))
+    # req = dorian_pc.race.verify()
+    # logger.info(req)
 
     # print('-----')
     #

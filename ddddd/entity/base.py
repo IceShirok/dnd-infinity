@@ -69,9 +69,10 @@ DESCRIPTION = 'description'
 CHOICES = 'choices'
 
 # Proficiency-related constants
-WEAPON_PROFICIENCY = 'weapon_proficiency'
+WEAPON_PROFICIENCY = 'Weapon Proficiency'
 TOOLS = 'tools'
-TOOL_PROFICIENCY = 'tool_proficiency'
+TOOL_PROFICIENCY = 'Tool Proficiency'
+ARMOR_PROFICIENCY = 'Armor Proficiency'
 LANGUAGES = 'languages'
 SKILL_PROF = 'skill_proficiency'
 SKILL_PROFS = 'skill_proficiencies'
@@ -138,13 +139,21 @@ class SpellTypes(object):
     NINTH = '9th'
 
 
-class AbilityScores(object):
+class AbilityScore(object):
     STR = 'STR'
     DEX = 'DEX'
     CON = 'CON'
     INT = 'INT'
     WIS = 'WIS'
     CHA = 'CHA'
+
+    def __init__(self, name, score):
+        self.name = name
+        self.score = score
+
+    @property
+    def modifier(self):
+        return modifier(self.score)
 
 
 class Sizes(object):
@@ -189,11 +198,11 @@ class Skills(object):
     PERSUASION = 'Persuasion'
 
     SKILL_PROFICIENCIES_BY_ABILITY_SCORE = {
-        AbilityScores.STR: [ATHLETICS],
-        AbilityScores.DEX: [ACROBATICS, SLEIGHT_OF_HAND, STEALTH],
-        AbilityScores.INT: [ARCANA, HISTORY, INVESTIGATION, NATURE, RELIGION],
-        AbilityScores.WIS: [ANIMAL_HANDLING, INSIGHT, MEDICINE, PERCEPTION, SURVIVAL],
-        AbilityScores.CHA: [DECEPTION, INTIMIDATION, PERFORMANCE, PERSUASION],
+        AbilityScore.STR: [ATHLETICS],
+        AbilityScore.DEX: [ACROBATICS, SLEIGHT_OF_HAND, STEALTH],
+        AbilityScore.INT: [ARCANA, HISTORY, INVESTIGATION, NATURE, RELIGION],
+        AbilityScore.WIS: [ANIMAL_HANDLING, INSIGHT, MEDICINE, PERCEPTION, SURVIVAL],
+        AbilityScore.CHA: [DECEPTION, INTIMIDATION, PERFORMANCE, PERSUASION],
     }
 
 

@@ -2,7 +2,7 @@
 import json
 
 from ddddd.entity import base
-from ddddd.entity.base import AbilityScores
+from ddddd.entity.base import AbilityScore
 
 
 class Spell(base.Jsonable):
@@ -145,7 +145,7 @@ def generate_simple_spell(name, level):
 
 
 def test_spells():
-    ability_scores = {base.AbilityScores.WIS: {base.MODIFIER: 5}}
+    ability_scores = {base.AbilityScore.WIS: {base.MODIFIER: 5}}
     proficiency_bonus = 3
     spell_slots = {
         base.SpellTypes.CANTRIPS: 4,
@@ -180,7 +180,7 @@ def test_spells():
     ]
     for name, level in simple_spell_list:
         list_spells.append(generate_simple_spell(name, level))
-    spellcasting_ability = SpellcastingAbility(spellcasting_ability=AbilityScores.WIS,
+    spellcasting_ability = SpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
                                                spell_slots=spell_slots,
                                                list_spells_known=list_spells)
     print(spellcasting_ability)
