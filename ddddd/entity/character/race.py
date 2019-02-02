@@ -24,22 +24,7 @@ class Race(base.Jsonable):
         self.size = size
         self.speed = speed
         self.languages = languages
-        self.__traits = traits if traits else []
-
-    @property
-    def base_race(self):
-        return self.name
-
-    @property
-    def traits(self):
-        # def_traits = {
-        #     base.SIZE: {
-        #         base.NAME: 'Size',
-        #         base.DESCRIPTION: 'Your size is {}.'.format(self.size.capitalize()),
-        #     },
-        # }
-        # return {**self.__traits, **def_traits}
-        return self.__traits
+        self.traits = traits
 
     @property
     def str_movement_multiplier(self):
@@ -60,7 +45,7 @@ class Race(base.Jsonable):
             base.SIZE: self.size,
             base.SPEED: self.speed,
             base.LANGUAGES: self.languages,
-            base.TRAITS: self.__traits,
+            base.TRAITS: self.traits,
         }
         return j
 
