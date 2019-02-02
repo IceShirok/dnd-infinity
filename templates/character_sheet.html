@@ -3,11 +3,25 @@
 {% block content %}
 
 <div id="banner" class="columns">
-    <div class="column col-6">
+    <div class="column col-3">
         <h2>{{ pc.name }}</h2>
         <p><strong>Class & Level</strong>: {{ pc.class_name }} {{ pc.level }}</p>
         <p><strong>Background</strong>: {{ pc.background_name }}</p>
         <p><strong>Race</strong>: {{ pc.base_race_name }} ({{ pc.race_name }})</p>
+    </div>
+
+    <div class="column col-3">
+        <div class="sheet-box">
+            <h3>Basic Combat Stuff <i class="material-icons">disc_full</i></h3>
+            <dl>
+                <dt><i class="material-icons">verified_user</i> Armor Class</dt>
+                <dd>{{ pc.armor_class }} ({{ pc.worn_items.armor.name if pc.worn_items.armor else 'dodgy stuff' }})</dd>
+                <dt><i class="material-icons">flash_on</i> Initiative</dt>
+                <dd>{{ pc.initiative }}</dd>
+                <dt><i class="material-icons">directions_run</i> Speed</dt>
+                <dd>{{ pc.speed }}</dd>
+            </dl>
+        </div>
     </div>
 
     <div class="column col-6">
@@ -41,7 +55,22 @@
                                                     </tr>
                                                     {% for skill in pc.skills_by_ability[ability] %}
                                                     <tr>
-                                                        <td><i class="material-icons">fitness_center</i> <strong>{{ skill }}</strong></td>
+                                                        <td>
+                                                            {% if ability == 'STR' %}
+                                                            <i class="material-icons">fitness_center</i>
+                                                            {% elif ability == 'DEX' %}
+                                                            <i class="material-icons">timer</i>
+                                                            {% elif ability == 'CON' %}
+                                                            <i class="material-icons">local_hospital</i>
+                                                            {% elif ability == 'INT' %}
+                                                            <i class="material-icons">school</i>
+                                                            {% elif ability == 'WIS' %}
+                                                            <i class="material-icons">nature</i>
+                                                            {% elif ability == 'CHA' %}
+                                                            <i class="material-icons">mood</i>
+                                                            {% endif %}
+                                                            <strong>{{ skill }}</strong>
+                                                        </td>
                                                         <td>{{ pmod(pc.skills_by_ability[ability][skill]['modifier']) }}</td>
                                                         <td>
                                                             {% if pc.skills_by_ability[ability][skill]['is_proficient'] %}
@@ -71,37 +100,19 @@
 
 <div class="columns">
     <div class="column col-4">
-        <div class="sheet-box">
-            <h3>Basic Combat Stuff <i class="material-icons">disc_full</i></h3>
-            <div class="stat-box">
-                <h4>Armor Class</h4>
-                <p>{{ pc.armor_class }} ({{ pc.worn_items.armor.name if pc.worn_items.armor else 'dodgy stuff' }})</p>
-            </div>
-            <div class="stat-box">
-                <h4>Initiative</h4>
-                <p>{{ pc.initiative }}</p>
-            </div>
-            <div class="stat-box">
-                <h4>Speed</h4>
-                <p>{{ pc.speed }}</p>
-            </div>
-        </div>
 
         <div class="sheet-box">
             <h3>Health Stuff <i class="material-icons">local_pharmacy</i></h3>
             <h4>Hit Points</h4>
-            <div class="stat-box">
-                <p>Hit Points</p>
-                <p>{{ pc.max_hit_points }} / {{ pc.max_hit_points }}</p>
-            </div>
-            <div class="stat-box">
-                <p>Temporary Hit Points</p>
-                <p>0</p>
-            </div>
-            <div class="stat-box">
-                <p>Total Hit Dice</p>
-                <p>{{ pc.total_hit_dice_prettified }}</p>
-            </div>
+            <dl>
+                <dt><i class="material-icons">local_hospital</i> Hit Points</dt>
+                <dd>{{ pc.max_hit_points }} / {{ pc.max_hit_points }}</dd>
+                <dt><i class="material-icons">healing</i> Temporary Hit Points</dt>
+                <dd>0</dd>
+                <dt><i class="material-icons">local_pharmacy</i> Total Hit Dice</dt>
+                <dd>{{ pc.total_hit_dice_prettified }}</dd>
+            </dl>
+
             <h4>Death Saves</h4>
             <p>Success {% for i in range(0,3) %}<i class="material-icons">mood</i>{% endfor %}</p>
             <p>Failure {% for i in range(0,3) %}<i class="material-icons">mood_bad</i>{% endfor %}</p>
@@ -137,22 +148,33 @@
             <h4>Spellcasting</h4>
             {% for spell_type in pc.spellcasting.spell_slots.keys() %}
 
-            <details class="accordion">
-                <summary class="accordion-header">
-                    <i class="icon icon-arrow-right mr-1"></i>
-                    {{ spell_type }}
-                    {% for i in range(0, pc.spellcasting.spell_slots[spell_type]) %}
-                    <i class="material-icons">all_out</i>
-                    {% endfor %}
-                </summary>
-                <div class="accordion-body">
-                    {% for spell in pc.spellcasting.list_spells_known %}
-                    {% if spell.level == spell_type %}
-                    <p>{{ spell.name }}</p>
-                    {% endif %}
-                    {% endfor %}
+            <h5>
+                {{ spell_type }}
+                {% for i in range(0, pc.spellcasting.spell_slots[spell_type]) %}
+                <i class="material-icons">all_out</i>
+                {% endfor %}
+            </h5>
+
+            {% for spell in pc.spellcasting.list_spells_known %}
+            {% if spell.level == spell_type %}
+            <div class="popover popover-bottom">
+                <p class="chip">{{ spell.name }}</p>
+                <div class="popover-container">
+                    <div class="card">
+                        <div class="card-header"><h5>{{ spell.name }}</h5></div>
+                        <div class="card-body">
+                            <p>{{ spell.level }}-level {{ spell.magic_school }}</p>
+                            <p><strong>Casting time</strong>: {{ spell.casting_time }}</p>
+                            <p><strong>Range</strong>: {{ spell.spell_range }}</p>
+                            <p><strong>Components</strong>: {{ ', '.join(spell.components) }}</p>
+                            <p><strong>Duration</strong>: {{ spell.duration }}</p>
+                            <p>{{ spell.description }}</p>
+                        </div>
+                    </div>
                 </div>
-            </details>
+            </div>
+            {% endif %}
+            {% endfor %}
 
             {% endfor %}
             {% endif %}
