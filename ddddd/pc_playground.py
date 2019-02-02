@@ -38,7 +38,9 @@ def create_dorian(level=5):
         dorian_class.level_to(level=level,
                               fighting_style='two_weapon_fighting',
                               archetype_feature='colossus_slayer',
-                              ability_score_increase={'STR': 2})
+                              ability_score_increase={
+                                  base.AbilityScore.STR: base.AbilityScoreIncrease(base.AbilityScore.STR, 2),
+                              })
     dorian_background = background.Criminal()
     dorian_equip = generate_equipment()
     dorian_backpack = generate_backpack()

@@ -22,7 +22,7 @@ class PlayerClass(base.Jsonable, metaclass=abc.ABCMeta):
         self.saving_throws = saving_throws
         self.skills = skill_proficiencies
         self.features = features
-        self.asi = asi if asi else []
+        self.asi = asi if asi else {}
         self.spellcasting = spellcasting
 
     def __json__(self):
@@ -271,7 +271,11 @@ class Ranger(PlayerClass):
 
     def _add_level_4_features(self, **kwargs):
         ability_score_increase = kwargs['ability_score_increase']
-        self.asi.append(ability_score_increase)
+        for ability in ability_score_increase.keys():
+            if ability not in self.asi:
+                self.asi[ability] = ability_score_increase[ability]
+            else:
+                self.asi[ability] = self.asi[ability].combine(ability_score_increase[ability])
 
     def _level_5_requirements(self):
         req = {

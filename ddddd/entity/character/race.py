@@ -79,7 +79,9 @@ class Race(base.Jsonable):
 # DWARF
 class Dwarf(Race):
     def __init__(self, asi, traits):
-        def_asi = {AbilityScore.CON: 2}
+        def_asi = {
+            base.AbilityScore.CON: base.AbilityScoreIncrease(base.AbilityScore.CON, 2)
+        }
         def_traits = [
             trait.Darkvision(range=60),
             trait.Trait(name='Dwarven Resilience',
@@ -125,7 +127,9 @@ class Dwarf(Race):
 
 class HillDwarf(Dwarf):
     def __init__(self, traits):
-        def_asi = {AbilityScore.WIS: 1}
+        def_asi = {
+            base.AbilityScore.WIS: base.AbilityScoreIncrease(base.AbilityScore.WIS, 1)
+        }
         def_traits = [
             trait.Toughness(name='Dwarven Toughness'),
         ]
