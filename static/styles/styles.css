@@ -10,7 +10,7 @@
 
     --d5-color-bg: var(--d5-color-red);
 
-    --d5-color-border-banner: var(--d5-color-orange);
+    --d5-color-border-banner: var(--d5-color-black);
     --d5-color-border-column: var(--d5-color-orange);
 
     --d5-color-box: var(--d5-color-gray);
@@ -23,7 +23,7 @@
 body {
    color: var(--d5-color-black);
    font-family: Cambria Math !important;
-   background-color: var(--d5-color-bg);
+   background-color: var(--d5-color-bg) !important;
 }
 
 #header {
@@ -32,15 +32,8 @@ body {
     top: 0;
 }
 
-#container {
-    display: block;
-    padding: 5px;
-}
-
 #banner {
     background-color: var(--d5-color-box);
-
-    margin: 5px;
     padding: 10px;
 
     border-style: solid;
@@ -50,17 +43,17 @@ body {
 }
 
 .column {
-    display: inline-block;
-    vertical-align: top;
+    /*display: inline-block;
+    vertical-align: top;*/
     background-color: var(--d5-color-box);
-    padding: 5px;
+    /*padding: 5px;
     width: 20%;
-    line-height: 100%;
+    line-height: 100%;*/
 
-    border-style: solid;
+    /*border-style: solid;
     border-width: 5px;
     border-color: var(--d5-color-border-column);
-    border-radius: 5px;
+    border-radius: 5px;*/
 }
 
 .sheet-box {

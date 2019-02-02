@@ -6,12 +6,16 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/styles.css') }}" />
     <!-- https://material.io/tools/icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <!-- https://picturepan2.github.io/spectre/ -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/spectre.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/spectre-exp.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/spectre-icons.min.css') }}">
 </head>
 <body>
     <div id="header">
         <h1>D&D Infinity ::: {{ title }}</h1>
     </div>
-    <div id="container">
+    <div class="container">
         {% block content %}{% endblock %}
     </div>
     <div id="footer">
