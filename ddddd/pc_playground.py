@@ -48,6 +48,27 @@ def create_dorian(level=5):
     return dorian_pc
 
 
+def create_tamiphi(level=1):
+    tamiphi_base = pc.PlayerBase("Tamiphi Tockentell", 10, 11, 15, 14, 16, 7, level=level)
+    tam_race = race.RockGnome()
+    tam_class = cclass.Ranger(skill_proficiencies=[Skills.ATHLETICS, Skills.ANIMAL_HANDLING, Skills.SURVIVAL],
+                              favored_enemy='plants',
+                              languages='elvish',
+                              favored_terrain='forest')
+    if level > 1:
+        tam_class.level_to(level=level,
+                           fighting_style='two_weapon_fighting',
+                           archetype_feature='colossus_slayer',
+                           ability_score_increase={
+                               base.AbilityScore.STR: base.AbilityScoreIncrease(base.AbilityScore.STR, 2),
+                           })
+    tam_bg = background.Criminal()
+    tam_equip = generate_equipment()
+    tam_backpack = generate_backpack()
+    tamiphi_pc = pc.PlayerCharacter(tamiphi_base, tam_race, tam_class, tam_bg, tam_equip, tam_backpack)
+    return tamiphi_pc
+
+
 def generate_backpack():
     logger.debug('Displaying equipment in backpack')
     backpack = equipment.Backpack(copper_pieces=0, silver_pieces=0, gold_pieces=15, platnium_pieces=0, items=None)

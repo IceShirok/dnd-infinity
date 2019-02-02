@@ -273,7 +273,7 @@ class PlayerCharacter(base.Jsonable):
     def calculate_weapon_bonuses(self):
         bonuses = {}
         weapons = self.worn_items.weapons
-        weapon_proficiencies = self.proficiencies[base.WEAPON_PROFICIENCY]
+        weapon_proficiencies = self.proficiencies[base.WEAPON_PROFICIENCY] if base.WEAPON_PROFICIENCY in self.proficiencies else []
         for weapon in weapons:
             damage_bonus = self.ability_scores[base.AbilityScore.STR].modifier
             attack_prof = 0
