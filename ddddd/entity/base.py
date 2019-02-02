@@ -231,10 +231,14 @@ class Languages(object):
     DWARVISH = 'dwarvish'
     GNOMISH = 'gnomish'
     DRACONIC = 'draconic'
+    INFERNAL = 'infernal'
+    CELESTIAL = 'celestial'
 
     LANGUAGES = {
         COMMON,
         DWARVISH,
         GNOMISH,
         DRACONIC,
+        INFERNAL,
+        CELESTIAL,
     }
