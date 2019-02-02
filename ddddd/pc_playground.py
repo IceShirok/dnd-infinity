@@ -2,9 +2,9 @@
 import json
 
 from ddddd.entity import base
-from ddddd.entity.base import Skills, Languages
+from ddddd.entity.base import Skills
 from ddddd.entity.character import race, background, pc, equipment
-from ddddd.entity.character.vocation import ranger
+from ddddd.entity.character.vocation import ranger, cleric
 from ddddd.entity.character import trait
 
 import logging
@@ -104,16 +104,15 @@ def create_dorian(level=5):
 def create_tamiphi(level=1):
     tamiphi_base = pc.PlayerBase("Tamiphi Tockentell", 10, 11, 15, 14, 16, 7, level=level)
     tam_race = race.RockGnome()
-    tam_class = ranger.Ranger(skill_proficiencies=[Skills.ATHLETICS, Skills.ANIMAL_HANDLING, Skills.SURVIVAL],
-                              favored_enemy='plants',
-                              languages='elvish',
-                              favored_terrain='forest')
+    class_languages = trait.LanguagesKnown(languages=[base.Languages.DRACONIC, base.Languages.DWARVISH])
+    tam_class = cleric.Cleric(skill_proficiencies=[Skills.INSIGHT, Skills.RELIGION, Skills.ARCANA, Skills.PERSUASION],
+                              languages=class_languages)
     if level > 1:
         tam_class.level_to(level=level,
                            fighting_style='two_weapon_fighting',
                            archetype_feature='colossus_slayer',
                            ability_score_increase={
-                               base.AbilityScore.STR: base.AbilityScoreIncrease(base.AbilityScore.STR, 2),
+                               base.AbilityScore.WIS: base.AbilityScoreIncrease(base.AbilityScore.WIS, 2),
                            })
     bg_languages = trait.LanguagesKnown(languages=[base.Languages.CELESTIAL, base.Languages.INFERNAL])
     tam_bg = background.Sage(bg_languages)
