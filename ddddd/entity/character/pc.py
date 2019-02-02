@@ -236,6 +236,7 @@ class PlayerCharacter(base.Jsonable):
                 if prof not in p:
                     p[prof] = []
                 p[prof] = p[prof] + prof_group[prof].proficiencies
+        p[base.LANGUAGES] = self.languages
         logger.debug(p)
         return p
 
