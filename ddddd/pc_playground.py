@@ -3,7 +3,8 @@ import json
 
 from ddddd.entity import base
 from ddddd.entity.base import Skills, Languages
-from ddddd.entity.character import race, cclass, background, pc, equipment
+from ddddd.entity.character import race, background, pc, equipment
+from ddddd.entity.character.vocation import ranger
 from ddddd.entity.character import trait
 
 import logging
@@ -15,14 +16,6 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 
-def main():
-    """
-    Testing playground for D&D Infinity.
-    """
-    test_pc()
-    print('bye')
-
-
 def create_dorian(level=5):
     dorian_base = pc.PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=level)
     tool_prof = [
@@ -30,7 +23,7 @@ def create_dorian(level=5):
                               proficiencies=['brewers_kit'])
     ]
     dorian_race = race.HillDwarf(traits=tool_prof)
-    dorian_class = cclass.Ranger(skill_proficiencies=[Skills.ATHLETICS, Skills.ANIMAL_HANDLING, Skills.SURVIVAL],
+    dorian_class = ranger.Ranger(skill_proficiencies=[Skills.ATHLETICS, Skills.ANIMAL_HANDLING, Skills.SURVIVAL],
                                  favored_enemy='plants',
                                  languages='elvish',
                                  favored_terrain='forest')
@@ -111,7 +104,7 @@ def create_dorian(level=5):
 def create_tamiphi(level=1):
     tamiphi_base = pc.PlayerBase("Tamiphi Tockentell", 10, 11, 15, 14, 16, 7, level=level)
     tam_race = race.RockGnome()
-    tam_class = cclass.Ranger(skill_proficiencies=[Skills.ATHLETICS, Skills.ANIMAL_HANDLING, Skills.SURVIVAL],
+    tam_class = ranger.Ranger(skill_proficiencies=[Skills.ATHLETICS, Skills.ANIMAL_HANDLING, Skills.SURVIVAL],
                               favored_enemy='plants',
                               languages='elvish',
                               favored_terrain='forest')
@@ -137,35 +130,3 @@ def create_tamiphi(level=1):
     tam_backpack = generate_backpack()
     tamiphi_pc = pc.PlayerCharacter(tamiphi_base, tam_race, tam_class, tam_bg, tam_equip, tam_backpack)
     return tamiphi_pc
-
-
-
-def test_pc():
-
-    ttt_base = pc.PlayerBase("Tamiphi Tockentell", 10, 11, 16, 18, 20, 7, level=8)
-    gnome = race.RockGnome()
-    logger.info(ttt_base)
-    logger.info(gnome)
-
-    logger.info('-----')
-
-    lok_base = pc.PlayerBase("Lok", 15, 18, 10, 12, 16, 9, level=4)
-    human = race.Human(languages=[Languages.DRACONIC])
-    logger.info(lok_base)
-    logger.info(human)
-
-    logger.info('-----')
-
-    dorian_pc = create_dorian()
-    # logger.info(json.dumps(dorian_pc.__json__(), indent=4))
-    # req = dorian_pc.race.verify()
-    # logger.info(req)
-
-    # print('-----')
-    #
-    # print(json.dumps(dorian_pc.generate_character_sheet(), indent=4))
-
-
-if __name__ == '__main__':
-    main()
-
