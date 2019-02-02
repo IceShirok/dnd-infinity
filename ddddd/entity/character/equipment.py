@@ -150,8 +150,9 @@ class Weapon(Item):
     Weapons are simple or martial weapons.
     Weapons can have many different properties and damage.
     """
-    def __init__(self, name, damage, price, weight, properties):
+    def __init__(self, name, category, damage, price, weight, properties):
         super(Weapon, self).__init__(name, price, weight)
+        self.category = category
         self.damage = damage
         self.properties = properties
 

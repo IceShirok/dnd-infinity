@@ -231,7 +231,6 @@ class PlayerCharacter(base.Jsonable):
                     p[prof] = []
                 p[prof] = p[prof] + prof_group[prof].proficiencies
         p[base.LANGUAGES] = self.languages
-        logger.debug(p)
         return p
 
     @property
@@ -277,7 +276,7 @@ class PlayerCharacter(base.Jsonable):
         for weapon in weapons:
             damage_bonus = self.ability_scores[base.AbilityScore.STR].modifier
             attack_prof = 0
-            if weapon.name in weapon_proficiencies:
+            if weapon.category in weapon_proficiencies or weapon.name in weapon_proficiencies:
                 attack_prof = self.proficiency_bonus
             bonuses[weapon.name] = {
                 'attack_bonus': damage_bonus + attack_prof,

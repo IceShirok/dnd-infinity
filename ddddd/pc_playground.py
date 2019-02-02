@@ -82,11 +82,11 @@ def create_dorian(level=5):
 
         armor = equipment.Armor('Chain Mail', price=75, weight=55, armor_class=calc_heavy_armor_rating, strength=15,
                                 stealth='disadvantage')
-        rondel = equipment.Weapon('handaxe', damage='1d6 slashing', price=5, weight=2,
+        rondel = equipment.Weapon('handaxe', category='simple', damage='1d6 slashing', price=5, weight=2,
                                   properties=['light', 'thrown (range 20/60)'])
-        lefon = equipment.Weapon('handaxe', damage='1d6 slashing', price=5, weight=2,
+        lefon = equipment.Weapon('handaxe', category='simple', damage='1d6 slashing', price=5, weight=2,
                                  properties=['light', 'thrown (range 20/60)'])
-        longbow = equipment.Weapon('longbow', damage='1d8 piercing', price=50, weight=2,
+        longbow = equipment.Weapon('longbow', category='martial', damage='1d8 piercing', price=50, weight=2,
                                    properties=['ammunition (range 150/600)', 'heavy', 'two-handed'])
         worn_items.don_armor(armor)
         worn_items.equip_weapon(rondel)
@@ -123,7 +123,7 @@ def create_tamiphi(level=1):
 
     def generate_equipment():
         worn_items = equipment.WornItems()
-        mace = equipment.Weapon('Mace', damage='1d6 bludgeoning', price=5, weight=4,
+        mace = equipment.Weapon('Mace', category='simple', damage='1d6 bludgeoning', price=5, weight=4,
                                 properties=[])
         worn_items.equip_weapon(mace)
 
