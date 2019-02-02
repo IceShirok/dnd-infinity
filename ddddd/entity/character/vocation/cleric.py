@@ -1,4 +1,3 @@
-
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScore, Skills, Languages, SpellTypes
 from ddddd.entity.character import spells, trait
@@ -44,13 +43,13 @@ class Cleric(PlayerClass):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
-                                                        list_spells_known=list_spells,
-                                                        spell_slots={
-                                                            SpellTypes.CANTRIPS: 3,
-                                                            SpellTypes.FIRST: 2
-                                                        },
-                                                        num_spells_known=3+1+2)
+        spellcasting = ClericSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
+                                                 list_spells_known=list_spells,
+                                                 spell_slots={
+                                                     SpellTypes.CANTRIPS: 3,
+                                                     SpellTypes.FIRST: 2
+                                                 },
+                                                 num_spells_known=3 + 1 + 2)
 
         super(Cleric, self).__init__(name='Cleric',
                                      level=1,
@@ -110,13 +109,13 @@ class Cleric(PlayerClass):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
-                                                        list_spells_known=list_spells,
-                                                        spell_slots={
-                                                            SpellTypes.CANTRIPS: 3,
-                                                            SpellTypes.FIRST: 3
-                                                        },
-                                                        num_spells_known=3+2+2)
+        spellcasting = ClericSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
+                                                 list_spells_known=list_spells,
+                                                 spell_slots={
+                                                     SpellTypes.CANTRIPS: 3,
+                                                     SpellTypes.FIRST: 3
+                                                 },
+                                                 num_spells_known=3 + 2 + 2)
         self.spellcasting = spellcasting
 
     def _level_3_requirements(self):
@@ -142,14 +141,14 @@ class Cleric(PlayerClass):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
-                                                        list_spells_known=list_spells,
-                                                        spell_slots={
-                                                            SpellTypes.CANTRIPS: 3,
-                                                            SpellTypes.FIRST: 4,
-                                                            SpellTypes.SECOND: 2
-                                                        },
-                                                        num_spells_known=3+3+4)
+        spellcasting = ClericSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
+                                                 list_spells_known=list_spells,
+                                                 spell_slots={
+                                                     SpellTypes.CANTRIPS: 3,
+                                                     SpellTypes.FIRST: 4,
+                                                     SpellTypes.SECOND: 2
+                                                 },
+                                                 num_spells_known=3 + 3 + 4)
         self.spellcasting = spellcasting
 
     def _level_4_requirements(self):
@@ -190,14 +189,14 @@ class Cleric(PlayerClass):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
-                                                        list_spells_known=list_spells,
-                                                        spell_slots={
-                                                            SpellTypes.CANTRIPS: 4,
-                                                            SpellTypes.FIRST: 4,
-                                                            SpellTypes.SECOND: 3
-                                                        },
-                                                        num_spells_known=4+4+4)
+        spellcasting = ClericSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
+                                                 list_spells_known=list_spells,
+                                                 spell_slots={
+                                                     SpellTypes.CANTRIPS: 4,
+                                                     SpellTypes.FIRST: 4,
+                                                     SpellTypes.SECOND: 3
+                                                 },
+                                                 num_spells_known=4 + 4 + 4)
         self.spellcasting = spellcasting
 
     def _level_5_requirements(self):
@@ -251,13 +250,27 @@ class Cleric(PlayerClass):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
-                                                        list_spells_known=list_spells,
-                                                        spell_slots={
-                                                            SpellTypes.CANTRIPS: 4,
-                                                            SpellTypes.FIRST: 4,
-                                                            SpellTypes.SECOND: 3,
-                                                            SpellTypes.THIRD: 3,
-                                                        },
-                                                        num_spells_known=4+5+6)
+        spellcasting = ClericSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
+                                                 list_spells_known=list_spells,
+                                                 spell_slots={
+                                                     SpellTypes.CANTRIPS: 4,
+                                                     SpellTypes.FIRST: 4,
+                                                     SpellTypes.SECOND: 3,
+                                                     SpellTypes.THIRD: 3,
+                                                 },
+                                                 num_spells_known=4 + 5 + 6)
         self.spellcasting = spellcasting
+
+
+class ClericSpellcastingAbility(spells.SpellcastingAbility):
+    def __init__(self, spellcasting_ability, spell_slots, list_spells_known, num_spells_known):
+        super(ClericSpellcastingAbility, self).__init__(spellcasting_ability, spell_slots, list_spells_known)
+        self.num_spells_known = num_spells_known
+
+    def _verify(self):
+        # TODO this part is tricky because it requires knowing the PC's WIS modifier to determine the number of spells.
+        return {}
+        # super(ClericSpellcastingAbility, self)._verify()
+        # spells_ = list(filter(lambda x: x.level != base.SpellTypes.CANTRIPS, self.list_spells_known))
+        # if len(spells_) != self.num_spells_known:
+        #     raise ValueError('Must have {} spells but inputted {} spells!'.format(self.num_spells_known, len(spells_)))
