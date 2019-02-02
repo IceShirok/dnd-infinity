@@ -28,17 +28,17 @@ class PlayerBase(base.Jsonable):
     def __init__(self, name, str_, dex_, con_, int_, wis_, cha_, level=1):
         self.name = name
 
-        self.str_ = str_
-        self.dex_ = dex_
-        self.con_ = con_
-        self.int_ = int_
-        self.wis_ = wis_
-        self.cha_ = cha_
+        self.str_ = base.AbilityScore(base.AbilityScore.STR, str_)
+        self.dex_ = base.AbilityScore(base.AbilityScore.DEX, dex_)
+        self.con_ = base.AbilityScore(base.AbilityScore.CON, con_)
+        self.int_ = base.AbilityScore(base.AbilityScore.INT, int_)
+        self.wis_ = base.AbilityScore(base.AbilityScore.WIS, wis_)
+        self.cha_ = base.AbilityScore(base.AbilityScore.CHA, cha_)
 
         self.level = level
 
     @property
-    def ability_scores(self):
+    def base_ability_scores(self):
         """
         Return the base ability scores.
         """
@@ -54,7 +54,7 @@ class PlayerBase(base.Jsonable):
     def __json__(self):
         j = {
             base.NAME: self.name,
-            base.BASE_ABILITY_SCORES: self.ability_scores,
+            base.BASE_ABILITY_SCORES: self.base_ability_scores,
             base.LEVEL: self.level,
             base.PROF_BONUS: self.proficiency_bonus,
         }
@@ -124,24 +124,17 @@ class PlayerCharacter(base.Jsonable):
     @property
     def ability_scores(self):
         # Calculate the scores and modifiers for each ability score
-        ability_scores_raw = self.base.ability_scores
+        ability_scores_agg = self.base.base_ability_scores
 
-        for a in self.race.asi.keys():
-            ability_scores_raw[a] += self.race.asi[a]
+        race_asi = self.race.asi
+        for ability in race_asi.keys():
+            ability_scores_agg[ability] = ability_scores_agg[ability].with_ability_score_increase(race_asi[ability])
 
-        for asi in self.classes.asi:
-            for a in asi:
-                ability_scores_raw[a] += asi[a]
+        class_asi = self.classes.asi
+        for ability in class_asi:
+            ability_scores_agg[ability] = ability_scores_agg[ability].with_ability_score_increase(class_asi[ability])
 
-        ability_scores_p = {}
-        for a in ability_scores_raw.keys():
-            score = ability_scores_raw[a]
-            ability_scores_p[a] = {
-                base.SCORE: score,
-                base.MODIFIER: base.modifier(score),
-            }
-
-        return ability_scores_p
+        return ability_scores_agg
 
     @property
     def armor_class(self):
@@ -150,24 +143,25 @@ class PlayerCharacter(base.Jsonable):
             import inspect
             check_for_args = inspect.getfullargspec(armor_obj.armor_class)
             if check_for_args.args:
-                return armor_obj.armor_class(self.ability_scores[base.AbilityScore.DEX][base.MODIFIER])
+                return armor_obj.armor_class(self.ability_scores[base.AbilityScore.DEX].modifier)
             else:
                 return armor_obj.armor_class()
-        return 10 + self.ability_scores[AbilityScore.DEX][base.MODIFIER]
+        return 10 + self.ability_scores[AbilityScore.DEX].modifier
 
     @property
     def initiative(self):
-        return self.ability_scores[AbilityScore.DEX][base.MODIFIER]
+        return self.ability_scores[AbilityScore.DEX].modifier
 
     @property
     def max_hit_points(self):
         hit_points = 0
         hit_die = self.classes.hit_die
+        con_modifier = self.ability_scores[AbilityScore.CON].modifier
         for i in range(1, self.classes.level+1):
             if hit_points <= 0:
-                hit_points = hit_die + self.ability_scores[AbilityScore.CON][base.MODIFIER]
+                hit_points = hit_die + con_modifier
             else:
-                hit_points += math.ceil(hit_die/2) + self.ability_scores[AbilityScore.CON][base.MODIFIER]
+                hit_points += math.ceil(hit_die/2) + con_modifier
         return hit_points
     
     @property
@@ -184,7 +178,7 @@ class PlayerCharacter(base.Jsonable):
         saving_throws_p = {}
         _ability_scores = self.ability_scores
         for a in _ability_scores.keys():
-            saving_throws_p[a] = {base.MODIFIER: _ability_scores[a][base.MODIFIER]}
+            saving_throws_p[a] = {base.MODIFIER: _ability_scores[a].modifier}
             saving_throws_p[a][base.IS_PROFICIENT] = False
             if a in saving_throws:
                 saving_throws_p[a][base.MODIFIER] += self.proficiency_bonus
@@ -203,7 +197,7 @@ class PlayerCharacter(base.Jsonable):
                     base.ABILITY: ability,
                     base.IS_PROFICIENT: False,
                 }
-                skill_proficiencies_p[skill][base.MODIFIER] = _ability_scores[ability][base.MODIFIER]
+                skill_proficiencies_p[skill][base.MODIFIER] = _ability_scores[ability].modifier
                 if skill in skill_proficiencies:
                     skill_proficiencies_p[skill][base.IS_PROFICIENT] = True
                     skill_proficiencies_p[skill][base.MODIFIER] += self.proficiency_bonus
@@ -222,7 +216,7 @@ class PlayerCharacter(base.Jsonable):
                     base.ABILITY: ability,
                     base.IS_PROFICIENT: False,
                 }
-                skill_proficiencies_p[ability][skill][base.MODIFIER] = _ability_scores[ability][base.MODIFIER]
+                skill_proficiencies_p[ability][skill][base.MODIFIER] = _ability_scores[ability].modifier
                 if skill in skill_proficiencies:
                     skill_proficiencies_p[ability][skill][base.IS_PROFICIENT] = True
                     skill_proficiencies_p[ability][skill][base.MODIFIER] += self.proficiency_bonus
@@ -274,14 +268,14 @@ class PlayerCharacter(base.Jsonable):
 
     @property
     def carrying_capacity(self):
-        return self.ability_scores[AbilityScore.STR][base.SCORE] * 15 * self.race.str_movement_multiplier
+        return self.ability_scores[AbilityScore.STR].score * 15 * self.race.str_movement_multiplier
 
     def calculate_weapon_bonuses(self):
         bonuses = {}
         weapons = self.worn_items.weapons
-        weapon_proficiencies = self.proficiencies[base.WEAPON_PROFICIENCY]
+        weapon_proficiencies = self.proficiencies[base.WEAPON_PROFICIENCY] if base.WEAPON_PROFICIENCY in self.proficiencies else []
         for weapon in weapons:
-            damage_bonus = self.ability_scores[base.AbilityScore.STR][base.MODIFIER]
+            damage_bonus = self.ability_scores[base.AbilityScore.STR].modifier
             attack_prof = 0
             if weapon.name in weapon_proficiencies:
                 attack_prof = self.proficiency_bonus

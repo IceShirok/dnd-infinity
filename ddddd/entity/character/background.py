@@ -46,6 +46,10 @@ class PlayerBackground(base.Jsonable):
         return p
 
 
+#############################
+# Custom backgrounds
+#############################
+
 class Criminal(PlayerBackground):
     def __init__(self):
         feature = trait.Trait(name='Criminal Contact',
@@ -60,3 +64,17 @@ class Criminal(PlayerBackground):
                                        feature=feature,
                                        proficiencies=proficiencies,
                                        languages=None)
+
+
+class Sage(PlayerBackground):
+    def __init__(self, languages):
+        feature = trait.Trait(name='Researcher',
+                              description='When you attempt to learn or recall a piece of lore, if you do not know \
+                              that information, you often know where and from whom you can obtain it ...')
+        proficiencies = {
+            base.SKILLS: [Skills.ARCANA, Skills.HISTORY],
+        }
+        super(Sage, self).__init__(name='Sage',
+                                   feature=feature,
+                                   proficiencies=proficiencies,
+                                   languages=languages)

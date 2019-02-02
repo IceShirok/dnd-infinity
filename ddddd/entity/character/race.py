@@ -36,7 +36,11 @@ class Race(base.Jsonable):
 
     @property
     def proficiencies(self):
-        return {}
+        prof = {}
+        for p in self.traits:
+            if isinstance(p, trait.ProficiencyKnown):
+                prof[p.proficiency_type] = p
+        return prof
 
     def __json__(self):
         j = {
@@ -76,10 +80,15 @@ class Race(base.Jsonable):
         return {}
 
 
+#############################
 # DWARF
+#############################
+
 class Dwarf(Race):
     def __init__(self, asi, traits):
-        def_asi = {AbilityScore.CON: 2}
+        def_asi = {
+            base.AbilityScore.CON: base.AbilityScoreIncrease(base.AbilityScore.CON, 2)
+        }
         def_traits = [
             trait.Darkvision(range=60),
             trait.Trait(name='Dwarven Resilience',
@@ -105,14 +114,6 @@ class Dwarf(Race):
     @property
     def base_race(self):
         return 'Dwarf'
-    
-    @property
-    def proficiencies(self):
-        prof = {}
-        for p in self.traits:
-            if isinstance(p, trait.ProficiencyKnown):
-                prof[p.proficiency_type] = p
-        return prof
 
     def required(self):
         return {
@@ -125,7 +126,9 @@ class Dwarf(Race):
 
 class HillDwarf(Dwarf):
     def __init__(self, traits):
-        def_asi = {AbilityScore.WIS: 1}
+        def_asi = {
+            base.AbilityScore.WIS: base.AbilityScoreIncrease(base.AbilityScore.WIS, 1)
+        }
         def_traits = [
             trait.Toughness(name='Dwarven Toughness'),
         ]
@@ -134,86 +137,45 @@ class HillDwarf(Dwarf):
         self.name = 'Hill Dwarf'
 
 
+#############################
 # GNOME
+#############################
 
 class Gnome(Race):
     def __init__(self, asi, traits):
-        def_asi = {AbilityScore.INT: 2}
-        def_traits = {
-                'darkvision': {
-                    base.NAME: 'Darkvision',
-                    base.DESCRIPTION: 'Accustomed to life underground, you have superior vision in dark and dim Conditions. You can see in dim light within 60 feet of you as if it were bright light, and in Darkness as if it were dim light. You can''t discern color in Darkness, only shades of gray.',
-                    base.RANGE: 60,
-                },
-                'gnome_cunning': {
-                    base.NAME: 'Gnome Cunning',
-                    base.DESCRIPTION: 'You have advantage on all Intelligence, Wisdom, and Charisma Saving Throws against magic.',
-                },
-            }
+        def_asi = {
+            base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 1)
+        }
+        def_traits = [
+            trait.Darkvision(range=60),
+            trait.Trait(name='Gnome Cunning',
+                        description='You have advantage on all Intelligence, Wisdom, \
+                        and Charisma Saving Throws against magic.'),
+        ]
         super(Gnome, self).__init__(name='Gnome',
                                     asi={**def_asi, **asi},
                                     size=Sizes.SMALL,
                                     speed=25,
                                     languages=trait.LanguagesKnown(languages=[Languages.COMMON, Languages.GNOMISH]),
-                                    traits={**def_traits, **traits})
+                                    traits=def_traits+traits)
+
+    @property
+    def base_race(self):
+        return 'Gnome'
 
 
 class RockGnome(Gnome):
     def __init__(self):
-        traits = {
-            'artificers_lore': {
-                base.NAME: 'Artificer''s Lore',
-                base.DESCRIPTION: 'Whenever you make an Intelligence (History) check related to Magic Items, alchemical Objects, or technological devices, you can add twice your Proficiency Bonus, instead of any Proficiency Bonus you normally apply.',
-            },
-            'tinker': {
-                base.NAME: 'Tinker',
-                base.DESCRIPTION: 'You have proficiency with artisan''s tools (tinker''s tools). ...',
-            }
+        asi = {
+            base.AbilityScore.CON: base.AbilityScoreIncrease(base.AbilityScore.CON, 1)
         }
-        super(RockGnome, self).__init__(asi={AbilityScore.CON: 1},
+        traits = [
+            trait.Trait(name='Artificer''s Lore',
+                        description='Whenever you make an Intelligence (History) check related to Magic Items, \
+                        alchemical Objects, or technological devices, you can add twice your Proficiency Bonus, \
+                        instead of any Proficiency Bonus you normally apply.'),
+            trait.ToolProficiency(name='Tinker', proficiencies=['tinkers_tools']),
+        ]
+        super(RockGnome, self).__init__(asi=asi,
                                         traits=traits)
         self.name = 'Rock Gnome'
-    
-    @property
-    def proficiencies(self):
-        return {
-            base.TOOLS: ['tinkers_tools'],
-        }
-
-
-# HUMAN
-
-class Human(Race):
-    def __init__(self, languages):
-        def_asi = {
-            AbilityScore.STR: 1,
-            AbilityScore.DEX: 1,
-            AbilityScore.CON: 1,
-            AbilityScore.INT: 1,
-            AbilityScore.WIS: 1,
-            AbilityScore.CHA: 1
-        }
-        def_traits = {}
-        def_languages = [Languages.COMMON]
-        super(Human, self).__init__(name='Human',
-                                    asi=def_asi,
-                                    size=Sizes.MEDIUM,
-                                    speed=30,
-                                    languages=def_languages+languages,
-                                    traits=def_traits)
-    
-    def required(self):
-        return {
-            base.LANGUAGES: {
-                base.LANGUAGES: Languages.LANGUAGES,
-                base.CHOICES: 1,
-            }
-        }
-
-    def verify(self):
-        language_details = self.required()[base.LANGUAGES]
-        language_list = self.languages
-        if len(language_list) != language_details[base.CHOICES] \
-                or not set(language_list).issubset(language_details[base.LANGUAGES]):
-            raise ValueError('Required trait {} is invalid.'.format(base.LANGUAGES))
-        return True

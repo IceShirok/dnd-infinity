@@ -155,6 +155,26 @@ class AbilityScore(object):
     def modifier(self):
         return modifier(self.score)
 
+    def with_ability_score_increase(self, asi):
+        if not isinstance(asi, AbilityScoreIncrease):
+            raise ValueError('Must pass in an ability score increase!')
+        if self.name != asi.ability:
+            raise ValueError('Ability do not match!')
+        return AbilityScore(self.name, self.score + asi.score_increase)
+
+
+class AbilityScoreIncrease(object):
+    def __init__(self, ability, score_increase):
+        self.ability = ability
+        self.score_increase = score_increase
+
+    def combine(self, asi):
+        if not isinstance(asi, AbilityScoreIncrease):
+            raise ValueError('Must pass in an ability score increase!')
+        if self.ability != asi.ability:
+            raise ValueError('Ability do not match!')
+        return AbilityScoreIncrease(self.ability, self.score_increase + asi.score_increase)
+
 
 class Sizes(object):
     TINY = 'tiny'
@@ -211,10 +231,14 @@ class Languages(object):
     DWARVISH = 'dwarvish'
     GNOMISH = 'gnomish'
     DRACONIC = 'draconic'
+    INFERNAL = 'infernal'
+    CELESTIAL = 'celestial'
 
     LANGUAGES = {
         COMMON,
         DWARVISH,
         GNOMISH,
         DRACONIC,
+        INFERNAL,
+        CELESTIAL,
     }
