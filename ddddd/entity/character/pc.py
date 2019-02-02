@@ -208,6 +208,25 @@ class PlayerCharacter(base.Jsonable):
                     skill_proficiencies_p[skill][base.IS_PROFICIENT] = True
                     skill_proficiencies_p[skill][base.MODIFIER] += self.proficiency_bonus
         return skill_proficiencies_p
+
+    @property
+    def skills_by_ability(self):
+        skill_proficiencies = (self.race.skills + self.classes.skills + self.background.skills)
+
+        _ability_scores = self.ability_scores
+        skill_proficiencies_p = {}
+        for ability in Skills.SKILL_PROFICIENCIES_BY_ABILITY_SCORE.keys():
+            skill_proficiencies_p[ability] = {}
+            for skill in Skills.SKILL_PROFICIENCIES_BY_ABILITY_SCORE[ability]:
+                skill_proficiencies_p[ability][skill] = {
+                    base.ABILITY: ability,
+                    base.IS_PROFICIENT: False,
+                }
+                skill_proficiencies_p[ability][skill][base.MODIFIER] = _ability_scores[ability][base.MODIFIER]
+                if skill in skill_proficiencies:
+                    skill_proficiencies_p[ability][skill][base.IS_PROFICIENT] = True
+                    skill_proficiencies_p[ability][skill][base.MODIFIER] += self.proficiency_bonus
+        return skill_proficiencies_p
     
     @property
     def proficiencies(self):
