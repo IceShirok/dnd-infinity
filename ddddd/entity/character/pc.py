@@ -290,37 +290,3 @@ class PlayerCharacter(base.Jsonable):
             j[base.BACKPACK] = self.backpack.__json__()
     
         return j
-
-    def generate_character_sheet(self):
-        j = {
-            base.NAME: self.name,
-            base.BASIC: {
-                base.RACE: self.race_name,
-                base.CLASS: self.class_name,
-                base.LEVEL: self.level,
-                base.BACKGROUND: self.background_name,
-            },
-            base.PROF_BONUS: self.proficiency_bonus,
-            base.ABILITY_SCORES: self.ability_scores,
-            base.SAVING_THROWS: self.saving_throws,
-            base.SKILLS: self.skill_proficiencies,
-            base.PROFICIENCIES: self.proficiencies,
-            base.COMBAT: {
-                base.ARMOR_CLASS: self.armor_class,
-                base.INITIATIVE: self.initiative,
-                base.SPEED: self.speed,
-            },
-            base.HIT_POINTS: {
-                base.MAX_HP: self.max_hit_points,
-                base.TOTAL_HIT_DICE: self.total_hit_dice,
-            },
-            base.TRAITS_AND_FEATURES: self.features,
-            base.SPELLCASTING: self.spellcasting.__json__(),
-            base.EQUIPMENT: {
-                base.CARRYING_WEIGHT: self.carrying_weight,
-                base.CARRYING_CAPACITY: self.carrying_capacity,
-                base.WORN_ITEMS: self.worn_items.__json__(),
-                base.BACKPACK: self.backpack.__json__(),
-            },
-        }
-        return j
