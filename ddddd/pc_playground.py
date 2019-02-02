@@ -123,6 +123,16 @@ def create_tamiphi(level=1):
 
     def generate_equipment():
         worn_items = equipment.WornItems()
+        mace = equipment.Weapon('Mace', damage='1d6 bludgeoning', price=5, weight=4,
+                                properties=[])
+        worn_items.equip_weapon(mace)
+
+        def calc_medium_armor_rating(dex_mod):
+            # chain shirt
+            return 13 + min(dex_mod, 2)
+
+        worn_items.don_armor(equipment.Armor('Chain Shirt', price=50, weight=20,
+                                             armor_class=calc_medium_armor_rating, strength=0, stealth=''))
         return worn_items
 
     tam_equip = generate_equipment()
