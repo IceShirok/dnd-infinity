@@ -136,12 +136,12 @@ class RangerSpellcastingAbility(SpellcastingAbility):
 
 def generate_simple_spell(name, level):
     return Spell(name=name, level=level,
-                 magic_school='',
-                 casting_time='',
-                 spell_range='',
+                 magic_school='enchantment',
+                 casting_time='1 action',
+                 spell_range='30 ft',
                  components=['verbal', 'somatic'],
-                 duration='',
-                 description='')
+                 duration='instantaneous',
+                 description='This is a spell.')
 
 
 def test_spells():

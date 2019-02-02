@@ -208,6 +208,25 @@ class PlayerCharacter(base.Jsonable):
                     skill_proficiencies_p[skill][base.IS_PROFICIENT] = True
                     skill_proficiencies_p[skill][base.MODIFIER] += self.proficiency_bonus
         return skill_proficiencies_p
+
+    @property
+    def skills_by_ability(self):
+        skill_proficiencies = (self.race.skills + self.classes.skills + self.background.skills)
+
+        _ability_scores = self.ability_scores
+        skill_proficiencies_p = {}
+        for ability in Skills.SKILL_PROFICIENCIES_BY_ABILITY_SCORE.keys():
+            skill_proficiencies_p[ability] = {}
+            for skill in Skills.SKILL_PROFICIENCIES_BY_ABILITY_SCORE[ability]:
+                skill_proficiencies_p[ability][skill] = {
+                    base.ABILITY: ability,
+                    base.IS_PROFICIENT: False,
+                }
+                skill_proficiencies_p[ability][skill][base.MODIFIER] = _ability_scores[ability][base.MODIFIER]
+                if skill in skill_proficiencies:
+                    skill_proficiencies_p[ability][skill][base.IS_PROFICIENT] = True
+                    skill_proficiencies_p[ability][skill][base.MODIFIER] += self.proficiency_bonus
+        return skill_proficiencies_p
     
     @property
     def proficiencies(self):
@@ -217,6 +236,7 @@ class PlayerCharacter(base.Jsonable):
                 if prof not in p:
                     p[prof] = []
                 p[prof] = p[prof] + prof_group[prof].proficiencies
+        p[base.LANGUAGES] = self.languages
         logger.debug(p)
         return p
 
@@ -289,38 +309,4 @@ class PlayerCharacter(base.Jsonable):
         if self.backpack:
             j[base.BACKPACK] = self.backpack.__json__()
     
-        return j
-
-    def generate_character_sheet(self):
-        j = {
-            base.NAME: self.name,
-            base.BASIC: {
-                base.RACE: self.race_name,
-                base.CLASS: self.class_name,
-                base.LEVEL: self.level,
-                base.BACKGROUND: self.background_name,
-            },
-            base.PROF_BONUS: self.proficiency_bonus,
-            base.ABILITY_SCORES: self.ability_scores,
-            base.SAVING_THROWS: self.saving_throws,
-            base.SKILLS: self.skill_proficiencies,
-            base.PROFICIENCIES: self.proficiencies,
-            base.COMBAT: {
-                base.ARMOR_CLASS: self.armor_class,
-                base.INITIATIVE: self.initiative,
-                base.SPEED: self.speed,
-            },
-            base.HIT_POINTS: {
-                base.MAX_HP: self.max_hit_points,
-                base.TOTAL_HIT_DICE: self.total_hit_dice,
-            },
-            base.TRAITS_AND_FEATURES: self.features,
-            base.SPELLCASTING: self.spellcasting.__json__(),
-            base.EQUIPMENT: {
-                base.CARRYING_WEIGHT: self.carrying_weight,
-                base.CARRYING_CAPACITY: self.carrying_capacity,
-                base.WORN_ITEMS: self.worn_items.__json__(),
-                base.BACKPACK: self.backpack.__json__(),
-            },
-        }
         return j

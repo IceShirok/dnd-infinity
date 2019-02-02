@@ -1,12 +1,18 @@
 import unittest
-from ddddd.entity.character import background
+from ddddd.entity.character import background, trait
 
 
 class TestBackground(unittest.TestCase):
     def setUp(self):
         self.dorian = background.PlayerBackground(name='background',
                                                   feature=None,
-                                                  proficiencies={'skills': ['history'], 'tools': ['chess_set']},
+                                                  proficiencies={
+                                                      'skills': ['stealth', 'deception'],
+                                                      'Tool Proficiency': trait.ToolProficiency(name='Tool Proficiency',
+                                                                                                proficiencies=[
+                                                                                                    'thieves_tools',
+                                                                                                    'bone_dice']),
+                                                  },
                                                   languages=['elvish'])
 
     def test_all_proficiencies(self):
@@ -19,7 +25,7 @@ class TestBackground(unittest.TestCase):
 
     def test_nonskill_proficiencies(self):
         prof = self.dorian.proficiencies
-        self.assertTrue('tools' in prof.keys())
+        self.assertTrue('Tool Proficiency' in prof.keys())
         self.assertTrue('skills' not in prof.keys())
 
 
