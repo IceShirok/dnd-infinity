@@ -65,7 +65,7 @@ class PlayerBase(base.Jsonable):
 
     @property
     def proficiency_bonus(self):
-        # Proficiency bonus is based on a character's level.
+        """Proficiency bonus is based on a character's level."""
         return math.floor((self.level + 3) / 4) + 1
 
 
@@ -89,44 +89,54 @@ class PlayerCharacter(base.Jsonable):
 
     @property
     def name(self):
+        """Return the PC's name"""
         return self.base.name
     
     @property
     def race_name(self):
+        """Return the PC's race, by subrace."""
         return self.race.name
 
     @property
     def base_race_name(self):
+        """Return the PC's race, by base race."""
         return self.race.base_race
     
     @property
     def class_name(self):
+        """Return the PC's class."""
         # TODO maybe this will be aggregated to a class/level thing
         # this is more important with multiclassing so we can delay this
         return self.classes.name
     
     @property
     def level(self):
+        """Return the PC's character level. This is different from class level."""
         return self.base.level
     
     @property
     def background_name(self):
+        """Return the PC's background."""
         return self.background.name
     
     @property
     def proficiency_bonus(self):
+        """Return the PC's proficiency bonus."""
         return self.base.proficiency_bonus
     
     @property
     def speed(self):
+        """Return the PC's speed, by feet."""
         return self.race.speed
         
     @property
     def size(self):
+        """Return the PC's character size."""
         return self.race.size
 
     @property
     def ability_scores(self):
+        """Calculate the final ability scores after aggregating all features that can affect ability score."""
         # Calculate the scores and modifiers for each ability score
         ability_scores_agg = self.base.base_ability_scores
 
@@ -142,6 +152,7 @@ class PlayerCharacter(base.Jsonable):
 
     @property
     def armor_class(self):
+        """Calculate armor class based on armor and other features."""
         armor_obj = self.worn_items.armor
         if armor_obj:
             import inspect
@@ -154,10 +165,19 @@ class PlayerCharacter(base.Jsonable):
 
     @property
     def initiative(self):
+        """Calculate initiative based on DEX modifier and a few traits."""
         return self.ability_scores[AbilityScore.DEX].modifier
+
+    #########################
+    # HIT POINTS
+    #########################
 
     @property
     def max_hit_points(self):
+        """
+        Calculate max HP based on class hit die, CON modifier, and a few features.
+        :return: the max HP for the PC
+        """
         hit_points = 0
         hit_die = self.classes.hit_die
         con_modifier = self.ability_scores[AbilityScore.CON].modifier
@@ -170,14 +190,21 @@ class PlayerCharacter(base.Jsonable):
     
     @property
     def total_hit_dice(self):
+        """Calculate total hit dice, based on class level and hit dice."""
         return {'d{}'.format(self.classes.hit_die): self.classes.level}
 
     @property
     def total_hit_dice_prettified(self):
+        """A more prettifed verison of total hit dice."""
         return '{}d{}'.format(self.classes.level, self.classes.hit_die)
-    
+
+    #########################
+    # PROFICIENCIES
+    #########################
+
     @property
     def saving_throws(self):
+        """Calculate the PC's saving throws."""
         saving_throws = self.classes.saving_throws
         saving_throws_p = {}
         _ability_scores = self.ability_scores
@@ -188,27 +215,10 @@ class PlayerCharacter(base.Jsonable):
                 saving_throws_p[a][base.MODIFIER] += self.proficiency_bonus
                 saving_throws_p[a][base.IS_PROFICIENT] = True
         return saving_throws_p
-    
-    @property
-    def skill_proficiencies(self):
-        skill_proficiencies = (self.race.skills + self.classes.skills + self.background.skills)
-
-        _ability_scores = self.ability_scores
-        skill_proficiencies_p = {}
-        for ability in Skills.SKILL_PROFICIENCIES_BY_ABILITY_SCORE.keys():
-            for skill in Skills.SKILL_PROFICIENCIES_BY_ABILITY_SCORE[ability]:
-                skill_proficiencies_p[skill] = {
-                    base.ABILITY: ability,
-                    base.IS_PROFICIENT: False,
-                }
-                skill_proficiencies_p[skill][base.MODIFIER] = _ability_scores[ability].modifier
-                if skill in skill_proficiencies:
-                    skill_proficiencies_p[skill][base.IS_PROFICIENT] = True
-                    skill_proficiencies_p[skill][base.MODIFIER] += self.proficiency_bonus
-        return skill_proficiencies_p
 
     @property
     def skills_by_ability(self):
+        """Calculates the PC's skill modifiers, and groups the skills by ability."""
         skill_proficiencies = (self.race.skills + self.classes.skills + self.background.skills)
 
         _ability_scores = self.ability_scores
@@ -228,21 +238,19 @@ class PlayerCharacter(base.Jsonable):
     
     @property
     def proficiencies(self):
+        """Aggregate proficiencies that the PC has learned."""
         p = {}
-        for prof_group in [self.race.proficiencies, self.class_proficiencies, self.background.proficiencies]:
+        for prof_group in [self.race.proficiencies, self.classes.proficiencies, self.background.proficiencies]:
             for prof in prof_group.keys():
                 if prof not in p:
                     p[prof] = []
                 p[prof] = p[prof] + prof_group[prof].proficiencies
         p[base.LANGUAGES] = self.languages
         return p
-
-    @property
-    def class_proficiencies(self):
-        return self.classes.proficiencies
     
     @property
     def languages(self):
+        """Aggregate languages that the PC knows."""
         langs = []
         for lang_opt in [self.race.languages, self.classes.languages, self.background.languages]:
             if lang_opt:
@@ -250,42 +258,50 @@ class PlayerCharacter(base.Jsonable):
         return langs
 
     @property
-    def class_features(self):
-        return self.classes.features
-
-    @property
     def features(self):
+        """
+        Aggregates all features that the PC possesses.
+        Note that background only provides 1 feature, while race and class
+        will provide multiple features.
+        :return:
+        """
         return {
             base.RACIAL_TRAITS: self.race.traits,
-            base.CLASS_FEATURES: self.class_features,
+            base.CLASS_FEATURES: self.classes.features,
             base.BACKGROUND_FEATURES: [self.background.feature],
         }
 
     @property
     def spellcasting(self):
+        """Retrieve a PC's spellcasting ability."""
         return self.classes.spellcasting
 
     @property
     def spell_attack_bonus(self):
+        """Calculate a PC's spell attack bonus, if the PC can cast spells."""
         if self.spellcasting:
             return self.spellcasting.spell_attack_bonus(self.ability_scores, self.proficiency_bonus)
         return None
 
     @property
     def spell_save_dc(self):
+        """Calculate a PC's spell save DC, if the PC can cast spells."""
         if self.spellcasting:
             return self.spellcasting.spell_save_dc(self.ability_scores, self.proficiency_bonus)
         return None
 
     @property
     def carrying_weight(self):
+        """Calculate the total weight of all items that PC is currently carrying."""
         return self.worn_items.total_weight + self.backpack.total_weight
 
     @property
     def carrying_capacity(self):
+        """Calculate the maximum amount of weight the PC can carry."""
         return self.ability_scores[AbilityScore.STR].score * 15 * self.race.str_movement_multiplier
 
     def calculate_weapon_bonuses(self):
+        """Calculate weapon bonuses."""
         bonuses = {}
         weapons = self.worn_items.weapons
         weapon_proficiencies = self.proficiencies[base.WEAPON_PROFICIENCY] if base.WEAPON_PROFICIENCY in self.proficiencies else []
@@ -299,23 +315,3 @@ class PlayerCharacter(base.Jsonable):
                 'damage': '{} + {}'.format(weapon.damage, damage_bonus),
             }
         return bonuses
-
-    def __json__(self):
-        j = self.base.__json__()
-
-        if self.race:
-            j[base.RACE] = self.race.__json__()
-
-        if self.classes:
-            j[base.CLASS] = self.classes.__json__()
-
-        if self.background:
-            j[base.BACKGROUND] = self.background.__json__()
-
-        if self.worn_items:
-            j[base.WORN_ITEMS] = self.worn_items.__json__()
-
-        if self.backpack:
-            j[base.BACKPACK] = self.backpack.__json__()
-    
-        return j
