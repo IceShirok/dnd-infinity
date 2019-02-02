@@ -84,10 +84,10 @@ class SpellcastingAbility(base.Jsonable):
         self.list_spells_known = list_spells_known
 
     def spell_save_dc(self, ability_scores, proficiency_bonus):
-        return 8 + ability_scores[self.spellcasting_ability][base.MODIFIER] + proficiency_bonus
+        return 8 + ability_scores[self.spellcasting_ability].modifier + proficiency_bonus
 
     def spell_attack_bonus(self, ability_scores, proficiency_bonus):
-        return ability_scores[self.spellcasting_ability][base.MODIFIER] + proficiency_bonus
+        return ability_scores[self.spellcasting_ability].modifier + proficiency_bonus
 
     def _verify(self):
         cantrips = list(filter(lambda x: x.level == 0, self.list_spells_known))

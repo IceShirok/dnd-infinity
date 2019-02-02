@@ -146,6 +146,15 @@
 
             {% if pc.spellcasting %}
             <h4>Spellcasting</h4>
+
+            <dl>
+                <dt>Spellcasting Ability</dt>
+                <dd>{{ pc.spellcasting.spellcasting_ability }}</dd>
+                <dt>Spell Save DC</dt>
+                <dd>{{ pc.spell_save_dc }}</dd>
+                <dt>Spell Attack Bonus</dt>
+                <dd>{{ pc.spell_attack_bonus }}</dd>
+            </dl>
             {% for spell_type in pc.spellcasting.spell_slots.keys() %}
 
             <h5>

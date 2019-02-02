@@ -82,7 +82,11 @@ class PlayerCharacter(base.Jsonable):
         self.background = background
         self.worn_items = worn_items if worn_items else equipment.WornItems()
         self.backpack = backpack if backpack else equipment.Backpack()
-    
+
+    #########################
+    # BASIC PROPERTIES
+    #########################
+
     @property
     def name(self):
         return self.base.name
@@ -260,6 +264,18 @@ class PlayerCharacter(base.Jsonable):
     @property
     def spellcasting(self):
         return self.classes.spellcasting
+
+    @property
+    def spell_attack_bonus(self):
+        if self.spellcasting:
+            return self.spellcasting.spell_attack_bonus(self.ability_scores, self.proficiency_bonus)
+        return None
+
+    @property
+    def spell_save_dc(self):
+        if self.spellcasting:
+            return self.spellcasting.spell_save_dc(self.ability_scores, self.proficiency_bonus)
+        return None
 
     @property
     def carrying_weight(self):
