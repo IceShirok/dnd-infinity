@@ -23,16 +23,8 @@ def main():
     print('bye')
 
 
-def create_dorian():
-    level = 5
+def create_dorian(level=5):
     dorian_base = pc.PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=level)
-    # tool_prof = {
-    #     'tool_proficiency': {
-    #         'name': 'Tool Proficiency',
-    #         'tools': [],
-    #         'description': 'You gain proficiency with the artisan''s tools of your choice: smith''s tools, brewer''s supplies, or mason''s tools.',
-    #     }
-    # }
     tool_prof = [
         trait.ToolProficiency(name='Tool Proficiency',
                               proficiencies=['brewers_kit'])
@@ -42,10 +34,11 @@ def create_dorian():
                                  favored_enemy='plants',
                                  languages='elvish',
                                  favored_terrain='forest')
-    dorian_class.level_to(level=level,
-                          fighting_style='two_weapon_fighting',
-                          archetype_feature='colossus_slayer',
-                          ability_score_increase={'STR': 2})
+    if level > 1:
+        dorian_class.level_to(level=level,
+                              fighting_style='two_weapon_fighting',
+                              archetype_feature='colossus_slayer',
+                              ability_score_increase={'STR': 2})
     dorian_background = background.Criminal()
     dorian_equip = generate_equipment()
     dorian_backpack = generate_backpack()

@@ -25,15 +25,15 @@ class PlayerBase(base.Jsonable):
     Why level by experience and not by class? I'm thinking a little
     too far ahead, but it's because of multiclassing.
     """
-    def __init__(self, name, _str, _dex, _con, _int, _wis, _cha, level=1):
+    def __init__(self, name, str_, dex_, con_, int_, wis_, cha_, level=1):
         self.name = name
 
-        self._str = _str
-        self._dex = _dex
-        self._con = _con
-        self._int = _int
-        self._wis = _wis
-        self._cha = _cha
+        self.str_ = str_
+        self.dex_ = dex_
+        self.con_ = con_
+        self.int_ = int_
+        self.wis_ = wis_
+        self.cha_ = cha_
 
         self.level = level
 
@@ -43,12 +43,12 @@ class PlayerBase(base.Jsonable):
         Return the base ability scores.
         """
         return {
-            AbilityScore.STR: self._str,
-            AbilityScore.DEX: self._dex,
-            AbilityScore.CON: self._con,
-            AbilityScore.INT: self._int,
-            AbilityScore.WIS: self._wis,
-            AbilityScore.CHA: self._cha,
+            AbilityScore.STR: self.str_,
+            AbilityScore.DEX: self.dex_,
+            AbilityScore.CON: self.con_,
+            AbilityScore.INT: self.int_,
+            AbilityScore.WIS: self.wis_,
+            AbilityScore.CHA: self.cha_,
         }
 
     def __json__(self):
