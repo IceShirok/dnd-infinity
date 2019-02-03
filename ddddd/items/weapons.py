@@ -1,4 +1,4 @@
-
+from ddddd.entity import base
 from ddddd.items.items import Item
 
 
@@ -22,6 +22,13 @@ class Weapon(Item):
 SIMPLE = 'simple'
 MARTIAL = 'martial'
 
+LIGHT = 'light'
+FINESSE = 'finesse'
+HEAVY = 'heavy'
+TWO_HANDED = 'two-handed'
+AMMUNITION = 'ammunition'
+THROWN = 'thrown'
+
 #############################
 # WEAPONS
 #############################
@@ -32,15 +39,15 @@ MACE = Weapon('Mace', category=SIMPLE, damage='1d6 bludgeoning',
 
 HANDAXE = Weapon('Handaxe', category=SIMPLE, damage='1d6 slashing',
                  price=5, weight=2,
-                 properties=['light', 'thrown (range 20/60)'])
+                 properties=[LIGHT, 'thrown (range 20/60)'])
 
 RAPIER = Weapon('Rapier', category=MARTIAL, damage='1d8 piercing',
                 price=25, weight=2,
-                properties=['finesse'])
+                properties=[FINESSE])
 
 LONGBOW = Weapon('Longbow', category=MARTIAL, damage='1d8 piercing',
                  price=50, weight=2,
-                 properties=['ammunition (range 150/600)', 'heavy', 'two-handed'])
+                 properties=['ammunition (range 150/600)', HEAVY, TWO_HANDED])
 
 WEAPON_TYPE_TO_WEAPONS = {
     SIMPLE: [MACE, HANDAXE],
@@ -63,3 +70,21 @@ def get_aggregated_weapon_proficiencies(proficiencies):
                 prof_agg.remove(weapon.name)
         return prof_agg
     return prof_agg
+
+
+def determine_attack_bonus_type(weapon, ability_scores):
+    str_mod = (base.AbilityScore.STR, ability_scores[base.AbilityScore.STR].modifier)
+    dex_mod = (base.AbilityScore.DEX, ability_scores[base.AbilityScore.DEX].modifier)
+
+    attack_mod = str_mod
+    for w_prop in weapon.properties:
+        w_prop = w_prop.lower()
+        if AMMUNITION in w_prop:  # Weapon is ranged only
+            attack_mod = dex_mod
+        elif FINESSE in w_prop:  # Weapon is finesse
+            attack_mod = dex_mod if dex_mod[1] > str_mod[1] else str_mod
+    return attack_mod
+
+
+def is_proficient(weapon, weapon_proficiencies):
+    return weapon.category.lower() in weapon_proficiencies or weapon.name.lower() in weapon_proficiencies

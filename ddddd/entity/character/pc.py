@@ -356,24 +356,12 @@ class PlayerCharacter(object):
     def calculate_weapon_bonuses(self):
         """Calculate weapon bonuses."""
         bonuses = {}
-        weapons = self.worn_items.weapons
+        weapons_ = self.worn_items.weapons
         weapon_proficiencies = self.proficiencies[base.WEAPON_PROFICIENCY] if base.WEAPON_PROFICIENCY in self.proficiencies else []
-        for weapon in weapons:
-            str_mod = (base.AbilityScore.STR, self.ability_scores[base.AbilityScore.STR].modifier)
-            dex_mod = (base.AbilityScore.DEX, self.ability_scores[base.AbilityScore.DEX].modifier)
-
-            attack_mod = str_mod
-            # TODO make this more elegant
-            for w_prop in weapon.properties:
-                w_prop = w_prop.lower()
-                if 'ammunition' in w_prop:  # Weapon is ranged only
-                    attack_mod = dex_mod
-                elif 'finesse' in w_prop:  # Weapon is finesse
-                    attack_mod = dex_mod if dex_mod[1] > str_mod[1] else str_mod
-
-            attack_type, damage_bonus = attack_mod
+        for weapon in weapons_:
+            attack_type, damage_bonus = weapons.determine_attack_bonus_type(weapon, self.ability_scores)
             attack_prof = 0
-            if weapon.category in weapon_proficiencies or weapon.name in weapon_proficiencies:
+            if weapons.is_proficient(weapon, weapon_proficiencies):
                 attack_prof = self.proficiency_bonus
             bonuses[weapon.name] = {
                 'weapon': weapon,
