@@ -168,11 +168,13 @@ class PlayerCharacter(object):
         hit_points = 0
         hit_die = self.classes.hit_die
         con_modifier = self.ability_scores[AbilityScore.CON].modifier
+        toughness = len(list(filter(lambda exp: isinstance(exp, trait.Toughness), self.race.traits)))
+
         for i in range(1, self.classes.level+1):
             if hit_points <= 0:
-                hit_points = hit_die + con_modifier
+                hit_points = hit_die + con_modifier + toughness
             else:
-                hit_points += math.ceil(hit_die/2) + con_modifier
+                hit_points += math.ceil(hit_die/2) + con_modifier + toughness
         return hit_points
     
     @property
