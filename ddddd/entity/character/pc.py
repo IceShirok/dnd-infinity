@@ -281,6 +281,7 @@ class PlayerCharacter(object):
         bonuses = {}
         for cantrip in damage_cantrips:
             bonuses[cantrip.name] = {
+                'cantrip': cantrip,
                 'attack_bonus': cantrip.attack_bonus_calc(self.spell_attack_bonus, self.spell_save_dc),
                 'damage': cantrip.damage_calc(self.level),
             }
@@ -338,6 +339,7 @@ class PlayerCharacter(object):
             if weapon.category in weapon_proficiencies or weapon.name in weapon_proficiencies:
                 attack_prof = self.proficiency_bonus
             bonuses[weapon.name] = {
+                'weapon': weapon,
                 'attack_bonus': damage_bonus + attack_prof,
                 'damage': '{} + {}'.format(weapon.damage, damage_bonus),
             }

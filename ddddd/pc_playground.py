@@ -69,7 +69,6 @@ def create_dorian(level=5):
             equipment.Armor('Chain Shirt', price=50, weight=20, armor_class=calc_medium_armor_rating, strength=0,
                             stealth=''))
 
-        logger.debug(json.dumps(backpack.__json__(), indent=4))
         return backpack
 
     def generate_equipment():
@@ -92,7 +91,6 @@ def create_dorian(level=5):
         worn_items.equip_weapon(rondel)
         worn_items.equip_weapon(lefon)
         worn_items.equip_weapon(longbow)
-        logger.debug(json.dumps(worn_items.__json__(), indent=4))
         return worn_items
 
     dorian_equip = generate_equipment()

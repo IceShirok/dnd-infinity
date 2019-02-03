@@ -82,7 +82,7 @@ class Cantrip(Spell):
                  casting_time, spell_range, components, duration,
                  description):
         super(Cantrip, self).__init__(name=name,
-                                      level=0,
+                                      level='cantrip',
                                       magic_school=magic_school,
                                       casting_time=casting_time,
                                       spell_range=spell_range,
@@ -133,7 +133,6 @@ def spell_attack(spell_attack_bonus, _):
 
 def damage_by_level_with_dice(dice_format):
     def damage_by_level(caster_level):
-        num_dice = 0
         if caster_level < 5:
             num_dice = 1
         elif caster_level < 11:
