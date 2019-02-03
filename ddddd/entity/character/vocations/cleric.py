@@ -17,11 +17,13 @@ class Cleric(Vocation):
             trait.Trait(name='Divine Domain',
                         description='You have chosen to worship Ioun, goddess of knowledge. \
                                     Your divine domain is the Knowledge Domain.'),
-            trait.Trait(name='Blessings of Knowledge',
-                        description='At 1st level, you learn two languages of your choice. \
-                        You also become proficient in your choice of two of the following skills: \
-                        Arcana, History, Nature, or Religion. Your proficiency bonus is doubled \
-                        for any ability check you make that uses either of those skills.'),
+            trait.Expertise(name='Blessings of Knowledge',
+                            description='At 1st level, you learn two languages of your choice. \
+                            You also become proficient in your choice of two of the following skills: \
+                            Arcana, History, Nature, or Religion. Your proficiency bonus is doubled \
+                            for any ability check you make that uses either of those skills.',
+                            skills=[Skills.ARCANA, Skills.HISTORY],
+                            proficiencies=None),
             languages,
         ]
 

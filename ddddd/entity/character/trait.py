@@ -64,9 +64,10 @@ class Toughness(Trait):
 
 
 class Expertise(Trait):
-    def __init__(self, skills, proficiencies, name=None):
+    def __init__(self, skills, proficiencies, name=None, description=None):
+        description = description if description else 'Your Proficiency Bonus is doubled for any ability check \
+                                        you make that uses the chosen proficiencies.'
         super(Expertise, self).__init__(name=name if name else 'Expertise',
-                                        description='Your Proficiency Bonus is doubled for any ability check \
-                                        you make that uses the chosen proficiencies.')
+                                        description=description)
         self.skills = skills if skills else []
         self.proficiencies = proficiencies if proficiencies else []
