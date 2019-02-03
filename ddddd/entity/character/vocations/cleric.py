@@ -143,7 +143,7 @@ class Cleric(Vocation):
         return req
 
     def _add_level_4_features(self, **kwargs):
-        ability_score_increase = kwargs['ability_score_increase']
+        ability_score_increase = kwargs['ability_score_increase_4']
         for ability in ability_score_increase.keys():
             if ability not in self.asi:
                 self.asi[ability] = ability_score_increase[ability]
@@ -242,7 +242,7 @@ class Cleric(Vocation):
         return {}
 
     def _add_level_8_features(self, **kwargs):
-        return {}
+        self._aggregate_ability_score_increase(kwargs['ability_score_increase_8'])
 
     def _add_level_9_features(self, **kwargs):
         return {}
@@ -254,7 +254,7 @@ class Cleric(Vocation):
         return {}
 
     def _add_level_12_features(self, **kwargs):
-        return {}
+        self._aggregate_ability_score_increase(kwargs['ability_score_increase_12'])
 
     def _add_level_13_features(self, **kwargs):
         return {}
@@ -266,7 +266,7 @@ class Cleric(Vocation):
         return {}
 
     def _add_level_16_features(self, **kwargs):
-        return {}
+        self._aggregate_ability_score_increase(kwargs['ability_score_increase_16'])
 
     def _add_level_17_features(self, **kwargs):
         return {}
@@ -275,10 +275,17 @@ class Cleric(Vocation):
         return {}
 
     def _add_level_19_features(self, **kwargs):
-        return {}
+        self._aggregate_ability_score_increase(kwargs['ability_score_increase_19'])
 
     def _add_level_20_features(self, **kwargs):
         return {}
+
+    def _aggregate_ability_score_increase(self, asi):
+        for ability in asi.keys():
+            if ability not in self.asi:
+                self.asi[ability] = asi[ability]
+            else:
+                self.asi[ability] = self.asi[ability].combine(asi[ability])
 
 
 class ClericSpellcastingAbility(spells.SpellcastingAbility):

@@ -22,7 +22,7 @@ def get_available_characters():
             'create': create_dorian,
         },
         'tamiphi': {
-            'max_level': 5,
+            'max_level': 20,
             'create': create_tamiphi,
         },
         'fethri': {
@@ -94,8 +94,21 @@ def create_tamiphi(level=1):
     if level > 1:
         vocation.level_to(level=level,
                           cantrip_4=spells.WORD_OF_RADIANCE,
-                          ability_score_increase={
+                          ability_score_increase_4={
                               base.AbilityScore.WIS: base.AbilityScoreIncrease(base.AbilityScore.WIS, 2),
+                          },
+                          ability_score_increase_8={
+                              base.AbilityScore.WIS: base.AbilityScoreIncrease(base.AbilityScore.WIS, 2),
+                          },
+                          ability_score_increase_12={
+                              base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 1),
+                              base.AbilityScore.DEX: base.AbilityScoreIncrease(base.AbilityScore.DEX, 1),
+                          },
+                          ability_score_increase_16={
+                              base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 2),
+                          },
+                          ability_score_increase_19={
+                              base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 2),
                           })
     bg_languages = trait.LanguagesKnown(languages=[base.Languages.CELESTIAL, base.Languages.INFERNAL])
     background_ = background.Sage(bg_languages)
