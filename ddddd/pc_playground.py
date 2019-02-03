@@ -15,6 +15,15 @@ logger.addHandler(ch)
 
 
 def create_dorian(level=5):
+    """
+    Creates Dorian, a dwarf ranger.
+    The dwarf race provides a suite of features while also giving choices
+    to proficiencies and stat-altering features.
+    The ranger class provides a good mix of features that a PC can have,
+    as a martial class with basic spellcasting abilities.
+    :param level: the character level
+    :return: Dorian the dwarf ranger
+    """
     dorian_base = pc.PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=level)
     tool_prof = [
         trait.ToolProficiency(name='Tool Proficiency',
@@ -98,6 +107,15 @@ def create_dorian(level=5):
 
 
 def create_tamiphi(level=1):
+    """
+    Creates Tamiphi, a gnome cleric.
+    The gnome race is extremely straightforward, as it provides all
+    features without user input.
+    The cleric class, especially a knowledge domain cleric, is a pure
+    spellcaster that is suited to test out the spellcasting feature.
+    :param level: the character level
+    :return: Tamiphi the gnome cleric
+    """
     tamiphi_base = pc.PlayerBase("Tamiphi Tockentell", 10, 11, 15, 14, 16, 7, level=level)
     tam_race = race.RockGnome()
     class_languages = trait.LanguagesKnown(languages=[base.Languages.DRACONIC, base.Languages.DWARVISH])
@@ -138,12 +156,22 @@ def create_tamiphi(level=1):
 
 
 def create_fethri(level=1):
+    """
+    Creates Fethri, a tiefling rogue.
+    The tiefling race is straightforward, providing a suite of features
+    without user input.
+    The rogue class, especially the mastermind, is perfect to test out
+    aggregations of skills and attack features without needing to focus
+    on spellcasting at all.
+    :param level: the character level
+    :return: Fethri the tiefling rogue
+    """
     fethri_base = pc.PlayerBase("Fethri Winterwhisper", 10, 14, 12, 15, 11, 12, level=level)
     tool_prof = [
         trait.ToolProficiency(name='Tool Proficiency',
                               proficiencies=['brewers_kit'])
     ]
-    fethri_race = race.Tiefling(traits=tool_prof)
+    fethri_race = race.Tiefling()
     fethri_class = rogue.Rogue(skill_proficiencies=[Skills.INVESTIGATION,
                                                     Skills.DECEPTION,
                                                     Skills.STEALTH],

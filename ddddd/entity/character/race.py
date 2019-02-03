@@ -175,7 +175,7 @@ class RockGnome(Gnome):
 #############################
 
 class Tiefling(Race):
-    def __init__(self, traits):
+    def __init__(self):
         def_asi = {
             base.AbilityScore.CHA: base.AbilityScoreIncrease(base.AbilityScore.CHA, 2),
             base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 1)
@@ -193,7 +193,7 @@ class Tiefling(Race):
                                        size=Sizes.MEDIUM,
                                        speed=30,
                                        languages=trait.LanguagesKnown(languages=[Languages.COMMON, Languages.INFERNAL]),
-                                       traits=def_traits + traits)
+                                       traits=def_traits)
 
     @property
     def base_race(self):
