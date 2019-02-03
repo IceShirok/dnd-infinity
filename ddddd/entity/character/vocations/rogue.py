@@ -1,3 +1,5 @@
+import math
+
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScore, Skills, Languages, SpellTypes
 from ddddd.entity.character import spells, trait
@@ -43,6 +45,7 @@ class Rogue(Vocation):
         pass
 
     def _add_level_2_features(self, **kwargs):
+        self.features['sneak_attack'] = SneakAttack(level=2)
         self.features['cunning_action'] = trait.Trait(name='Cunning Action',
                                                       description='Starting at 2nd level, your quick thinking and agility \
                                                       allow you to move and act quickly.')
@@ -51,6 +54,7 @@ class Rogue(Vocation):
         pass
 
     def _add_level_3_features(self, **kwargs):
+        self.features['sneak_attack'] = SneakAttack(level=3)
         new_gaming_set = kwargs['gaming_set']
         for proficiency in ['disguise_kit', 'forgery_kit', new_gaming_set]:
             self.proficiencies[base.TOOL_PROFICIENCY].proficiencies.append(proficiency)
@@ -60,7 +64,8 @@ class Rogue(Vocation):
                                                           that you hear speak for at least 1 minute.')
 
         new_languages = kwargs[base.LANGUAGES]
-        self.features['master_of_intrigue_languages'] = new_languages
+        self.features['master_of_intrigue_languages'] = trait.LanguagesKnown(name='Master of Intrigue: Languages',
+                                                                             languages=new_languages.languages)
 
         self.features['master_of_tactics'] = trait.Trait(name='Master of Tactics',
                                                          description='Starting at 3rd level, you can use the Help action as a bonus action. \
@@ -72,6 +77,7 @@ class Rogue(Vocation):
         pass
 
     def _add_level_4_features(self, **kwargs):
+        self.features['sneak_attack'] = SneakAttack(level=4)
         ability_score_increase = kwargs['ability_score_increase']
         for ability in ability_score_increase.keys():
             if ability not in self.asi:
@@ -83,6 +89,7 @@ class Rogue(Vocation):
         pass
 
     def _add_level_5_features(self, **kwargs):
+        self.features['sneak_attack'] = SneakAttack(level=5)
         self.features['uncanny_dodge'] = trait.Trait(name='Uncanny Dodge',
                                                      description='Starting at 5th level, when an attacker that you can see hits you with an Attack, \
                                                      you can use your Reaction to halve the attack''s damage against you.')
@@ -135,7 +142,7 @@ class Rogue(Vocation):
 
 class SneakAttack(trait.Trait):
     def __init__(self, level):
-        self.attack_bonus = '{}d6'.format((level+1)/2)
+        self.attack_bonus = '{}d6'.format(math.floor((level+1)/2))
         super(SneakAttack, self).__init__(name='Sneak Attack',
                                           description='Beginning at 1st level, you know how to strike subtly \
                                           and exploit a foe''s distraction. \
