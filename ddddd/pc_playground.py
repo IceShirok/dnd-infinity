@@ -69,7 +69,6 @@ def create_dorian(level=5):
             equipment.Armor('Chain Shirt', price=50, weight=20, armor_class=calc_medium_armor_rating, strength=0,
                             stealth=''))
 
-        logger.debug(json.dumps(backpack.__json__(), indent=4))
         return backpack
 
     def generate_equipment():
@@ -82,17 +81,16 @@ def create_dorian(level=5):
 
         armor = equipment.Armor('Chain Mail', price=75, weight=55, armor_class=calc_heavy_armor_rating, strength=15,
                                 stealth='disadvantage')
-        rondel = equipment.Weapon('handaxe', damage='1d6 slashing', price=5, weight=2,
+        rondel = equipment.Weapon('handaxe', category='simple', damage='1d6 slashing', price=5, weight=2,
                                   properties=['light', 'thrown (range 20/60)'])
-        lefon = equipment.Weapon('handaxe', damage='1d6 slashing', price=5, weight=2,
+        lefon = equipment.Weapon('handaxe', category='simple', damage='1d6 slashing', price=5, weight=2,
                                  properties=['light', 'thrown (range 20/60)'])
-        longbow = equipment.Weapon('longbow', damage='1d8 piercing', price=50, weight=2,
+        longbow = equipment.Weapon('longbow', category='martial', damage='1d8 piercing', price=50, weight=2,
                                    properties=['ammunition (range 150/600)', 'heavy', 'two-handed'])
         worn_items.don_armor(armor)
         worn_items.equip_weapon(rondel)
         worn_items.equip_weapon(lefon)
         worn_items.equip_weapon(longbow)
-        logger.debug(json.dumps(worn_items.__json__(), indent=4))
         return worn_items
 
     dorian_equip = generate_equipment()
@@ -123,6 +121,16 @@ def create_tamiphi(level=1):
 
     def generate_equipment():
         worn_items = equipment.WornItems()
+        mace = equipment.Weapon('Mace', category='simple', damage='1d6 bludgeoning', price=5, weight=4,
+                                properties=[])
+        worn_items.equip_weapon(mace)
+
+        def calc_medium_armor_rating(dex_mod):
+            # chain shirt
+            return 13 + min(dex_mod, 2)
+
+        worn_items.don_armor(equipment.Armor('Chain Shirt', price=50, weight=20,
+                                             armor_class=calc_medium_armor_rating, strength=0, stealth=''))
         return worn_items
 
     tam_equip = generate_equipment()

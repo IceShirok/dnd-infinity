@@ -21,7 +21,7 @@ class TestBackground(unittest.TestCase):
 
     def test_skills(self):
         skills = self.dorian.skills
-        self.assertEqual(1, len(skills))
+        self.assertEqual(2, len(skills))
 
     def test_nonskill_proficiencies(self):
         prof = self.dorian.proficiencies

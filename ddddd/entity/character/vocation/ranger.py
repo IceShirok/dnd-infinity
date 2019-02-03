@@ -1,4 +1,3 @@
-
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScore, Skills, Languages, SpellTypes
 from ddddd.entity.character import spells, trait
@@ -101,10 +100,10 @@ class Ranger(PlayerClass):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        self.spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
-                                                             list_spells_known=list_spells,
-                                                             spell_slots={SpellTypes.FIRST: 2},
-                                                             num_spells_known=2)
+        self.spellcasting = RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
+                                                      list_spells_known=list_spells,
+                                                      spell_slots={SpellTypes.FIRST: 2},
+                                                      num_spells_known=2)
 
     def _level_3_requirements(self):
         req = {
@@ -146,10 +145,10 @@ class Ranger(PlayerClass):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        self.spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
-                                                             list_spells_known=list_spells,
-                                                             spell_slots={SpellTypes.FIRST: 3},
-                                                             num_spells_known=3)
+        self.spellcasting = RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
+                                                      list_spells_known=list_spells,
+                                                      spell_slots={SpellTypes.FIRST: 3},
+                                                      num_spells_known=3)
 
     def _level_4_requirements(self):
         req = {
@@ -198,7 +197,20 @@ class Ranger(PlayerClass):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        self.spellcasting = spells.RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
-                                                             list_spells_known=list_spells,
-                                                             spell_slots={SpellTypes.FIRST: 4, SpellTypes.SECOND: 2},
-                                                             num_spells_known=4)
+        self.spellcasting = RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
+                                                      list_spells_known=list_spells,
+                                                      spell_slots={SpellTypes.FIRST: 4, SpellTypes.SECOND: 2},
+                                                      num_spells_known=4)
+
+
+class RangerSpellcastingAbility(spells.SpellcastingAbility):
+    def __init__(self, spellcasting_ability, spell_slots, list_spells_known, num_spells_known):
+        super(RangerSpellcastingAbility, self).__init__(spellcasting_ability, spell_slots, list_spells_known)
+        self.num_spells_known = num_spells_known
+        self._verify()
+
+    def _verify(self):
+        super(RangerSpellcastingAbility, self)._verify()
+        spells_ = list(filter(lambda x: x.level != base.SpellTypes.CANTRIPS, self.list_spells_known))
+        if len(spells_) != self.num_spells_known:
+            raise ValueError('Must have {} spells but inputted {} spells!'.format(self.num_spells_known, len(spells_)))

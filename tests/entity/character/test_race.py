@@ -28,7 +28,7 @@ class TestDwarfRace(unittest.TestCase):
                                  traits=tool_prof)
 
     def test_default_traits(self):
-        self.assertEqual({'CON': 2}, self.dorian.asi)
+        self.assertEqual(2, self.dorian.asi['CON'].score_increase)
 
         expected_trait_names = {'Darkvision',
                                 'Dwarven Combat Training',
@@ -70,7 +70,8 @@ class TestHillDwarfRace(unittest.TestCase):
         self.dorian = race.HillDwarf(traits=tool_prof)
 
     def test_default_traits(self):
-        self.assertEqual({'CON': 2, 'WIS': 1}, self.dorian.asi)
+        self.assertEqual(2, self.dorian.asi['CON'].score_increase)
+        self.assertEqual(1, self.dorian.asi['WIS'].score_increase)
 
         expected_trait_names = {'Darkvision',
                                 'Dwarven Combat Training',

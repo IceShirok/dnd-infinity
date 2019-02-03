@@ -1,17 +1,59 @@
 
-import json
-
 from ddddd.entity import base
-from ddddd.entity.base import AbilityScore
 
 
-class Spell(base.Jsonable):
+class SpellcastingAbility(object):
+    """
+    An object representing a character's ability to cast spells.
+    This is likely going to be delegated to the class factory, as each class
+    will known the number of spells and the available spell slots
+    for that class and level. I'm not sure whether to add the spellcasting
+    bonus and DCs here or at the class level...
+    """
+    def __init__(self, spellcasting_ability, spell_slots, list_spells_known):
+        self.spellcasting_ability = spellcasting_ability
+        self.spell_slots = spell_slots
+        self.list_spells_known = list_spells_known
+
+    def spell_save_dc(self, ability_scores, proficiency_bonus):
+        return 8 + ability_scores[self.spellcasting_ability].modifier + proficiency_bonus
+
+    def spell_attack_bonus(self, ability_scores, proficiency_bonus):
+        return ability_scores[self.spellcasting_ability].modifier + proficiency_bonus
+
+    def _verify(self):
+        cantrips = list(filter(lambda x: x.level == 0, self.list_spells_known))
+        if len(cantrips) > 0:
+            if base.SpellTypes.CANTRIPS not in self.spell_slots:
+                raise ValueError('Cannot learn cantrips!')
+            num_cantrips_know = self.spell_slots[base.SpellTypes.CANTRIPS]
+            if len(cantrips) != num_cantrips_know:
+                raise ValueError('Must have {} cantrips but inputted {} cantrips!'.format(num_cantrips_know, len(cantrips)))
+
+        spells = list(filter(lambda x: x.level != base.SpellTypes.CANTRIPS, self.list_spells_known))
+        for s in spells:
+            if s.level not in self.spell_slots:
+                raise ValueError('Cannot cast a {}-level spell - you don''t have the spell slots for it!'.format(s.level))
+
+
+def generate_simple_spell(name, level):
+    return Spell(name=name, level=level,
+                 magic_school='enchantment',
+                 casting_time='1 action',
+                 spell_range='30 ft',
+                 components=['verbal', 'somatic'],
+                 duration='instantaneous',
+                 description='This is a spell.')
+
+
+class Spell(object):
     """
     A singular spell in D&D.
     I will very likely keep the majority of the information in a database
     because of the sheer number of spells in the book. Some spells will
     be manually created into objects for testing purposes.
     """
+
     def __init__(self, name, level, magic_school,
                  casting_time, spell_range, components, duration,
                  description):
@@ -23,32 +65,131 @@ class Spell(base.Jsonable):
         self.components = components
         self.duration = duration
         self.description = description
-    
-    def __json__(self):
-        return {
-            base.SPELL: self.name,
-            # 'level': self.level,
-            # 'magic_school': self.magic_school,
-            # 'casting_time': self.casting_time,
-            # 'range': self.spell_range,
-            # 'components': self.components,
-            # 'duration': self.duration,
-            # 'description': self.description,
-        }
-
-    def __str__(self):
-        return json.dumps(self.__json__(), indent=4)
 
 
-# Cantrips (level 0 spells)
-CHILL_TOUCH = Spell(name='Chill Touch',
-                    level=base.SpellTypes.CANTRIPS,
-                    magic_school='necromancy',
-                    casting_time='1 action',
-                    spell_range='120ft',
-                    components=['verbal', 'somatic'],
-                    duration='1 round',
-                    description='You create a ghostly, skeletal hand in the space of a creature within range.')
+class Cantrip(Spell):
+    """
+    A cantrip is a spell that can be cast at will, without using a spell slot
+    and without being prepared in advance. Repeated practice has fixed the spell
+    in the caster's mind and infused the caster with the magic needed to produce
+    the effect over and over. A cantrip's spell level is 0.
+
+    A cantrip is its separate class because a cantrip is not exhausted like
+    a spell slot. It's better to say that it could be treated as a weapon.
+    """
+
+    def __init__(self, name, magic_school,
+                 casting_time, spell_range, components, duration,
+                 description):
+        super(Cantrip, self).__init__(name=name,
+                                      level='cantrip',
+                                      magic_school=magic_school,
+                                      casting_time=casting_time,
+                                      spell_range=spell_range,
+                                      components=components,
+                                      duration=duration,
+                                      description=description)
+
+
+class DamageCantrip(Cantrip):
+    """
+    A damage cantrip is a cantrip that would act as the spellcaster's
+    magical weapon. This cantrip is able to spit out the calculations
+    for attack bonuses/spell save DC and damage like a weapon.
+    """
+    def __init__(self, name, magic_school,
+                 casting_time, spell_range, components, duration,
+                 description, attack_bonus_calc, damage_calc):
+        super(DamageCantrip, self).__init__(name=name,
+                                            magic_school=magic_school,
+                                            casting_time=casting_time,
+                                            spell_range=spell_range,
+                                            components=components,
+                                            duration=duration,
+                                            description=description)
+        self.attack_bonus_calc = attack_bonus_calc
+        self.damage_calc = damage_calc
+
+    def calculate_attack_bonus(self, spell_attack_bonus, spell_save_dc):
+        return self.attack_bonus_calc(spell_attack_bonus, spell_save_dc)
+
+    def calculate_damage_calc(self, caster_level):
+        return self.damage_calc(caster_level)
+
+
+##############################
+# CANTRIPS
+##############################
+
+def spell_dc_with_ability(ability):
+    def spell_dc(_, spell_save_dc):
+        return '{} DC {}'.format(ability, spell_save_dc)
+    return spell_dc
+
+
+def spell_attack(spell_attack_bonus, _):
+    return '{}'.format(spell_attack_bonus)
+
+
+def damage_by_level_with_dice(dice_format):
+    def damage_by_level(caster_level):
+        if caster_level < 5:
+            num_dice = 1
+        elif caster_level < 11:
+            num_dice = 2
+        elif caster_level < 17:
+            num_dice = 3
+        else:
+            num_dice = 4
+        return dice_format.format(num_dice)
+    return damage_by_level
+
+
+SACRED_FLAME = DamageCantrip(name='Sacred Flame',
+                             magic_school='evocation',
+                             casting_time='1 action',
+                             spell_range=60,
+                             components=['verbal', 'somatic'],
+                             duration='instantaneous',
+                             description='Flame-like radiance descends on a creature that you can see within range.',
+                             attack_bonus_calc=spell_dc_with_ability(base.AbilityScore.DEX),
+                             damage_calc=damage_by_level_with_dice('{}d8 fire'))
+
+GUIDANCE = Cantrip(name='Guidance',
+                   magic_school='divination',
+                   casting_time='1 action',
+                   spell_range='touch',
+                   components=['verbal', 'somatic'],
+                   duration='concentration, up to 1 minute',
+                   description='Once before the spell ends, the target can roll a d4 \
+                   and add the number rolled to one ability check of its choice.')
+
+SPARE_THE_DYING = Cantrip(name='Spare the Dying',
+                          magic_school='necromancy',
+                          casting_time='1 action',
+                          spell_range='touch',
+                          components=['verbal', 'somatic'],
+                          duration='instantaneous',
+                          description='You touch a living creature that has 0 hit points. \
+                          The creature becomes stable. \
+                          This spell has no effect on undead or constructs.')
+
+WORD_OF_RADIANCE = DamageCantrip(name='Word of Radiance',
+                                 magic_school='evocation',
+                                 casting_time='1 action',
+                                 spell_range='5 ft',
+                                 components=['verbal', 'material (a holy symbol)'],
+                                 duration='instantaneous',
+                                 description='You utter a divine word, and burning radiance erupts from you. \
+                                    Each creature of your choice that you can see within range must succeed on a \
+                                    Constitution saving throw or take Xd6 radiant damage.',
+                                 attack_bonus_calc=spell_dc_with_ability(base.AbilityScore.CON),
+                                 damage_calc=damage_by_level_with_dice('{}d6 radiant'))
+
+
+##############################
+# SPELLS
+##############################
 
 # 1st level spells
 BLESS = Spell(name='Bless',
@@ -68,125 +209,3 @@ COMMAND = Spell(name='Command',
                 components=['verbal'],
                 duration='1 round',
                 description='You speak a one-word command to a creature you can see within range.')
-
-
-class SpellcastingAbility(base.Jsonable):
-    """
-    An object representing a character's ability to cast spells.
-    This is likely going to be delegated to the class factory, as each class
-    will known the number of spells and the available spell slots
-    for that class and level. I'm not sure whether to add the spellcasting
-    bonus and DCs here or at the class level...
-    """
-    def __init__(self, spellcasting_ability, spell_slots, list_spells_known):
-        self.spellcasting_ability = spellcasting_ability
-        self.spell_slots = spell_slots
-        self.list_spells_known = list_spells_known
-
-    def spell_save_dc(self, ability_scores, proficiency_bonus):
-        return 8 + ability_scores[self.spellcasting_ability][base.MODIFIER] + proficiency_bonus
-
-    def spell_attack_bonus(self, ability_scores, proficiency_bonus):
-        return ability_scores[self.spellcasting_ability][base.MODIFIER] + proficiency_bonus
-
-    def _verify(self):
-        cantrips = list(filter(lambda x: x.level == 0, self.list_spells_known))
-        if len(cantrips) > 0:
-            if base.SpellTypes.CANTRIPS not in self.spell_slots:
-                raise ValueError('Cannot learn cantrips!')
-            num_cantrips_know = self.spell_slots[base.SpellTypes.CANTRIPS]
-            if len(cantrips) != num_cantrips_know:
-                raise ValueError('Must have {} cantrips but inputted {} cantrips!'.format(num_cantrips_know, len(cantrips)))
-
-        spells = list(filter(lambda x: x.level != base.SpellTypes.CANTRIPS, self.list_spells_known))
-        for s in spells:
-            if s.level not in self.spell_slots:
-                raise ValueError('Cannot cast a {}-level spell - you don''t have the spell slots for it!'.format(s.level))
-
-    def __json__(self):
-        spells_p = {}
-        for s in self.list_spells_known:
-            if s.level in spells_p:
-                spells_p[s.level].append(s.__json__())
-            else:
-                spells_p[s.level] = [s.__json__()]
-
-        return {
-            base.SPELLCASTING_ABILITY: self.spellcasting_ability,
-            base.LIST_SPELLS_KNOWN: spells_p,
-            base.SPELL_SLOTS: self.spell_slots,
-        }
-
-    def __str__(self):
-        return json.dumps(self.__json__(), indent=4)
-
-
-class RangerSpellcastingAbility(SpellcastingAbility):
-    def __init__(self, spellcasting_ability, spell_slots, list_spells_known, num_spells_known):
-        super(RangerSpellcastingAbility, self).__init__(spellcasting_ability, spell_slots, list_spells_known)
-        self.num_spells_known = num_spells_known
-        self._verify()
-
-    def _verify(self):
-        super(RangerSpellcastingAbility, self)._verify()
-        spells = list(filter(lambda x: x.level != base.SpellTypes.CANTRIPS, self.list_spells_known))
-        if len(spells) != self.num_spells_known:
-            raise ValueError('Must have {} spells but inputted {} spells!'.format(self.num_spells_known, len(spells)))
-
-
-def generate_simple_spell(name, level):
-    return Spell(name=name, level=level,
-                 magic_school='enchantment',
-                 casting_time='1 action',
-                 spell_range='30 ft',
-                 components=['verbal', 'somatic'],
-                 duration='instantaneous',
-                 description='This is a spell.')
-
-
-def test_spells():
-    ability_scores = {base.AbilityScore.WIS: {base.MODIFIER: 5}}
-    proficiency_bonus = 3
-    spell_slots = {
-        base.SpellTypes.CANTRIPS: 4,
-        base.SpellTypes.FIRST: 4,
-        base.SpellTypes.SECOND: 3,
-        base.SpellTypes.THIRD: 3,
-        base.SpellTypes.FOURTH: 2,
-    }
-    list_spells = []
-    simple_spell_list = [
-        ('Sacred Flame', 0),
-        ('Guidance', 0),
-        ('Mending', 0),
-        ('Word of Radiance', 0),
-        ('Command', 1),
-        ('Identify', 1),
-        ('Bless', 1),
-        ('Healing Word', 1),
-        ('Guiding Bolt', 1),
-        ('Augury', 2),
-        ('Suggestion', 2),
-        ('Spiritual Weapon', 2),
-        ('Enhance Ability', 2),
-        ('Nondetection', 3),
-        ('Speak with Dead', 3),
-        ('Beacon of Hope', 3),
-        ('Spirit Guardians', 3),
-        ('Arcane Eye', 4),
-        ('Confusion', 4),
-        ('Freedom of Movement', 4),
-        ('Banishment', 4),
-    ]
-    for name, level in simple_spell_list:
-        list_spells.append(generate_simple_spell(name, level))
-    spellcasting_ability = SpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
-                                               spell_slots=spell_slots,
-                                               list_spells_known=list_spells)
-    print(spellcasting_ability)
-    print('Spell save DC: {}'.format(spellcasting_ability.spell_save_dc(ability_scores, proficiency_bonus)))
-    print('Spell attack bonus: {}'.format(spellcasting_ability.spell_attack_bonus(ability_scores, proficiency_bonus)))
-
-
-if __name__ == '__main__':
-    test_spells()

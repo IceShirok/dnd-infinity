@@ -1,5 +1,50 @@
 {% extends "base.html" %}
 
+{% macro spell_popover(spell, popover_dir) -%}
+    <div class="popover popover-{{ popover_dir }}">
+        <p class="chip">{{ spell.name }}</p>
+        <div class="popover-container">
+            <div class="card">
+                <div class="card-header"><h5>{{ spell.name }}</h5></div>
+                <div class="card-body">
+                    <p>{{ spell.level }}-level {{ spell.magic_school }}</p>
+                    <p><strong>Casting time</strong>: {{ spell.casting_time }}</p>
+                    <p><strong>Range</strong>: {{ spell.spell_range }}</p>
+                    <p><strong>Components</strong>: {{ ', '.join(spell.components) }}</p>
+                    <p><strong>Duration</strong>: {{ spell.duration }}</p>
+                    <p>{{ spell.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{%- endmacro %}
+
+{% macro skill_prof(name, icon, modifier, is_proficient) -%}
+    <tr>
+        <td>
+            <i class="material-icons">{{ icon }}</i>
+            <strong>{{ name }}</strong>
+        </td>
+        <td>{{ pmod(modifier) }}</td>
+        <td>
+            {% if is_proficient %}
+            <i class="material-icons">check_box</i>
+            {% else %}
+            <i class="material-icons">check_box_outline_blank</i>
+            {% endif %}
+        </td>
+    </tr>
+{%- endmacro %}
+
+{% set ability_to_icon = {
+'STR': 'fitness_center',
+'DEX': 'timer',
+'CON': 'local_hospital',
+'INT': 'school',
+'WIS': 'nature',
+'CHA': 'mood',
+} %}
+
 {% block content %}
 
 <div id="banner" class="columns">
@@ -35,51 +80,21 @@
                         <td>
                             <div class="popover popover-bottom">
                                 <p><strong>{{ ability }}</strong></p>
-                                <p>{{ pc.ability_scores[ability]['score'] }}</p>
+                                <p class="chip">{{ pc.ability_scores[ability]['score'] }}</p>
 
                                 <div class="popover-container">
                                     <div class="card">
                                         <div class="card-body">
                                             <table>
                                                 <tbody>
-                                                    <tr>
-                                                        <td><i class="material-icons">warning</i> <strong>Saving throw</strong></td>
-                                                        <td>{{ pmod(pc.saving_throws[ability]['modifier']) }}</td>
-                                                        <td>
-                                                            {% if pc.saving_throws[ability]['is_proficient'] %}
-                                                            <i class="material-icons">check_box</i>
-                                                            {% else %}
-                                                            <i class="material-icons">check_box_outline_blank</i>
-                                                            {% endif %}
-                                                        </td>
-                                                    </tr>
+                                                    {% set modifier = pc.saving_throws[ability]['modifier'] %}
+                                                    {% set is_proficient = pc.saving_throws[ability]['is_proficient'] %}
+                                                    {{ skill_prof('Saving throw', 'warning', modifier, is_proficient) }}
+
                                                     {% for skill in pc.skills_by_ability[ability] %}
-                                                    <tr>
-                                                        <td>
-                                                            {% if ability == 'STR' %}
-                                                            <i class="material-icons">fitness_center</i>
-                                                            {% elif ability == 'DEX' %}
-                                                            <i class="material-icons">timer</i>
-                                                            {% elif ability == 'CON' %}
-                                                            <i class="material-icons">local_hospital</i>
-                                                            {% elif ability == 'INT' %}
-                                                            <i class="material-icons">school</i>
-                                                            {% elif ability == 'WIS' %}
-                                                            <i class="material-icons">nature</i>
-                                                            {% elif ability == 'CHA' %}
-                                                            <i class="material-icons">mood</i>
-                                                            {% endif %}
-                                                            <strong>{{ skill }}</strong>
-                                                        </td>
-                                                        <td>{{ pmod(pc.skills_by_ability[ability][skill]['modifier']) }}</td>
-                                                        <td>
-                                                            {% if pc.skills_by_ability[ability][skill]['is_proficient'] %}
-                                                            <i class="material-icons">check_box</i>
-                                                            {% else %}
-                                                            <i class="material-icons">check_box_outline_blank</i>
-                                                            {% endif %}
-                                                        </td>
-                                                    </tr>
+                                                        {% set modifier = pc.skills_by_ability[ability][skill]['modifier'] %}
+                                                        {% set is_proficient = pc.skills_by_ability[ability][skill]['is_proficient'] %}
+                                                        {{ skill_prof(skill, ability_to_icon[ability], modifier, is_proficient) }}
                                                     {% endfor %}
                                                 </tbody>
                                             </table>
@@ -141,42 +156,60 @@
                         <td>{{ pc.calculate_weapon_bonuses()[weapon.name]['damage'] }}</td>
                     </tr>
                     {% endfor %}
+
+                    {% if pc.spellcasting and pc.cantrips %}
+                    {% for cantrip in pc.calculate_damage_cantrips() %}
+                    <tr>
+                        <td>
+                            {% set c = pc.calculate_damage_cantrips()[cantrip]['cantrip'] %}
+                            {{ spell_popover(c, 'right') }}
+                        </td>
+                        <td>{{ pc.calculate_damage_cantrips()[cantrip]['attack_bonus'] }}</td>
+                        <td>{{ pc.calculate_damage_cantrips()[cantrip]['damage'] }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
                 </tbody>
             </table>
 
             {% if pc.spellcasting %}
-            <h4>Spellcasting</h4>
-            {% for spell_type in pc.spellcasting.spell_slots.keys() %}
+                <h4>Spellcasting</h4>
 
-            <h5>
-                {{ spell_type }}
-                {% for i in range(0, pc.spellcasting.spell_slots[spell_type]) %}
-                <i class="material-icons">all_out</i>
-                {% endfor %}
-            </h5>
-
-            {% for spell in pc.spellcasting.list_spells_known %}
-            {% if spell.level == spell_type %}
-            <div class="popover popover-bottom">
-                <p class="chip">{{ spell.name }}</p>
-                <div class="popover-container">
-                    <div class="card">
-                        <div class="card-header"><h5>{{ spell.name }}</h5></div>
-                        <div class="card-body">
-                            <p>{{ spell.level }}-level {{ spell.magic_school }}</p>
-                            <p><strong>Casting time</strong>: {{ spell.casting_time }}</p>
-                            <p><strong>Range</strong>: {{ spell.spell_range }}</p>
-                            <p><strong>Components</strong>: {{ ', '.join(spell.components) }}</p>
-                            <p><strong>Duration</strong>: {{ spell.duration }}</p>
-                            <p>{{ spell.description }}</p>
-                        </div>
+                <div class="columns">
+                    <div class="column col-4">
+                        <dl>
+                            <dt>Spellcasting Ability</dt>
+                            <dd>{{ pc.spellcasting.spellcasting_ability }}</dd>
+                            <dt>Spell Save DC</dt>
+                            <dd>{{ pc.spell_save_dc }}</dd>
+                            <dt>Spell Attack Bonus</dt>
+                            <dd>{{ pc.spell_attack_bonus }}</dd>
+                        </dl>
                     </div>
-                </div>
-            </div>
-            {% endif %}
-            {% endfor %}
 
-            {% endfor %}
+                    <div class="column col-8">
+                        {% if pc.spellcasting and pc.cantrips %}
+                        <h5>Cantrips</h5>
+                        {% for cantrip in pc.cantrips %}
+                            {{ spell_popover(cantrip, 'left') }}
+                        {% endfor %}
+                        {% endif %}
+
+                        {% for spell_type in pc.casting_spells.keys() %}
+                        <h5>
+                            {{ spell_type }}
+                            {% for i in range(0, pc.spellcasting.spell_slots[spell_type]) %}
+                            <i class="material-icons">all_out</i>
+                            {% endfor %}
+                        </h5>
+                        {% for spell in pc.casting_spells[spell_type] %}
+                            {{ spell_popover(spell, 'left') }}
+                        {% endfor %}
+
+                        {% endfor %}
+                    </div>
+
+                </div>
             {% endif %}
         </div>
     </div>
@@ -197,6 +230,7 @@
             {% endfor %}
         </div>
     </div>
+
     <div class="column col-8">
         <div class="sheet-box">
             <h3>Traits & Features <i class="material-icons">style</i></h3>
@@ -210,9 +244,11 @@
                             <i class="icon icon-arrow-right mr-1"></i>
                             {{ feature.name }}
                         </summary>
+
                         <div class="accordion-body">
                             <p>{{ feature.description }}</p>
                         </div>
+
                     </details>
                     {% endfor %}
                 </div>

@@ -4,7 +4,7 @@ from ddddd.entity.base import Skills
 from ddddd.entity.character import trait
 
 
-class PlayerBackground(base.Jsonable):
+class PlayerBackground(object):
     """
     A player character's (PC) background.
     This doesn't change after a PC is created, but this is created
@@ -17,15 +17,6 @@ class PlayerBackground(base.Jsonable):
         self.feature = feature
         self.__proficiencies = proficiencies if proficiencies else {}
         self.languages = languages
-
-    def __json__(self):
-        j = {
-            base.BACKGROUND: self.name,
-            base.FEATURES: self.feature,
-            base.PROFICIENCIES: self.__proficiencies,
-            base.LANGUAGES: self.languages,
-        }
-        return j
 
     @property
     def skills(self):

@@ -12,7 +12,7 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 
-class Race(base.Jsonable):
+class Race(object):
     """
     A player character's (PC) race.
     A PC's race does not change for the most part, although
@@ -41,17 +41,6 @@ class Race(base.Jsonable):
             if isinstance(p, trait.ProficiencyKnown):
                 prof[p.proficiency_type] = p
         return prof
-
-    def __json__(self):
-        j = {
-            base.RACE: self.name,
-            base.ASI: self.asi,
-            base.SIZE: self.size,
-            base.SPEED: self.speed,
-            base.LANGUAGES: self.languages,
-            base.TRAITS: self.traits,
-        }
-        return j
 
     def verify(self):
         """
