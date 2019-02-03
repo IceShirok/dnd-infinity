@@ -6,6 +6,7 @@ This project is currently written in Python 3.5. I'm writing this in Python for 
 while modelling, and also because I just want to practice Python.
 
 ## Project hit list
+* Move the project hit list to GitHub issues and/or a project management system
 * Clean up saving throw/skill proficiency hashmap usage
 * Restructure equipment (rely on class inheritance vs. use properties)
     * Have functions to ask whether something is simple/martial, STR/DEX-based, etc.
