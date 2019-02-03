@@ -39,7 +39,7 @@ MAX_HP = 'max_hp'
 TOTAL_HIT_DICE = 'total_hit_dice'
 TRAITS_AND_FEATURES = 'traits_and_features'
 RACIAL_TRAITS = 'Racial Traits'
-CLASS_FEATURES = 'Class Features'
+VOCATION_FEATURES = 'Class Features'
 BACKGROUND_FEATURES = 'Background Features'
 
 # Race-related constants
