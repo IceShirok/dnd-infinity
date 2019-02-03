@@ -62,10 +62,10 @@ class PlayerCharacter(object):
     A PC consists of some base characteristics, a race, a class, and
     a background.
     """
-    def __init__(self, base, race=None, classes=None, background=None, worn_items=None, backpack=None):
+    def __init__(self, base, race=None, vocation=None, background=None, worn_items=None, backpack=None):
         self.base = base
         self.race = race
-        self.classes = classes
+        self.vocation = vocation
         self.background = background
         self.worn_items = worn_items if worn_items else equipment.WornItems()
         self.backpack = backpack if backpack else equipment.Backpack()
@@ -90,15 +90,13 @@ class PlayerCharacter(object):
         return self.race.base_race
     
     @property
-    def class_name(self):
-        """Return the PC's class."""
-        # TODO maybe this will be aggregated to a class/level thing
-        # this is more important with multiclassing so we can delay this
-        return self.classes.name
+    def vocation_name(self):
+        """Return the PC's vocation."""
+        return self.vocation.name
     
     @property
     def level(self):
-        """Return the PC's character level. This is different from class level."""
+        """Return the PC's character level. This is different from vocation level."""
         return self.base.level
     
     @property
@@ -131,9 +129,9 @@ class PlayerCharacter(object):
         for ability in race_asi.keys():
             ability_scores_agg[ability] = ability_scores_agg[ability].with_ability_score_increase(race_asi[ability])
 
-        class_asi = self.classes.asi
-        for ability in class_asi:
-            ability_scores_agg[ability] = ability_scores_agg[ability].with_ability_score_increase(class_asi[ability])
+        vocation_asi = self.vocation.asi
+        for ability in vocation_asi:
+            ability_scores_agg[ability] = ability_scores_agg[ability].with_ability_score_increase(vocation_asi[ability])
 
         return ability_scores_agg
 
@@ -166,11 +164,11 @@ class PlayerCharacter(object):
         :return: the max HP for the PC
         """
         hit_points = 0
-        hit_die = self.classes.hit_die
+        hit_die = self.vocation.hit_die
         con_modifier = self.ability_scores[AbilityScore.CON].modifier
         toughness = len(list(filter(lambda exp: isinstance(exp, trait.Toughness), self.race.traits)))
 
-        for i in range(1, self.classes.level+1):
+        for _ in range(0, self.vocation.level):
             if hit_points <= 0:
                 hit_points = hit_die + con_modifier + toughness
             else:
@@ -180,12 +178,12 @@ class PlayerCharacter(object):
     @property
     def total_hit_dice(self):
         """Calculate total hit dice, based on class level and hit dice."""
-        return {'d{}'.format(self.classes.hit_die): self.classes.level}
+        return {'d{}'.format(self.vocation.hit_die): self.vocation.level}
 
     @property
     def total_hit_dice_prettified(self):
         """A more prettifed verison of total hit dice."""
-        return '{}d{}'.format(self.classes.level, self.classes.hit_die)
+        return '{}d{}'.format(self.vocation.level, self.vocation.hit_die)
 
     #########################
     # PROFICIENCIES
@@ -194,7 +192,7 @@ class PlayerCharacter(object):
     @property
     def saving_throws(self):
         """Calculate the PC's saving throws."""
-        saving_throws = self.classes.saving_throws
+        saving_throws = self.vocation.saving_throws
         saving_throws_p = {}
         _ability_scores = self.ability_scores
         for a in _ability_scores.keys():
@@ -208,8 +206,8 @@ class PlayerCharacter(object):
     @property
     def skills_by_ability(self):
         """Calculates the PC's skill modifiers, and groups the skills by ability."""
-        skill_proficiencies = (self.race.skills + self.classes.skills + self.background.skills)
-        expertise = list(filter(lambda exp: isinstance(exp, trait.Expertise), self.classes.features))
+        skill_proficiencies = (self.race.skills + self.vocation.skills + self.background.skills)
+        expertise = list(filter(lambda exp: isinstance(exp, trait.Expertise), self.vocation.features))
 
         _ability_scores = self.ability_scores
         skill_proficiencies_p = {}
@@ -235,7 +233,7 @@ class PlayerCharacter(object):
     def proficiencies(self):
         """Aggregate proficiencies that the PC has learned."""
         p = {}
-        for prof_group in [self.race.proficiencies, self.classes.proficiencies, self.background.proficiencies]:
+        for prof_group in [self.race.proficiencies, self.vocation.proficiencies, self.background.proficiencies]:
             for prof in prof_group.keys():
                 if prof not in p:
                     p[prof] = []
@@ -247,7 +245,7 @@ class PlayerCharacter(object):
     def languages(self):
         """Aggregate languages that the PC knows."""
         langs = []
-        for lang_opt in [self.race.languages, self.classes.languages, self.background.languages]:
+        for lang_opt in [self.race.languages, self.vocation.languages, self.background.languages]:
             if lang_opt:
                 langs = langs + lang_opt.languages
         return langs
@@ -262,7 +260,7 @@ class PlayerCharacter(object):
         """
         return {
             base.RACIAL_TRAITS: self.race.traits,
-            base.CLASS_FEATURES: self.classes.features,
+            base.VOCATION_FEATURES: self.vocation.features,
             base.BACKGROUND_FEATURES: [self.background.feature],
         }
 
@@ -273,7 +271,7 @@ class PlayerCharacter(object):
     @property
     def spellcasting(self):
         """Retrieve a PC's spellcasting ability."""
-        return self.classes.spellcasting
+        return self.vocation.spellcasting
 
     @property
     def cantrips(self):

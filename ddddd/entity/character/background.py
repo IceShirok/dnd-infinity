@@ -4,7 +4,7 @@ from ddddd.entity.base import Skills
 from ddddd.entity.character import trait
 
 
-class PlayerBackground(object):
+class Background(object):
     """
     A player character's (PC) background.
     This doesn't change after a PC is created, but this is created
@@ -41,7 +41,7 @@ class PlayerBackground(object):
 # Custom backgrounds
 #############################
 
-class Criminal(PlayerBackground):
+class Criminal(Background):
     def __init__(self):
         feature = trait.Trait(name='Criminal Contact',
                               description='You have a reliable and trustworthy contact who acts as \
@@ -57,7 +57,7 @@ class Criminal(PlayerBackground):
                                        languages=None)
 
 
-class Noble(PlayerBackground):
+class Noble(Background):
     def __init__(self, tool_proficiency, languages):
         feature = trait.Trait(name='Position of Privilege',
                               description='Thanks to your noble birth, people are inclined to think the best of you.')
@@ -71,7 +71,7 @@ class Noble(PlayerBackground):
                                     languages=languages)
 
 
-class Sage(PlayerBackground):
+class Sage(Background):
     def __init__(self, languages):
         feature = trait.Trait(name='Researcher',
                               description='When you attempt to learn or recall a piece of lore, if you do not know \

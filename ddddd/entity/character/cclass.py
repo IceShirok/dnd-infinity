@@ -1,15 +1,15 @@
 
 import abc
 
-from ddddd.entity import base
 from ddddd.entity.character import trait
 
 
-class PlayerClass(object, metaclass=abc.ABCMeta):
+class Vocation(object, metaclass=abc.ABCMeta):
     """
-    A representation of a player character (PC) class
-    for a particular class/level combination. This particular
-    class is fairly dumb.
+    A representation of a player character (PC) vocation.
+    In 5e, this would be called a "class", but because Python has the word "class"
+    as a keyword, this class is renamed to avoid confusion. In the presentation
+    layer, a vocation would be called a "class"
     """
     def __init__(self, name, level, hit_die,
                  proficiencies, saving_throws, skill_proficiencies, features, asi,

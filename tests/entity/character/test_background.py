@@ -4,16 +4,16 @@ from ddddd.entity.character import background, trait
 
 class TestBackground(unittest.TestCase):
     def setUp(self):
-        self.dorian = background.PlayerBackground(name='background',
-                                                  feature=None,
-                                                  proficiencies={
+        self.dorian = background.Background(name='background',
+                                            feature=None,
+                                            proficiencies={
                                                       'skills': ['stealth', 'deception'],
                                                       'Tool Proficiency': trait.ToolProficiency(name='Tool Proficiency',
                                                                                                 proficiencies=[
                                                                                                     'thieves_tools',
                                                                                                     'bone_dice']),
                                                   },
-                                                  languages=['elvish'])
+                                            languages=['elvish'])
 
     def test_all_proficiencies(self):
         prof = self.dorian.background_proficiencies
