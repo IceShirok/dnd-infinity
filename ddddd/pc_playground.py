@@ -1,7 +1,7 @@
 
 from ddddd.entity import base
 from ddddd.entity.base import Skills
-from ddddd.entity.character import race, background, pc, equipment
+from ddddd.entity.character import race, background, pc, equipment, spells
 from ddddd.entity.character.vocation import ranger, cleric, rogue
 from ddddd.entity.character import trait
 
@@ -101,12 +101,12 @@ def create_tamiphi(level=1):
     tamiphi_base = pc.PlayerBase("Tamiphi Tockentell", 10, 11, 15, 14, 16, 7, level=level)
     tam_race = race.RockGnome()
     class_languages = trait.LanguagesKnown(languages=[base.Languages.DRACONIC, base.Languages.DWARVISH])
+    class_cantrips = [spells.SACRED_FLAME, spells.GUIDANCE, spells.SPARE_THE_DYING]
     tam_class = cleric.Cleric(skill_proficiencies=[Skills.INSIGHT, Skills.RELIGION, Skills.ARCANA, Skills.PERSUASION],
-                              languages=class_languages)
+                              languages=class_languages, cantrips=class_cantrips)
     if level > 1:
         tam_class.level_to(level=level,
-                           fighting_style='two_weapon_fighting',
-                           archetype_feature='colossus_slayer',
+                           cantrip_4=spells.WORD_OF_RADIANCE,
                            ability_score_increase={
                                base.AbilityScore.WIS: base.AbilityScoreIncrease(base.AbilityScore.WIS, 2),
                            })

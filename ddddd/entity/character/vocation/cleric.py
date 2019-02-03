@@ -12,7 +12,7 @@ class Cleric(Vocation):
     FIGHTING_STYLE = 'fighting_style'
     STYLES = 'styles'
 
-    def __init__(self, skill_proficiencies, languages):
+    def __init__(self, skill_proficiencies, languages, cantrips):
         def_features = [
             trait.Trait(name='Divine Domain',
                         description='You have chosen to worship Ioun, goddess of knowledge. \
@@ -25,11 +25,6 @@ class Cleric(Vocation):
             languages,
         ]
 
-        cantrips = [
-            spells.SACRED_FLAME,
-            spells.GUIDANCE,
-            spells.SPARE_THE_DYING,
-        ]
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
             ('Identify', base.SpellTypes.FIRST),
@@ -90,11 +85,6 @@ class Cleric(Vocation):
                         For 10 minutes, you have proficiency with the chosen skill or tool.')
         )
 
-        cantrips = [
-            spells.SACRED_FLAME,
-            spells.GUIDANCE,
-            spells.SPARE_THE_DYING,
-        ]
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
             ('Identify', base.SpellTypes.FIRST),
@@ -111,7 +101,7 @@ class Cleric(Vocation):
                                                      SpellTypes.FIRST: 3
                                                  },
                                                  num_spells_known=3 + 2 + 2,
-                                                 num_cantrips_known=3, cantrips=cantrips)
+                                                 num_cantrips_known=3, cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _level_3_requirements(self):
@@ -119,12 +109,6 @@ class Cleric(Vocation):
         return req
 
     def _add_level_3_features(self, **kwargs):
-        cantrips = [
-            spells.SACRED_FLAME,
-            spells.GUIDANCE,
-            spells.SPARE_THE_DYING,
-            spells.WORD_OF_RADIANCE,
-        ]
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
             ('Identify', base.SpellTypes.FIRST),
@@ -146,7 +130,7 @@ class Cleric(Vocation):
                                                      SpellTypes.SECOND: 2
                                                  },
                                                  num_spells_known=3 + 3 + 4,
-                                                 num_cantrips_known=3, cantrips=cantrips)
+                                                 num_cantrips_known=3, cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _level_4_requirements(self):
@@ -166,12 +150,8 @@ class Cleric(Vocation):
             else:
                 self.asi[ability] = self.asi[ability].combine(ability_score_increase[ability])
 
-        cantrips = [
-            spells.SACRED_FLAME,
-            spells.GUIDANCE,
-            spells.SPARE_THE_DYING,
-            spells.WORD_OF_RADIANCE,
-        ]
+        new_cantrip = kwargs['cantrip_4']
+        self.spellcasting.cantrips.append(new_cantrip)
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
             ('Identify', base.SpellTypes.FIRST),
@@ -194,7 +174,7 @@ class Cleric(Vocation):
                                                      SpellTypes.SECOND: 3
                                                  },
                                                  num_spells_known=4 + 4 + 4,
-                                                 num_cantrips_known=4, cantrips=cantrips)
+                                                 num_cantrips_known=4, cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _level_5_requirements(self):
@@ -224,12 +204,6 @@ class Cleric(Vocation):
                         description='')
         )
 
-        cantrips = [
-            spells.SACRED_FLAME,
-            spells.GUIDANCE,
-            spells.SPARE_THE_DYING,
-            spells.WORD_OF_RADIANCE,
-        ]
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
             ('Identify', base.SpellTypes.FIRST),
@@ -258,7 +232,7 @@ class Cleric(Vocation):
                                                      SpellTypes.THIRD: 3,
                                                  },
                                                  num_spells_known=4 + 5 + 6,
-                                                 num_cantrips_known=4, cantrips=cantrips)
+                                                 num_cantrips_known=4, cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
 
