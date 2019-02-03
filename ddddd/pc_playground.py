@@ -191,8 +191,8 @@ def create_fethri(level=1):
 
         armor = equipment.Armor('Leather Armor', price=10, weight=10, armor_class=calc_light_armor_rating,
                                 strength=0, stealth='')
-        longbow = equipment.Weapon('longbow', category='martial', damage='1d8 piercing', price=50, weight=2,
-                                   properties=['ammunition (range 150/600)', 'heavy', 'two-handed'])
+        longbow = equipment.Weapon('rapier', category='martial', damage='1d8 piercing', price=25, weight=2,
+                                   properties=['finesse'])
         worn_items.don_armor(armor)
         worn_items.equip_weapon(longbow)
         return worn_items

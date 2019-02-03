@@ -155,8 +155,9 @@
                     {% for weapon in pc.worn_items.weapons %}
                     <tr>
                         <td>{{ weapon.name }}</td>
-                        <td>{{ pmod(pc.calculate_weapon_bonuses()[weapon.name]['attack_bonus']) }}</td>
-                        <td>{{ pc.calculate_weapon_bonuses()[weapon.name]['damage'] }}</td>
+                        {% set weapon_details = pc.calculate_weapon_bonuses()[weapon.name] %}
+                        <td>{{ pmod(weapon_details['attack_bonus']) }} ({{ weapon_details['attack_type'] }})</td>
+                        <td>{{ weapon_details['damage'] }}</td>
                     </tr>
                     {% endfor %}
 
