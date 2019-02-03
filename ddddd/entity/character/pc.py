@@ -3,7 +3,8 @@ import math
 
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScore, Skills
-from ddddd.entity.character import equipment, spells, trait
+from ddddd.entity.character import spells, trait
+from ddddd.items import items
 
 import logging
 logger = logging.getLogger(__name__)
@@ -67,8 +68,8 @@ class PlayerCharacter(object):
         self.race = race
         self.vocation = vocation
         self.background = background
-        self.worn_items = worn_items if worn_items else equipment.WornItems()
-        self.backpack = backpack if backpack else equipment.Backpack()
+        self.worn_items = worn_items if worn_items else items.WornItems()
+        self.backpack = backpack if backpack else items.Backpack()
 
     #########################
     # BASIC PROPERTIES
@@ -277,8 +278,7 @@ class PlayerCharacter(object):
     def cantrips(self):
         """Retrieve cantrips that the PC knows."""
         if self.spellcasting:
-            list_cantrips = list(filter(lambda s: isinstance(s, spells.Cantrip), self.spellcasting.list_spells_known))
-            return list_cantrips
+            return self.spellcasting.cantrips
         return None
 
     def calculate_damage_cantrips(self):
@@ -298,7 +298,7 @@ class PlayerCharacter(object):
         """Retrieve a PC's spells (spells that require spell slots)."""
         if self.spellcasting:
             spell_by_level = {}
-            list_spells = list(filter(lambda s: not isinstance(s, spells.Cantrip), self.spellcasting.list_spells_known))
+            list_spells = self.spellcasting.casting_spells
             for spell in list_spells:
                 if spell.level not in spell_by_level:
                     spell_by_level[spell.level] = []
