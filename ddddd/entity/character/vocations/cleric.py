@@ -859,7 +859,7 @@ class Cleric(Vocation):
 
             ('Earthquake', base.SpellTypes.EIGHTH),
 
-            ('Gate', base.SpellTypes.EIGHTH),
+            ('Gate', base.SpellTypes.NINTH),
         ]
         casting_spells = spells.generate_simple_spell_list(simple_spell_list)
         spellcasting = ClericSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
