@@ -1,7 +1,7 @@
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScore, Skills, Languages, SpellTypes
 from ddddd.entity.character import spells, trait
-from ddddd.entity.character.cclass import Vocation
+from ddddd.entity.character.vocation import Vocation
 
 
 class Ranger(Vocation):

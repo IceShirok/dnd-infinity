@@ -1,7 +1,7 @@
 from ddddd.entity import base
 from ddddd.entity.base import Skills
 from ddddd.entity.character import race, background, pc, spells
-from ddddd.entity.character.vocation import ranger, cleric, rogue
+from ddddd.entity.character.vocations import ranger, cleric, rogue
 from ddddd.entity.character import trait
 from ddddd.items import items, armor, weapons
 

@@ -92,12 +92,12 @@ class PlayerCharacter(object):
     
     @property
     def vocation_name(self):
-        """Return the PC's vocation."""
+        """Return the PC's vocations."""
         return self.vocation.name
     
     @property
     def level(self):
-        """Return the PC's character level. This is different from vocation level."""
+        """Return the PC's character level. This is different from vocations level."""
         return self.base.level
     
     @property
