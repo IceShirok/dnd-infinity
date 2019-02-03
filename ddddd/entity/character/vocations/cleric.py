@@ -192,7 +192,7 @@ class Cleric(Vocation):
 
     def _add_level_5_features(self, **kwargs):
         self.features.append(
-            trait.Trait(name='Channel Divinity: Destroy Undead',
+            trait.Trait(name='Channel Divinity: Destroy Undead (CR 1/2)',
                         description='Starting at 5th level, when an undead fails its saving throw \
                         against your Turn Undead feature, the creature is instantly destroyed \
                         if its challenge rating is at or below CR 1/2.')
@@ -236,22 +236,47 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_6_features(self, **kwargs):
-        return {}
+        self.features.append(
+            trait.Trait(name='Channel Divinity: Read Thoughts',
+                        description='At 6th level, you can use your Channel Divinity to read \
+                                    a creature''s thoguhts.')
+        )
 
     def _add_level_7_features(self, **kwargs):
-        return {}
+        self.features.append(
+            trait.Trait(name='Potent Spellcasting',
+                        description='Starting at 8th level, you add your Wisdom modifier \
+                        to the damage you deal with any cleric cantrip.')
+        )
 
     def _add_level_8_features(self, **kwargs):
         self._aggregate_ability_score_increase(kwargs['ability_score_increase_8'])
+        self.features.append(
+            trait.Trait(name='Channel Divinity: Destroy Undead (CR 1)',
+                        description='Starting at 5th level, when an undead fails its saving throw \
+                        against your Turn Undead feature, the creature is instantly destroyed \
+                        if its challenge rating is at or below CR 1.')
+        )
 
     def _add_level_9_features(self, **kwargs):
         return {}
 
     def _add_level_10_features(self, **kwargs):
-        return {}
+        self.features.append(
+            trait.Trait(name='Divine Intervention',
+                        description='Beginning at 10th level, you can call on your deity \
+                        to intervene on your behalf when your need is great.')
+        )
+        new_cantrip = kwargs['cantrip_10']
+        self.spellcasting.cantrips.append(new_cantrip)
 
     def _add_level_11_features(self, **kwargs):
-        return {}
+        self.features.append(
+            trait.Trait(name='Channel Divinity: Destroy Undead (CR 2)',
+                        description='Starting at 5th level, when an undead fails its saving throw \
+                        against your Turn Undead feature, the creature is instantly destroyed \
+                        if its challenge rating is at or below CR 2.')
+        )
 
     def _add_level_12_features(self, **kwargs):
         self._aggregate_ability_score_increase(kwargs['ability_score_increase_12'])
@@ -260,7 +285,12 @@ class Cleric(Vocation):
         return {}
 
     def _add_level_14_features(self, **kwargs):
-        return {}
+        self.features.append(
+            trait.Trait(name='Channel Divinity: Destroy Undead (CR 3)',
+                        description='Starting at 5th level, when an undead fails its saving throw \
+                        against your Turn Undead feature, the creature is instantly destroyed \
+                        if its challenge rating is at or below CR 3.')
+        )
 
     def _add_level_15_features(self, **kwargs):
         return {}
@@ -269,16 +299,33 @@ class Cleric(Vocation):
         self._aggregate_ability_score_increase(kwargs['ability_score_increase_16'])
 
     def _add_level_17_features(self, **kwargs):
-        return {}
+        self.features.append(
+            trait.Trait(name='Visions of the Past',
+                        description='Starting at 17th level, you can call up \
+                        visions of the past that relate to an object you hold or your immediate surroundings.')
+        )
+        self.features.append(
+            trait.Trait(name='Channel Divinity: Destroy Undead (CR 4)',
+                        description='Starting at 5th level, when an undead fails its saving throw \
+                        against your Turn Undead feature, the creature is instantly destroyed \
+                        if its challenge rating is at or below CR 4.')
+        )
 
     def _add_level_18_features(self, **kwargs):
-        return {}
+        self.features.append(
+            trait.Trait(name='Channel Divinity (3/rest)',
+                        description='')
+        )
 
     def _add_level_19_features(self, **kwargs):
         self._aggregate_ability_score_increase(kwargs['ability_score_increase_19'])
 
     def _add_level_20_features(self, **kwargs):
-        return {}
+        self.features.append(
+            trait.Trait(name='Improved Divine Intervention',
+                        description='At 20th level, your call for intervention succeeds automatically, \
+                        no roll required.')
+        )
 
     def _aggregate_ability_score_increase(self, asi):
         for ability in asi.keys():

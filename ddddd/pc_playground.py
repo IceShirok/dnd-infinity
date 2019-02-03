@@ -100,6 +100,7 @@ def create_tamiphi(level=1):
                           ability_score_increase_8={
                               base.AbilityScore.WIS: base.AbilityScoreIncrease(base.AbilityScore.WIS, 2),
                           },
+                          cantrip_10=spells.MENDING,
                           ability_score_increase_12={
                               base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 1),
                               base.AbilityScore.DEX: base.AbilityScoreIncrease(base.AbilityScore.DEX, 1),

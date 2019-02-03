@@ -199,6 +199,14 @@ WORD_OF_RADIANCE = DamageCantrip(name='Word of Radiance',
                                  attack_bonus_calc=spell_dc_with_ability(base.AbilityScore.CON),
                                  damage_calc=damage_by_level_with_dice('{}d6 radiant'))
 
+MENDING = Cantrip(name='Mending',
+                  magic_school='transmutation',
+                  casting_time='1 action',
+                  spell_range='touch',
+                  components=['verbal', 'somatic'],
+                  duration='instantaneous',
+                  description='')
+
 
 ##############################
 # SPELLS
