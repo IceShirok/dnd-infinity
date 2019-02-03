@@ -6,15 +6,15 @@ from ddddd.entity.character.vocation import Vocation
 
 class Rogue(Vocation):
     def __init__(self, skill_proficiencies, expertise):
-        def_features = [
-            SneakAttack(level=1),
-            trait.LanguagesKnown(name='Thieves'' Cant',
-                                 description='During your rogue Training you learned thieves'' cant, \
-                                 a Secret mix of dialect, jargon, and code that allows you to hide messages \
-                                 in seemingly normal conversation.',
-                                 languages=[base.Languages.THIEVES_CANT]),
-            expertise,
-        ]
+        def_features = {
+            'sneak_attack': SneakAttack(level=1),
+            'thieves_cant': trait.LanguagesKnown(name='Thieves'' Cant',
+                                                 description='During your rogue Training you learned thieves'' cant, \
+                                                 a Secret mix of dialect, jargon, and code that allows you to hide messages \
+                                                 in seemingly normal conversation.',
+                                                 languages=[base.Languages.THIEVES_CANT]),
+            'expertise': expertise,
+        }
 
         super(Rogue, self).__init__(name='Rogue',
                                     level=1,
@@ -43,11 +43,9 @@ class Rogue(Vocation):
         pass
 
     def _add_level_2_features(self, **kwargs):
-        self.features.append(
-            trait.Trait(name='Cunning Action',
-                        description='Starting at 2nd level, your quick thinking and agility \
-                        allow you to move and act quickly.')
-        )
+        self.features['cunning_action'] = trait.Trait(name='Cunning Action',
+                                                      description='Starting at 2nd level, your quick thinking and agility \
+                                                      allow you to move and act quickly.')
 
     def _level_3_requirements(self):
         pass
@@ -57,22 +55,18 @@ class Rogue(Vocation):
         for proficiency in ['disguise_kit', 'forgery_kit', new_gaming_set]:
             self.proficiencies[base.TOOL_PROFICIENCY].proficiencies.append(proficiency)
 
+        self.features['master_of_intrigue'] = trait.Trait(name='Master of Intrigue',
+                                                          description='You can unerringly mimic the speech patterns and accent of a creature \
+                                                          that you hear speak for at least 1 minute.')
+
         new_languages = kwargs[base.LANGUAGES]
-        self.features.append(new_languages)
+        self.features['master_of_intrigue_languages'] = new_languages
 
-        self.features.append(
-            trait.Trait(name='Master of Intrigue',
-                        description='You can unerringly mimic the speech patterns and accent of a creature \
-                        that you hear speak for at least 1 minute.')
-        )
-
-        self.features.append(
-            trait.Trait(name='Master of Tactics',
-                        description='Starting at 3rd level, you can use the Help action as a bonus action. \
-                        Additionally, when you use the Help action to aid an ally in attacking a creature, \
-                        the target of that attack can be within 30 feet of you, rather than 5 feet of you, \
-                        if the target can see or hear you.')
-        )
+        self.features['master_of_tactics'] = trait.Trait(name='Master of Tactics',
+                                                         description='Starting at 3rd level, you can use the Help action as a bonus action. \
+                                                         Additionally, when you use the Help action to aid an ally in attacking a creature, \
+                                                         the target of that attack can be within 30 feet of you, rather than 5 feet of you, \
+                                                         if the target can see or hear you.')
 
     def _level_4_requirements(self):
         pass
@@ -89,11 +83,9 @@ class Rogue(Vocation):
         pass
 
     def _add_level_5_features(self, **kwargs):
-        self.features.append(
-            trait.Trait(name='Uncanny Dodge',
-                        description='Starting at 5th level, when an attacker that you can see hits you with an Attack, \
-                        you can use your Reaction to halve the attack''s damage against you.')
-        )
+        self.features['uncanny_dodge'] = trait.Trait(name='Uncanny Dodge',
+                                                     description='Starting at 5th level, when an attacker that you can see hits you with an Attack, \
+                                                     you can use your Reaction to halve the attack''s damage against you.')
 
     def _add_level_6_features(self, **kwargs):
         return {}
@@ -143,8 +135,9 @@ class Rogue(Vocation):
 
 class SneakAttack(trait.Trait):
     def __init__(self, level):
+        self.attack_bonus = '{}d6'.format((level+1)/2)
         super(SneakAttack, self).__init__(name='Sneak Attack',
                                           description='Beginning at 1st level, you know how to strike subtly \
-                                          and exploit a foe''s distraction.')
-        self.attack_bonus = '{}d6'.format((level+1)/2)
+                                          and exploit a foe''s distraction. \
+                                          Sneak attack bonus = {}'.format(self.attack_bonus))
 

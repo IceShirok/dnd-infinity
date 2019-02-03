@@ -268,7 +268,7 @@ class PlayerCharacter(object):
     @property
     def vocation_features(self):
         """Returns all features from the vocation"""
-        return self.vocation.features
+        return list(self.vocation.features.values())
 
     @property
     def background_feature(self):
