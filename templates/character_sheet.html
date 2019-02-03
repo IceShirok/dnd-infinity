@@ -19,6 +19,32 @@
     </div>
 {%- endmacro %}
 
+{% macro skill_prof(name, icon, modifier, is_proficient) -%}
+    <tr>
+        <td>
+            <i class="material-icons">{{ icon }}</i>
+            <strong>{{ name }}</strong>
+        </td>
+        <td>{{ pmod(modifier) }}</td>
+        <td>
+            {% if is_proficient %}
+            <i class="material-icons">check_box</i>
+            {% else %}
+            <i class="material-icons">check_box_outline_blank</i>
+            {% endif %}
+        </td>
+    </tr>
+{%- endmacro %}
+
+{% set ability_to_icon = {
+'STR': 'fitness_center',
+'DEX': 'timer',
+'CON': 'local_hospital',
+'INT': 'school',
+'WIS': 'nature',
+'CHA': 'mood',
+} %}
+
 {% block content %}
 
 <div id="banner" class="columns">
@@ -61,44 +87,14 @@
                                         <div class="card-body">
                                             <table>
                                                 <tbody>
-                                                    <tr>
-                                                        <td><i class="material-icons">warning</i> <strong>Saving throw</strong></td>
-                                                        <td>{{ pmod(pc.saving_throws[ability]['modifier']) }}</td>
-                                                        <td>
-                                                            {% if pc.saving_throws[ability]['is_proficient'] %}
-                                                            <i class="material-icons">check_box</i>
-                                                            {% else %}
-                                                            <i class="material-icons">check_box_outline_blank</i>
-                                                            {% endif %}
-                                                        </td>
-                                                    </tr>
+                                                    {% set modifier = pc.saving_throws[ability]['modifier'] %}
+                                                    {% set is_proficient = pc.saving_throws[ability]['is_proficient'] %}
+                                                    {{ skill_prof('Saving throw', 'warning', modifier, is_proficient) }}
+
                                                     {% for skill in pc.skills_by_ability[ability] %}
-                                                    <tr>
-                                                        <td>
-                                                            {% if ability == 'STR' %}
-                                                            <i class="material-icons">fitness_center</i>
-                                                            {% elif ability == 'DEX' %}
-                                                            <i class="material-icons">timer</i>
-                                                            {% elif ability == 'CON' %}
-                                                            <i class="material-icons">local_hospital</i>
-                                                            {% elif ability == 'INT' %}
-                                                            <i class="material-icons">school</i>
-                                                            {% elif ability == 'WIS' %}
-                                                            <i class="material-icons">nature</i>
-                                                            {% elif ability == 'CHA' %}
-                                                            <i class="material-icons">mood</i>
-                                                            {% endif %}
-                                                            <strong>{{ skill }}</strong>
-                                                        </td>
-                                                        <td>{{ pmod(pc.skills_by_ability[ability][skill]['modifier']) }}</td>
-                                                        <td>
-                                                            {% if pc.skills_by_ability[ability][skill]['is_proficient'] %}
-                                                            <i class="material-icons">check_box</i>
-                                                            {% else %}
-                                                            <i class="material-icons">check_box_outline_blank</i>
-                                                            {% endif %}
-                                                        </td>
-                                                    </tr>
+                                                        {% set modifier = pc.skills_by_ability[ability][skill]['modifier'] %}
+                                                        {% set is_proficient = pc.skills_by_ability[ability][skill]['is_proficient'] %}
+                                                        {{ skill_prof(skill, ability_to_icon[ability], modifier, is_proficient) }}
                                                     {% endfor %}
                                                 </tbody>
                                             </table>
@@ -159,8 +155,8 @@
                         <td>{{ pmod(pc.calculate_weapon_bonuses()[weapon.name]['attack_bonus']) }}</td>
                         <td>{{ pc.calculate_weapon_bonuses()[weapon.name]['damage'] }}</td>
                     </tr>
-
                     {% endfor %}
+
                     {% if pc.spellcasting and pc.cantrips %}
                     {% for cantrip in pc.calculate_damage_cantrips() %}
                     <tr>
@@ -177,38 +173,36 @@
             </table>
 
             {% if pc.spellcasting %}
-            <h4>Spellcasting</h4>
+                <h4>Spellcasting</h4>
 
-            <dl>
-                <dt>Spellcasting Ability</dt>
-                <dd>{{ pc.spellcasting.spellcasting_ability }}</dd>
-                <dt>Spell Save DC</dt>
-                <dd>{{ pc.spell_save_dc }}</dd>
-                <dt>Spell Attack Bonus</dt>
-                <dd>{{ pc.spell_attack_bonus }}</dd>
-            </dl>
+                <dl>
+                    <dt>Spellcasting Ability</dt>
+                    <dd>{{ pc.spellcasting.spellcasting_ability }}</dd>
+                    <dt>Spell Save DC</dt>
+                    <dd>{{ pc.spell_save_dc }}</dd>
+                    <dt>Spell Attack Bonus</dt>
+                    <dd>{{ pc.spell_attack_bonus }}</dd>
+                </dl>
 
-            <h5>Cantrips</h5>
-            {% if pc.spellcasting and pc.cantrips %}
-            {% for cantrip in pc.cantrips %}
-                {{ spell_popover(cantrip, 'bottom') }}
-            {% endfor %}
-            {% endif %}
-
-            {% for spell_type in pc.casting_spells.keys() %}
-
-            <h5>
-                {{ spell_type }}
-                {% for i in range(0, pc.spellcasting.spell_slots[spell_type]) %}
-                <i class="material-icons">all_out</i>
+                {% if pc.spellcasting and pc.cantrips %}
+                <h5>Cantrips</h5>
+                {% for cantrip in pc.cantrips %}
+                    {{ spell_popover(cantrip, 'bottom') }}
                 {% endfor %}
-            </h5>
+                {% endif %}
 
-            {% for spell in pc.casting_spells[spell_type] %}
-                {{ spell_popover(spell, 'bottom') }}
-            {% endfor %}
+                {% for spell_type in pc.casting_spells.keys() %}
+                <h5>
+                    {{ spell_type }}
+                    {% for i in range(0, pc.spellcasting.spell_slots[spell_type]) %}
+                    <i class="material-icons">all_out</i>
+                    {% endfor %}
+                </h5>
+                {% for spell in pc.casting_spells[spell_type] %}
+                    {{ spell_popover(spell, 'bottom') }}
+                {% endfor %}
 
-            {% endfor %}
+                {% endfor %}
             {% endif %}
         </div>
     </div>
@@ -229,6 +223,7 @@
             {% endfor %}
         </div>
     </div>
+
     <div class="column col-8">
         <div class="sheet-box">
             <h3>Traits & Features <i class="material-icons">style</i></h3>
@@ -242,9 +237,11 @@
                             <i class="icon icon-arrow-right mr-1"></i>
                             {{ feature.name }}
                         </summary>
+
                         <div class="accordion-body">
                             <p>{{ feature.description }}</p>
                         </div>
+
                     </details>
                     {% endfor %}
                 </div>
