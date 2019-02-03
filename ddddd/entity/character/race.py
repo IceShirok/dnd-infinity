@@ -133,7 +133,7 @@ class HillDwarf(Dwarf):
 class Gnome(Race):
     def __init__(self, asi, traits):
         def_asi = {
-            base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 1)
+            base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 2)
         }
         def_traits = [
             trait.Darkvision(range=60),

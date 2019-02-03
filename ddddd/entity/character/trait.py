@@ -88,3 +88,12 @@ class EnhanceDamage(Trait):
     def qualifies(self, weapon):
         """Checks to see whether this weapon is qualified for the attack bonus"""
         return True
+
+
+# TODO refactor this into a feat later
+# for now, feats can be treated like traits
+class WarCaster(Trait):
+    def __init__(self):
+        super(WarCaster, self).__init__(name='War Caster',
+                                        description='You have advantage one Constitution saves \
+                                        that you make to maintain concentration on a spell when you take damage.')

@@ -133,12 +133,7 @@ class Cleric(Vocation):
         return req
 
     def _add_level_4_features(self, **kwargs):
-        ability_score_increase = kwargs['ability_score_increase_4']
-        for ability in ability_score_increase.keys():
-            if ability not in self.asi:
-                self.asi[ability] = ability_score_increase[ability]
-            else:
-                self.asi[ability] = self.asi[ability].combine(ability_score_increase[ability])
+        self._aggregate_asi_or_feat(kwargs, 4)
 
         new_cantrip = kwargs['cantrip_4']
         self.spellcasting.cantrips.append(new_cantrip)
@@ -279,7 +274,8 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_8_features(self, **kwargs):
-        self._aggregate_ability_score_increase(kwargs['ability_score_increase_8'])
+        self._aggregate_asi_or_feat(kwargs, 8)
+
         self.features['channel_divinity_destroy_undead'] = trait.Trait(
             name='Channel Divinity: Destroy Undead (CR 1)',
             description='Starting at 5th level, when an undead fails its saving throw \
@@ -451,7 +447,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_12_features(self, **kwargs):
-        self._aggregate_ability_score_increase(kwargs['ability_score_increase_12'])
+        self._aggregate_asi_or_feat(kwargs, 12)
 
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
@@ -637,7 +633,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_16_features(self, **kwargs):
-        self._aggregate_ability_score_increase(kwargs['ability_score_increase_16'])
+        self._aggregate_asi_or_feat(kwargs, 16)
 
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
@@ -799,7 +795,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_19_features(self, **kwargs):
-        self._aggregate_ability_score_increase(kwargs['ability_score_increase_19'])
+        self._aggregate_asi_or_feat(kwargs, 19)
 
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
@@ -909,12 +905,18 @@ class Cleric(Vocation):
                                                  num_cantrips_known=spells.cantrips_by_level(5), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
-    def _aggregate_ability_score_increase(self, asi):
-        for ability in asi.keys():
-            if ability not in self.asi:
-                self.asi[ability] = asi[ability]
-            else:
-                self.asi[ability] = self.asi[ability].combine(asi[ability])
+    def _aggregate_asi_or_feat(self, kwargs, level):
+        asi_key = 'ability_score_increase_{}'.format(level)
+        feat_key = 'feat_{}'.format(level)
+        if asi_key in kwargs:
+            asi = kwargs[asi_key]
+            for ability in asi.keys():
+                if ability not in self.asi:
+                    self.asi[ability] = asi[ability]
+                else:
+                    self.asi[ability] = self.asi[ability].combine(asi[ability])
+        elif feat_key in kwargs:
+            self.feats.append(kwargs[feat_key])
 
 
 class PotentSpellcasting(trait.EnhanceDamage):

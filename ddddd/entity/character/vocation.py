@@ -13,7 +13,7 @@ class Vocation(object, metaclass=abc.ABCMeta):
     """
     def __init__(self, name, level, hit_die,
                  proficiencies, saving_throws, skill_proficiencies, features, asi,
-                 spellcasting=None):
+                 spellcasting=None, feats=None):
         self.name = name
         self.level = level
         self.hit_die = hit_die
@@ -23,6 +23,7 @@ class Vocation(object, metaclass=abc.ABCMeta):
         self.features = features
         self.asi = asi if asi else {}
         self.spellcasting = spellcasting
+        self.feats = feats if feats else []
     
     @property
     def languages(self):

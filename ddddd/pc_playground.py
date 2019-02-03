@@ -85,7 +85,7 @@ def create_tamiphi(level=1):
     :param level: the character level
     :return: Tamiphi the gnome cleric
     """
-    base_ = pc.PlayerBase("Tamiphi Tockentell", 10, 11, 15, 14, 16, 7, level=level)
+    base_ = pc.PlayerBase("Tamiphi Tockentell", 10, 12, 15, 14, 18, 7, level=level)
     race_ = race.RockGnome()
     class_languages = trait.LanguagesKnown(languages=[base.Languages.DRACONIC, base.Languages.DWARVISH])
     class_cantrips = [spells.SACRED_FLAME, spells.GUIDANCE, spells.SPARE_THE_DYING]
@@ -97,19 +97,16 @@ def create_tamiphi(level=1):
                           ability_score_increase_4={
                               base.AbilityScore.WIS: base.AbilityScoreIncrease(base.AbilityScore.WIS, 2),
                           },
-                          ability_score_increase_8={
-                              base.AbilityScore.WIS: base.AbilityScoreIncrease(base.AbilityScore.WIS, 2),
-                          },
+                          feat_8=trait.WarCaster(),
                           cantrip_10=spells.MENDING,
                           ability_score_increase_12={
-                              base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 1),
-                              base.AbilityScore.DEX: base.AbilityScoreIncrease(base.AbilityScore.DEX, 1),
+                              base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 2),
                           },
                           ability_score_increase_16={
                               base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 2),
                           },
                           ability_score_increase_19={
-                              base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 2),
+                              base.AbilityScore.CON: base.AbilityScoreIncrease(base.AbilityScore.CON, 2),
                           })
     bg_languages = trait.LanguagesKnown(languages=[base.Languages.CELESTIAL, base.Languages.INFERNAL])
     background_ = background.Sage(bg_languages)

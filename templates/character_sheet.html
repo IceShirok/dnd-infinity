@@ -259,6 +259,9 @@
                 <div class="column col-6">
                     {{ feature_list('Racial Features', pc.racial_features) }}
                     {{ feature_list('Background Features', pc.background_feature) }}
+                    {% if pc.feats %}
+                        {{ feature_list('Feats', pc.feats) }}
+                    {% endif %}
                 </div>
                 <div class="column col-6">
                     {{ feature_list('Class Features', pc.vocation_features) }}

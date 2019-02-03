@@ -260,6 +260,15 @@ class PlayerCharacter(object):
                 langs = langs + lang_opt.languages
         return langs
 
+    #########################
+    # FEATURES & TRAITS
+    #########################
+
+    @property
+    def feats(self):
+        """Returns all features from race"""
+        return self.vocation.feats
+
     @property
     def racial_features(self):
         """Returns all features from race"""
