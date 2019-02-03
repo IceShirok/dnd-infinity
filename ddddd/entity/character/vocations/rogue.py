@@ -7,9 +7,7 @@ from ddddd.entity.character.vocation import Vocation
 class Rogue(Vocation):
     def __init__(self, skill_proficiencies, expertise):
         def_features = [
-            trait.Trait(name='Sneak Attack',
-                        description='Beginning at 1st level, you know how to strike subtly \
-                        and exploit a foe''s distraction.'),
+            SneakAttack(level=1),
             trait.LanguagesKnown(name='Thieves'' Cant',
                                  description='During your rogue Training you learned thieves'' cant, \
                                  a Secret mix of dialect, jargon, and code that allows you to hide messages \
@@ -141,3 +139,12 @@ class Rogue(Vocation):
 
     def _add_level_20_features(self, **kwargs):
         return {}
+
+
+class SneakAttack(trait.Trait):
+    def __init__(self, level):
+        super(SneakAttack, self).__init__(name='Sneak Attack',
+                                          description='Beginning at 1st level, you know how to strike subtly \
+                                          and exploit a foe''s distraction.')
+        self.attack_bonus = '{}d6'.format((level+1)/2)
+
