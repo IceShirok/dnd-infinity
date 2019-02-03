@@ -15,6 +15,23 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 
+def get_available_characters():
+    return {
+        'dorian': {
+            'max_level': 5,
+            'create': create_dorian,
+        },
+        'tamiphi': {
+            'max_level': 5,
+            'create': create_tamiphi,
+        },
+        'fethri': {
+            'max_level': 5,
+            'create': create_fethri,
+        },
+    }
+
+
 def create_dorian(level=5):
     """
     Creates Dorian, a dwarf ranger.
