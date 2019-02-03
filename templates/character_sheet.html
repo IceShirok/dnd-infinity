@@ -62,9 +62,9 @@
                 <dt><i class="material-icons">verified_user</i> Armor Class</dt>
                 <dd>{{ pc.armor_class }} ({{ pc.worn_items.armor.name if pc.worn_items.armor else 'dodgy stuff' }})</dd>
                 <dt><i class="material-icons">flash_on</i> Initiative</dt>
-                <dd>{{ pc.initiative }}</dd>
+                <dd>{{ pmod(pc.initiative) }}</dd>
                 <dt><i class="material-icons">directions_run</i> Speed</dt>
-                <dd>{{ pc.speed }}</dd>
+                <dd>{{ pc.speed }} ft</dd>
             </dl>
         </div>
     </div>

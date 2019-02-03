@@ -63,7 +63,26 @@ class Rogue(PlayerClass):
         pass
 
     def _add_level_3_features(self, **kwargs):
-        pass
+        new_gaming_set = kwargs['gaming_set']
+        for proficiency in ['disguise_kit', 'forgery_kit', new_gaming_set]:
+            self.proficiencies[base.TOOL_PROFICIENCY].proficiencies.append(proficiency)
+
+        new_languages = kwargs[base.LANGUAGES]
+        self.features.append(new_languages)
+
+        self.features.append(
+            trait.Trait(name='Master of Intrigue',
+                        description='You can unerringly mimic the speech patterns and accent of a creature \
+                        that you hear speak for at least 1 minute.')
+        )
+
+        self.features.append(
+            trait.Trait(name='Master of Tactics',
+                        description='Starting at 3rd level, you can use the Help action as a bonus action. \
+                        Additionally, when you use the Help action to aid an ally in attacking a creature, \
+                        the target of that attack can be within 30 feet of you, rather than 5 feet of you, \
+                        if the target can see or hear you.')
+        )
 
     def _level_4_requirements(self):
         pass
@@ -80,4 +99,8 @@ class Rogue(PlayerClass):
         pass
 
     def _add_level_5_features(self, **kwargs):
-        pass
+        self.features.append(
+            trait.Trait(name='Uncanny Dodge',
+                        description='Starting at 5th level, when an attacker that you can see hits you with an Attack, \
+                        you can use your Reaction to halve the attack''s damage against you.')
+        )

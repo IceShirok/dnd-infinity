@@ -149,10 +149,11 @@ def create_fethri(level=1):
                                                     Skills.STEALTH])
     if level > 1:
         fethri_class.level_to(level=level,
-                              fighting_style='two_weapon_fighting',
-                              archetype_feature='colossus_slayer',
+                              gaming_set='bone_dice',
+                              languages=trait.LanguagesKnown(languages=[base.Languages.CELESTIAL,
+                                                                        base.Languages.DWARVISH]),
                               ability_score_increase={
-                                  base.AbilityScore.STR: base.AbilityScoreIncrease(base.AbilityScore.STR, 2),
+                                  base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 2),
                               })
     fethri_bg = background.Noble(tool_proficiency=trait.ToolProficiency(proficiencies=['chess_set']),
                                  languages=trait.LanguagesKnown(languages=[base.Languages.DRACONIC]))

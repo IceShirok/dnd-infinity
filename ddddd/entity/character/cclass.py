@@ -27,9 +27,10 @@ class PlayerClass(object, metaclass=abc.ABCMeta):
     @property
     def languages(self):
         lang = list(filter(lambda f: isinstance(f, trait.LanguagesKnown), self.features))
-        if len(lang) > 0:
-            return lang[0]
-        return []
+        agg_languages = trait.LanguagesKnown(languages=[])
+        for l_feature in lang:
+            agg_languages.languages = agg_languages.languages + l_feature.languages
+        return agg_languages
 
     def get_requirements(self, level):
         if level == 1:
