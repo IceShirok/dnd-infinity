@@ -6,10 +6,10 @@ from ddddd.entity.character import trait
 
 class Vocation(object, metaclass=abc.ABCMeta):
     """
-    A representation of a player character (PC) vocations.
+    A representation of a player character (PC) vocation.
     In 5e, this would be called a "class", but because Python has the word "class"
     as a keyword, this class is renamed to avoid confusion. In the presentation
-    layer, a vocations would be called a "class"
+    layer, a vocation would be called a "class"
     """
     def __init__(self, name, level, hit_die,
                  proficiencies, saving_throws, skill_proficiencies, features, asi,
