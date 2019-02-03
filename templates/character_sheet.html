@@ -80,7 +80,7 @@
                         <td>
                             <div class="popover popover-bottom">
                                 <p><strong>{{ ability }}</strong></p>
-                                <p>{{ pc.ability_scores[ability]['score'] }}</p>
+                                <p class="chip">{{ pc.ability_scores[ability]['score'] }}</p>
 
                                 <div class="popover-container">
                                     <div class="card">
@@ -191,7 +191,7 @@
                         {% if pc.spellcasting and pc.cantrips %}
                         <h5>Cantrips</h5>
                         {% for cantrip in pc.cantrips %}
-                            {{ spell_popover(cantrip, 'bottom') }}
+                            {{ spell_popover(cantrip, 'left') }}
                         {% endfor %}
                         {% endif %}
 
@@ -203,7 +203,7 @@
                             {% endfor %}
                         </h5>
                         {% for spell in pc.casting_spells[spell_type] %}
-                            {{ spell_popover(spell, 'bottom') }}
+                            {{ spell_popover(spell, 'left') }}
                         {% endfor %}
 
                         {% endfor %}
