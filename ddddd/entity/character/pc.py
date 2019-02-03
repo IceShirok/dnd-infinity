@@ -4,7 +4,7 @@ import math
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScore, Skills
 from ddddd.entity.character import spells, trait
-from ddddd.items import items
+from ddddd.items import items, weapons
 
 import logging
 logger = logging.getLogger(__name__)
@@ -233,13 +233,22 @@ class PlayerCharacter(object):
     @property
     def proficiencies(self):
         """Aggregate proficiencies that the PC has learned."""
-        p = {}
+        p = {
+            base.WEAPON_PROFICIENCY: [],
+            base.ARMOR_PROFICIENCY: [],
+            base.TOOL_PROFICIENCY: [],
+            base.LANGUAGES: [],
+        }
         for prof_group in [self.race.proficiencies, self.vocation.proficiencies, self.background.proficiencies]:
             for prof in prof_group.keys():
                 if prof not in p:
                     p[prof] = []
                 p[prof] = p[prof] + prof_group[prof].proficiencies
         p[base.LANGUAGES] = self.languages
+
+        # Weapon proficiencies are a bit strange because there are weapon categories
+        # and specific weapon proficiencies.
+        p[base.WEAPON_PROFICIENCY] = weapons.get_aggregated_weapon_proficiencies(p[base.WEAPON_PROFICIENCY])
         return p
     
     @property
