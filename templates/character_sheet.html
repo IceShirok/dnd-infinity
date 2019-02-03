@@ -1,5 +1,24 @@
 {% extends "base.html" %}
 
+{% macro spell_popover(spell, popover_dir) -%}
+    <div class="popover popover-{{ popover_dir }}">
+        <p class="chip">{{ spell.name }}</p>
+        <div class="popover-container">
+            <div class="card">
+                <div class="card-header"><h5>{{ spell.name }}</h5></div>
+                <div class="card-body">
+                    <p>{{ spell.level }}-level {{ spell.magic_school }}</p>
+                    <p><strong>Casting time</strong>: {{ spell.casting_time }}</p>
+                    <p><strong>Range</strong>: {{ spell.spell_range }}</p>
+                    <p><strong>Components</strong>: {{ ', '.join(spell.components) }}</p>
+                    <p><strong>Duration</strong>: {{ spell.duration }}</p>
+                    <p>{{ spell.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{%- endmacro %}
+
 {% block content %}
 
 <div id="banner" class="columns">
@@ -140,29 +159,14 @@
                         <td>{{ pmod(pc.calculate_weapon_bonuses()[weapon.name]['attack_bonus']) }}</td>
                         <td>{{ pc.calculate_weapon_bonuses()[weapon.name]['damage'] }}</td>
                     </tr>
+
                     {% endfor %}
                     {% if pc.spellcasting and pc.cantrips %}
                     {% for cantrip in pc.calculate_damage_cantrips() %}
                     <tr>
                         <td>
-                            <div class="popover popover-right">
-                                <p class="chip">{{ cantrip }}</p>
-                                <div class="popover-container">
-                                    <div class="card">
-                                        {% set c = pc.calculate_damage_cantrips()[cantrip]['cantrip'] %}
-                                        <div class="card-header"><h5>{{ c.name }}</h5></div>
-                                        <div class="card-body">
-                                            <p>{{ c.magic_school }} {{ c.level }}</p>
-                                            <p><strong>Casting time</strong>: {{ c.casting_time }}</p>
-                                            <p><strong>Range</strong>: {{ c.spell_range }}</p>
-                                            <p><strong>Components</strong>: {{ ', '.join(c.components) }}</p>
-                                            <p><strong>Duration</strong>: {{ c.duration }}</p>
-                                            <p>{{ c.description }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
+                            {% set c = pc.calculate_damage_cantrips()[cantrip]['cantrip'] %}
+                            {{ spell_popover(c, 'right') }}
                         </td>
                         <td>{{ pc.calculate_damage_cantrips()[cantrip]['attack_bonus'] }}</td>
                         <td>{{ pc.calculate_damage_cantrips()[cantrip]['damage'] }}</td>
@@ -183,6 +187,14 @@
                 <dt>Spell Attack Bonus</dt>
                 <dd>{{ pc.spell_attack_bonus }}</dd>
             </dl>
+
+            <h5>Cantrips</h5>
+            {% if pc.spellcasting and pc.cantrips %}
+            {% for cantrip in pc.cantrips %}
+                {{ spell_popover(cantrip, 'bottom') }}
+            {% endfor %}
+            {% endif %}
+
             {% for spell_type in pc.casting_spells.keys() %}
 
             <h5>
@@ -193,22 +205,7 @@
             </h5>
 
             {% for spell in pc.casting_spells[spell_type] %}
-            <div class="popover popover-bottom">
-                <p class="chip">{{ spell.name }}</p>
-                <div class="popover-container">
-                    <div class="card">
-                        <div class="card-header"><h5>{{ spell.name }}</h5></div>
-                        <div class="card-body">
-                            <p>{{ spell.level }}-level {{ spell.magic_school }}</p>
-                            <p><strong>Casting time</strong>: {{ spell.casting_time }}</p>
-                            <p><strong>Range</strong>: {{ spell.spell_range }}</p>
-                            <p><strong>Components</strong>: {{ ', '.join(spell.components) }}</p>
-                            <p><strong>Duration</strong>: {{ spell.duration }}</p>
-                            <p>{{ spell.description }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                {{ spell_popover(spell, 'bottom') }}
             {% endfor %}
 
             {% endfor %}
