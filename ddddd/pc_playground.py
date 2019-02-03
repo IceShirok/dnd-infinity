@@ -157,6 +157,7 @@ def create_fethri(level=1):
     worn_items = items.WornItems()
     worn_items.don_armor(armor.LEATHER_ARMOR)
     worn_items.equip_weapon(weapons.RAPIER)
+    worn_items.equip_weapon(weapons.LONGSWORD)
 
     backpack = items.generate_burglars_pack()
     fethri = pc.PlayerCharacter(base_, race_, vocation, background_, worn_items, backpack)

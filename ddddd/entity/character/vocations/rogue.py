@@ -4,6 +4,7 @@ from ddddd.entity import base
 from ddddd.entity.base import AbilityScore, Skills, Languages, SpellTypes
 from ddddd.entity.character import spells, trait
 from ddddd.entity.character.vocation import Vocation
+from ddddd.items import weapons
 
 
 class Rogue(Vocation):
@@ -140,11 +141,19 @@ class Rogue(Vocation):
         return {}
 
 
-class SneakAttack(trait.Trait):
+class SneakAttack(trait.EnhanceWeaponAttack):
     def __init__(self, level):
-        self.attack_bonus = '{}d6'.format(math.floor((level+1)/2))
+        attack_bonus = '{}d6'.format(math.floor((level+1)/2))
         super(SneakAttack, self).__init__(name='Sneak Attack',
                                           description='Beginning at 1st level, you know how to strike subtly \
                                           and exploit a foe''s distraction. \
-                                          Sneak attack bonus = {}'.format(self.attack_bonus))
+                                          Sneak attack bonus = {}'.format(attack_bonus),
+                                          attack_bonus=attack_bonus)
 
+    def qualifies(self, weapon):
+        if not isinstance(weapon, weapons.Weapon):  # Must be a weapon
+            return False
+        for prop in [weapons.FINESSE, weapons.AMMUNITION, weapons.THROWN]:
+            if prop in weapon.properties:  # Must be a finesse or ranged weapon
+                return True
+        return False

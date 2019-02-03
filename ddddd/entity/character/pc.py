@@ -358,15 +358,23 @@ class PlayerCharacter(object):
         bonuses = {}
         weapons_ = self.worn_items.weapons
         weapon_proficiencies = self.proficiencies[base.WEAPON_PROFICIENCY] if base.WEAPON_PROFICIENCY in self.proficiencies else []
+        vocation_bonuses = list(filter(lambda f: isinstance(f, trait.EnhanceWeaponAttack), self.vocation_features))
+
         for weapon in weapons_:
             attack_type, damage_bonus = weapons.determine_attack_bonus_type(weapon, self.ability_scores)
-            attack_prof = 0
+            attack_bonus = damage_bonus
             if weapons.is_proficient(weapon, weapon_proficiencies):
-                attack_prof = self.proficiency_bonus
+                attack_bonus += self.proficiency_bonus
+
+            weapon_damage_list = [str(weapon.damage), str(damage_bonus)]
+            for bonus in vocation_bonuses:
+                if bonus.qualifies(weapon):
+                    weapon_damage_list.append('{} [{}]'.format(bonus.attack_bonus, bonus.name))
+
             bonuses[weapon.name] = {
                 'weapon': weapon,
-                'attack_bonus': damage_bonus + attack_prof,
+                'attack_bonus': attack_bonus,
                 'attack_type': attack_type,
-                'damage': '{} + {}'.format(weapon.damage, damage_bonus),
+                'damage': ' + '.join(weapon_damage_list),
             }
         return bonuses

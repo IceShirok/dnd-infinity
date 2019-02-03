@@ -49,6 +49,10 @@ LONGBOW = Weapon('Longbow', category=MARTIAL, damage='1d8 piercing',
                  price=50, weight=2,
                  properties=['ammunition (range 150/600)', HEAVY, TWO_HANDED])
 
+LONGSWORD = Weapon('Longsword', category=MARTIAL, damage='1d8 piercing',
+                   price=15, weight=3,
+                   properties=['versatile (1d10)'])
+
 WEAPON_TYPE_TO_WEAPONS = {
     SIMPLE: [MACE, HANDAXE],
     MARTIAL: [RAPIER, LONGBOW],
