@@ -3,7 +3,8 @@ import math
 
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScore, Skills
-from ddddd.entity.character import equipment, spells, trait
+from ddddd.entity.character import spells, trait
+from ddddd.items import items
 
 import logging
 logger = logging.getLogger(__name__)
@@ -67,8 +68,8 @@ class PlayerCharacter(object):
         self.race = race
         self.vocation = vocation
         self.background = background
-        self.worn_items = worn_items if worn_items else equipment.WornItems()
-        self.backpack = backpack if backpack else equipment.Backpack()
+        self.worn_items = worn_items if worn_items else items.WornItems()
+        self.backpack = backpack if backpack else items.Backpack()
 
     #########################
     # BASIC PROPERTIES

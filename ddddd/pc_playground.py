@@ -1,8 +1,9 @@
 from ddddd.entity import base
 from ddddd.entity.base import Skills
-from ddddd.entity.character import race, background, pc, equipment, spells
+from ddddd.entity.character import race, background, pc, spells
 from ddddd.entity.character.vocation import ranger, cleric, rogue
 from ddddd.entity.character import trait
+from ddddd.items import items, armor, weapons
 
 import logging
 
@@ -43,29 +44,17 @@ def create_dorian(level=5):
                           })
     bg = background.Criminal()
 
-    def generate_equipment():
-        logger.debug('Displaying worn items')
-        worn_items = equipment.WornItems()
+    worn_items = items.WornItems()
+    worn_items.don_armor(armor.CHAIN_MAIL)
+    worn_items.equip_weapon(weapons.HANDAXE)
+    worn_items.equip_weapon(weapons.HANDAXE)
+    worn_items.equip_weapon(weapons.LONGBOW)
 
-        rondel = equipment.Weapon('handaxe', category='simple', damage='1d6 slashing', price=5, weight=2,
-                                  properties=['light', 'thrown (range 20/60)'])
-        lefon = equipment.Weapon('handaxe', category='simple', damage='1d6 slashing', price=5, weight=2,
-                                 properties=['light', 'thrown (range 20/60)'])
-        longbow = equipment.Weapon('longbow', category='martial', damage='1d8 piercing', price=50, weight=2,
-                                   properties=['ammunition (range 150/600)', 'heavy', 'two-handed'])
-        worn_items.don_armor(equipment.CHAIN_MAIL)
-        worn_items.equip_weapon(rondel)
-        worn_items.equip_weapon(lefon)
-        worn_items.equip_weapon(longbow)
-        return worn_items
+    backpack = items.generate_burglars_pack()
+    backpack.add_item(armor.CHAIN_SHIRT)
+    backpack.add_item(armor.LEATHER_ARMOR)
 
-    equip = generate_equipment()
-
-    backpack = generate_burglars_pack()
-    backpack.add_item(equipment.CHAIN_SHIRT)
-    backpack.add_item(equipment.LEATHER_ARMOR)
-
-    dorian = pc.PlayerCharacter(base_, race_, vocation, bg, equip, backpack)
+    dorian = pc.PlayerCharacter(base_, race_, vocation, bg, worn_items, backpack)
     return dorian
 
 
@@ -94,23 +83,12 @@ def create_tamiphi(level=1):
     bg_languages = trait.LanguagesKnown(languages=[base.Languages.CELESTIAL, base.Languages.INFERNAL])
     background_ = background.Sage(bg_languages)
 
-    def generate_equipment():
-        worn_items = equipment.WornItems()
-        mace = equipment.Weapon('Mace', category='simple', damage='1d6 bludgeoning', price=5, weight=4,
-                                properties=[])
-        worn_items.equip_weapon(mace)
+    worn_items = items.WornItems()
+    worn_items.equip_weapon(weapons.MACE)
+    worn_items.don_armor(armor.CHAIN_SHIRT)
 
-        def calc_medium_armor_rating(dex_mod):
-            # chain shirt
-            return 13 + min(dex_mod, 2)
-
-        worn_items.don_armor(equipment.Armor('Chain Shirt', price=50, weight=20,
-                                             armor_class=calc_medium_armor_rating, strength=0, stealth=''))
-        return worn_items
-
-    equip = generate_equipment()
-    backpack = generate_burglars_pack()
-    tamiphi = pc.PlayerCharacter(base_, race_, vocation, background_, equip, backpack)
+    backpack = items.generate_explorers_pack()
+    tamiphi = pc.PlayerCharacter(base_, race_, vocation, background_, worn_items, backpack)
     return tamiphi
 
 
@@ -145,41 +123,10 @@ def create_fethri(level=1):
     background_ = background.Noble(tool_proficiency=trait.ToolProficiency(proficiencies=['chess_set']),
                                    languages=trait.LanguagesKnown(languages=[base.Languages.DRACONIC]))
 
-    def generate_equipment():
-        logger.debug('Displaying worn items')
-        worn_items = equipment.WornItems()
+    worn_items = items.WornItems()
+    worn_items.don_armor(armor.LEATHER_ARMOR)
+    worn_items.equip_weapon(weapons.RAPIER)
 
-        def calc_light_armor_rating(dex_mod):
-            # leather armor
-            return 11 + dex_mod
-
-        armor = equipment.Armor('Leather Armor', price=10, weight=10, armor_class=calc_light_armor_rating,
-                                strength=0, stealth='')
-        longbow = equipment.Weapon('rapier', category='martial', damage='1d8 piercing', price=25, weight=2,
-                                   properties=['finesse'])
-        worn_items.don_armor(armor)
-        worn_items.equip_weapon(longbow)
-        return worn_items
-
-    equip = generate_equipment()
-    backpack = generate_burglars_pack()
-    fethri = pc.PlayerCharacter(base_, race_, vocation, background_, equip, backpack)
+    backpack = items.generate_burglars_pack()
+    fethri = pc.PlayerCharacter(base_, race_, vocation, background_, worn_items, backpack)
     return fethri
-
-
-def generate_burglars_pack():
-    backpack = equipment.Backpack(copper_pieces=0, silver_pieces=0, gold_pieces=15, platnium_pieces=0, items=None)
-    backpack.add_item(equipment.Item('Ball Bearings', price=1, weight=2))
-    backpack.add_item(equipment.Item('String', price=0, weight=0, description='10 ft of string'))
-    backpack.add_item(equipment.Item('Bell', price=1, weight=0))
-    backpack.add_item(equipment.Item('Candle', price=0, weight=0, quantity=5))
-    backpack.add_item(equipment.Item('Crowbar', price=2, weight=5, quantity=2))
-    backpack.add_item(equipment.Item('Hammer', price=1, weight=3))
-    backpack.add_item(equipment.Item('Piton', price=0, weight=1, quantity=10))
-    backpack.add_item(equipment.Item('Hooded Lantern', price=4, weight=2))
-    backpack.add_item(equipment.Item('Flask of Oil', price=1, weight=1, quantity=2))
-    backpack.add_item(equipment.Item('Rations', price=0.5, weight=2, quantity=5))
-    backpack.add_item(equipment.Item('Tinderbox', price=1, weight=1))
-    backpack.add_item(equipment.Item('Waterskin', price=1, weight=5))
-    backpack.add_item(equipment.Item('Hempen Rope', price=1, weight=10, description='50 ft of rope'))
-    return backpack
