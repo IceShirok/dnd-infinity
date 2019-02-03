@@ -252,17 +252,27 @@ class PlayerCharacter(object):
         return langs
 
     @property
+    def racial_features(self):
+        """Returns all features from race"""
+        return self.race.traits
+
+    @property
+    def vocation_features(self):
+        """Returns all features from the vocation"""
+        return self.vocation.features
+
+    @property
+    def background_feature(self):
+        """Currently background only provides one feature."""
+        return [self.background.feature]
+
+    @property
     def features(self):
-        """
-        Aggregates all features that the PC possesses.
-        Note that background only provides 1 feature, while race and class
-        will provide multiple features.
-        :return:
-        """
+        """Aggregates all features that the PC possesses."""
         return {
-            base.RACIAL_TRAITS: self.race.traits,
-            base.VOCATION_FEATURES: self.vocation.features,
-            base.BACKGROUND_FEATURES: [self.background.feature],
+            base.RACIAL_TRAITS: self.racial_features,
+            base.VOCATION_FEATURES: self.vocation_features,
+            base.BACKGROUND_FEATURES: [self.background_feature],
         }
 
     #########################

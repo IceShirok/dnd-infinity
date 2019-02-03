@@ -38,6 +38,23 @@
     </tr>
 {%- endmacro %}
 
+{% macro feature_list(name, features) -%}
+    <h4>{{ name }}</h4>
+    {% for feature in features %}
+    <details class="accordion">
+        <summary class="accordion-header">
+            <i class="icon icon-arrow-right mr-1"></i>
+            {{ feature.name }}
+        </summary>
+
+        <div class="accordion-body">
+            <p>{{ feature.description }}</p>
+        </div>
+
+    </details>
+    {% endfor %}
+{%- endmacro %}
+
 {% set ability_to_icon = {
 'STR': 'fitness_center',
 'DEX': 'timer',
@@ -239,24 +256,13 @@
         <div class="sheet-box">
             <h3>Traits & Features <i class="material-icons">style</i></h3>
             <div class="columns">
-            {% for subfeature in pc.features %}
-                <div class="column col-4">
-                    <h4>{{ subfeature }}</h4>
-                    {% for feature in pc.features[subfeature] %}
-                    <details class="accordion">
-                        <summary class="accordion-header">
-                            <i class="icon icon-arrow-right mr-1"></i>
-                            {{ feature.name }}
-                        </summary>
-
-                        <div class="accordion-body">
-                            <p>{{ feature.description }}</p>
-                        </div>
-
-                    </details>
-                    {% endfor %}
+                <div class="column col-6">
+                    {{ feature_list('Racial Features', pc.racial_features) }}
+                    {{ feature_list('Background Features', pc.background_feature) }}
                 </div>
-            {% endfor %}
+                <div class="column col-6">
+                    {{ feature_list('Class Features', pc.vocation_features) }}
+                </div>
 
             </div>
 
