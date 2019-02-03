@@ -80,9 +80,9 @@ class Expertise(Trait):
         self.proficiencies = proficiencies if proficiencies else []
 
 
-class EnhanceWeaponAttack(Trait):
+class EnhanceDamage(Trait):
     def __init__(self, name, description, attack_bonus):
-        super(EnhanceWeaponAttack, self).__init__(name, description)
+        super(EnhanceDamage, self).__init__(name, description)
         self.attack_bonus = attack_bonus
 
     def qualifies(self, weapon):

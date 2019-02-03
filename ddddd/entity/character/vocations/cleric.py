@@ -245,9 +245,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_7_features(self, **kwargs):
-        self.features['potent_spellcasting'] = trait.Trait(name='Potent Spellcasting',
-                        description='Starting at 8th level, you add your Wisdom modifier \
-                        to the damage you deal with any cleric cantrip.')
+        self.features['potent_spellcasting'] = PotentSpellcasting(wis_mod=4)
 
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
@@ -917,6 +915,17 @@ class Cleric(Vocation):
                 self.asi[ability] = asi[ability]
             else:
                 self.asi[ability] = self.asi[ability].combine(asi[ability])
+
+
+class PotentSpellcasting(trait.EnhanceDamage):
+    def __init__(self, wis_mod):
+        super(PotentSpellcasting, self).__init__(name='Potent Spellcasting',
+                                                 description='Starting at 8th level, you add your Wisdom modifier \
+                                                 to the damage you deal with any cleric cantrip.',
+                                                 attack_bonus=wis_mod)
+
+    def qualifies(self, spell):
+        return isinstance(spell, spells.DamageCantrip)
 
 
 class ClericSpellcastingAbility(spells.SpellcastingAbility):

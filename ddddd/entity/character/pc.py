@@ -304,11 +304,19 @@ class PlayerCharacter(object):
         """Get a list of damaging cantrips, treated like weapons."""
         damage_cantrips = list(filter(lambda c: isinstance(c, spells.DamageCantrip), self.cantrips))
         bonuses = {}
+
+        vocation_bonuses = list(filter(lambda f: isinstance(f, trait.EnhanceDamage), self.vocation_features))
+
         for cantrip in damage_cantrips:
+            cantrip_bonus = 0
+            for bonus in vocation_bonuses:
+                if bonus.qualifies(cantrip):
+                    cantrip_bonus += bonus.attack_bonus
+
             bonuses[cantrip.name] = {
                 'cantrip': cantrip,
                 'attack_bonus': cantrip.attack_bonus_calc(self.spell_attack_bonus, self.spell_save_dc),
-                'damage': cantrip.damage_calc(self.level),
+                'damage': '{} + {}'.format(cantrip.damage_calc(self.level), cantrip_bonus),
             }
         return bonuses
 
@@ -358,7 +366,7 @@ class PlayerCharacter(object):
         bonuses = {}
         weapons_ = self.worn_items.weapons
         weapon_proficiencies = self.proficiencies[base.WEAPON_PROFICIENCY] if base.WEAPON_PROFICIENCY in self.proficiencies else []
-        vocation_bonuses = list(filter(lambda f: isinstance(f, trait.EnhanceWeaponAttack), self.vocation_features))
+        vocation_bonuses = list(filter(lambda f: isinstance(f, trait.EnhanceDamage), self.vocation_features))
 
         for weapon in weapons_:
             attack_type, damage_bonus = weapons.determine_attack_bonus_type(weapon, self.ability_scores)
@@ -378,3 +386,21 @@ class PlayerCharacter(object):
                 'damage': ' + '.join(weapon_damage_list),
             }
         return bonuses
+
+
+class SneakAttack(trait.EnhanceDamage):
+    def __init__(self, level):
+        attack_bonus = '{}d6'.format(math.floor((level+1)/2))
+        super(SneakAttack, self).__init__(name='Sneak Attack',
+                                          description='Beginning at 1st level, you know how to strike subtly \
+                                          and exploit a foe''s distraction. \
+                                          Sneak attack bonus = {}'.format(attack_bonus),
+                                          attack_bonus=attack_bonus)
+
+    def qualifies(self, weapon):
+        if not isinstance(weapon, weapons.Weapon):  # Must be a weapon
+            return False
+        for prop in [weapons.FINESSE, weapons.AMMUNITION, weapons.THROWN]:
+            if prop in weapon.properties:  # Must be a finesse or ranged weapon
+                return True
+        return False

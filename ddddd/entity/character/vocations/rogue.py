@@ -141,7 +141,7 @@ class Rogue(Vocation):
         return {}
 
 
-class SneakAttack(trait.EnhanceWeaponAttack):
+class SneakAttack(trait.EnhanceDamage):
     def __init__(self, level):
         attack_bonus = '{}d6'.format(math.floor((level+1)/2))
         super(SneakAttack, self).__init__(name='Sneak Attack',
