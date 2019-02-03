@@ -1,5 +1,9 @@
 
 
+#############################
+# EQUIPMENT PACKS
+#############################
+
 class WornItems(object):
     """
     The items that are currently equipped on the
@@ -85,6 +89,10 @@ class Backpack(object):
         return total
 
 
+#############################
+# ITEMS
+#############################
+
 class Item(object):
     """
     An item in D&D.
@@ -115,6 +123,10 @@ class Weapon(Item):
         self.properties = properties
 
 
+#############################
+# ARMOR
+#############################
+
 class Armor(Item):
     """
     Armor in D&D.
@@ -126,3 +138,31 @@ class Armor(Item):
         self.armor_class = armor_class
         self.strength = strength
         self.stealth = stealth
+
+
+def calc_light_armor_rating(dex_mod):
+    # leather armor
+    return 11 + dex_mod
+
+
+def calc_medium_armor_rating(dex_mod):
+    # chain shirt
+    return 13 + min(dex_mod, 2)
+
+
+def calc_heavy_armor_rating():
+    # chain mail
+    return 16
+
+
+LEATHER_ARMOR = Armor('Leather Armor', price=10, weight=10,
+                      armor_class=calc_light_armor_rating,
+                      strength=0, stealth='')
+
+CHAIN_SHIRT = Armor('Chain Shirt', price=50, weight=20,
+                    armor_class=calc_medium_armor_rating,
+                    strength=0, stealth='')
+
+CHAIN_MAIL = Armor('Chain Mail', price=75, weight=55,
+                   armor_class=calc_heavy_armor_rating,
+                   strength=15, stealth='disadvantage')
