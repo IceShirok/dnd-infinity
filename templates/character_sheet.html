@@ -175,34 +175,41 @@
             {% if pc.spellcasting %}
                 <h4>Spellcasting</h4>
 
-                <dl>
-                    <dt>Spellcasting Ability</dt>
-                    <dd>{{ pc.spellcasting.spellcasting_ability }}</dd>
-                    <dt>Spell Save DC</dt>
-                    <dd>{{ pc.spell_save_dc }}</dd>
-                    <dt>Spell Attack Bonus</dt>
-                    <dd>{{ pc.spell_attack_bonus }}</dd>
-                </dl>
+                <div class="columns">
+                    <div class="column col-4">
+                        <dl>
+                            <dt>Spellcasting Ability</dt>
+                            <dd>{{ pc.spellcasting.spellcasting_ability }}</dd>
+                            <dt>Spell Save DC</dt>
+                            <dd>{{ pc.spell_save_dc }}</dd>
+                            <dt>Spell Attack Bonus</dt>
+                            <dd>{{ pc.spell_attack_bonus }}</dd>
+                        </dl>
+                    </div>
 
-                {% if pc.spellcasting and pc.cantrips %}
-                <h5>Cantrips</h5>
-                {% for cantrip in pc.cantrips %}
-                    {{ spell_popover(cantrip, 'bottom') }}
-                {% endfor %}
-                {% endif %}
+                    <div class="column col-8">
+                        {% if pc.spellcasting and pc.cantrips %}
+                        <h5>Cantrips</h5>
+                        {% for cantrip in pc.cantrips %}
+                            {{ spell_popover(cantrip, 'bottom') }}
+                        {% endfor %}
+                        {% endif %}
 
-                {% for spell_type in pc.casting_spells.keys() %}
-                <h5>
-                    {{ spell_type }}
-                    {% for i in range(0, pc.spellcasting.spell_slots[spell_type]) %}
-                    <i class="material-icons">all_out</i>
-                    {% endfor %}
-                </h5>
-                {% for spell in pc.casting_spells[spell_type] %}
-                    {{ spell_popover(spell, 'bottom') }}
-                {% endfor %}
+                        {% for spell_type in pc.casting_spells.keys() %}
+                        <h5>
+                            {{ spell_type }}
+                            {% for i in range(0, pc.spellcasting.spell_slots[spell_type]) %}
+                            <i class="material-icons">all_out</i>
+                            {% endfor %}
+                        </h5>
+                        {% for spell in pc.casting_spells[spell_type] %}
+                            {{ spell_popover(spell, 'bottom') }}
+                        {% endfor %}
 
-                {% endfor %}
+                        {% endfor %}
+                    </div>
+
+                </div>
             {% endif %}
         </div>
     </div>
