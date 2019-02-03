@@ -162,14 +162,14 @@
                     {% endfor %}
 
                     {% if pc.spellcasting and pc.cantrips %}
-                    {% for cantrip in pc.calculate_damage_cantrips() %}
+                    {% for cantrip_name in pc.calculate_damage_cantrips() %}
+                    {% set cantrip_details = pc.calculate_damage_cantrips()[cantrip_name] %}
                     <tr>
                         <td>
-                            {% set c = pc.calculate_damage_cantrips()[cantrip]['cantrip'] %}
-                            {{ spell_popover(c, 'right') }}
+                            {{ spell_popover(cantrip_details['cantrip'], 'right') }}
                         </td>
-                        <td>{{ pc.calculate_damage_cantrips()[cantrip]['attack_bonus'] }}</td>
-                        <td>{{ pc.calculate_damage_cantrips()[cantrip]['damage'] }}</td>
+                        <td>{{ cantrip_details['attack_bonus'] }}</td>
+                        <td>{{ cantrip_details['damage'] }}</td>
                     </tr>
                     {% endfor %}
                     {% endif %}
