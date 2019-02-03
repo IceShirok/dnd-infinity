@@ -25,7 +25,7 @@ class Cleric(Vocation):
             languages,
         ]
 
-        list_spells = [
+        cantrips = [
             spells.SACRED_FLAME,
             spells.GUIDANCE,
             spells.SPARE_THE_DYING,
@@ -38,15 +38,14 @@ class Cleric(Vocation):
             ('Healing Word', base.SpellTypes.FIRST),
             ('Sanctuary', base.SpellTypes.FIRST),
         ]
-        for name, level in simple_spell_list:
-            list_spells.append(spells.generate_simple_spell(name, level))
+        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
         spellcasting = ClericSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
-                                                 list_spells_known=list_spells,
+                                                 list_spells_known=casting_spells,
                                                  spell_slots={
-                                                     SpellTypes.CANTRIPS: 3,
                                                      SpellTypes.FIRST: 2
                                                  },
-                                                 num_spells_known=3 + 1 + 2)
+                                                 num_spells_known=3 + 1 + 2,
+                                                 num_cantrips_known=3, cantrips=cantrips)
 
         super(Cleric, self).__init__(name='Cleric',
                                      level=1,
@@ -91,7 +90,7 @@ class Cleric(Vocation):
                         For 10 minutes, you have proficiency with the chosen skill or tool.')
         )
 
-        list_spells = [
+        cantrips = [
             spells.SACRED_FLAME,
             spells.GUIDANCE,
             spells.SPARE_THE_DYING,
@@ -105,15 +104,14 @@ class Cleric(Vocation):
             ('Inflict Wounds', base.SpellTypes.FIRST),
             ('Sanctuary', base.SpellTypes.FIRST),
         ]
-        for name, level in simple_spell_list:
-            list_spells.append(spells.generate_simple_spell(name, level))
+        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
         spellcasting = ClericSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
-                                                 list_spells_known=list_spells,
+                                                 list_spells_known=casting_spells,
                                                  spell_slots={
-                                                     SpellTypes.CANTRIPS: 3,
                                                      SpellTypes.FIRST: 3
                                                  },
-                                                 num_spells_known=3 + 2 + 2)
+                                                 num_spells_known=3 + 2 + 2,
+                                                 num_cantrips_known=3, cantrips=cantrips)
         self.spellcasting = spellcasting
 
     def _level_3_requirements(self):
@@ -121,10 +119,11 @@ class Cleric(Vocation):
         return req
 
     def _add_level_3_features(self, **kwargs):
-        list_spells = [
+        cantrips = [
             spells.SACRED_FLAME,
             spells.GUIDANCE,
             spells.SPARE_THE_DYING,
+            spells.WORD_OF_RADIANCE,
         ]
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
@@ -139,16 +138,15 @@ class Cleric(Vocation):
             ('Augury', base.SpellTypes.SECOND),
             ('Suggestion', base.SpellTypes.SECOND),
         ]
-        for name, level in simple_spell_list:
-            list_spells.append(spells.generate_simple_spell(name, level))
+        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
         spellcasting = ClericSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
-                                                 list_spells_known=list_spells,
+                                                 list_spells_known=casting_spells,
                                                  spell_slots={
-                                                     SpellTypes.CANTRIPS: 3,
                                                      SpellTypes.FIRST: 4,
                                                      SpellTypes.SECOND: 2
                                                  },
-                                                 num_spells_known=3 + 3 + 4)
+                                                 num_spells_known=3 + 3 + 4,
+                                                 num_cantrips_known=3, cantrips=cantrips)
         self.spellcasting = spellcasting
 
     def _level_4_requirements(self):
@@ -168,7 +166,7 @@ class Cleric(Vocation):
             else:
                 self.asi[ability] = self.asi[ability].combine(ability_score_increase[ability])
 
-        list_spells = [
+        cantrips = [
             spells.SACRED_FLAME,
             spells.GUIDANCE,
             spells.SPARE_THE_DYING,
@@ -185,20 +183,18 @@ class Cleric(Vocation):
 
             ('Enhance Ability', base.SpellTypes.SECOND),
             ('Lesser Restoration', base.SpellTypes.SECOND),
-            ('Spiritual Weapon', base.SpellTypes.SECOND),
             ('Augury', base.SpellTypes.SECOND),
             ('Suggestion', base.SpellTypes.SECOND),
         ]
-        for name, level in simple_spell_list:
-            list_spells.append(spells.generate_simple_spell(name, level))
+        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
         spellcasting = ClericSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
-                                                 list_spells_known=list_spells,
+                                                 list_spells_known=casting_spells,
                                                  spell_slots={
-                                                     SpellTypes.CANTRIPS: 4,
                                                      SpellTypes.FIRST: 4,
                                                      SpellTypes.SECOND: 3
                                                  },
-                                                 num_spells_known=4 + 4 + 4)
+                                                 num_spells_known=4 + 4 + 4,
+                                                 num_cantrips_known=4, cantrips=cantrips)
         self.spellcasting = spellcasting
 
     def _level_5_requirements(self):
@@ -228,7 +224,7 @@ class Cleric(Vocation):
                         description='')
         )
 
-        list_spells = [
+        cantrips = [
             spells.SACRED_FLAME,
             spells.GUIDANCE,
             spells.SPARE_THE_DYING,
@@ -253,23 +249,27 @@ class Cleric(Vocation):
             ('Speak with Dead', base.SpellTypes.THIRD),
             ('Tongues', base.SpellTypes.THIRD),
         ]
-        for name, level in simple_spell_list:
-            list_spells.append(spells.generate_simple_spell(name, level))
+        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
         spellcasting = ClericSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
-                                                 list_spells_known=list_spells,
+                                                 list_spells_known=casting_spells,
                                                  spell_slots={
-                                                     SpellTypes.CANTRIPS: 4,
                                                      SpellTypes.FIRST: 4,
                                                      SpellTypes.SECOND: 3,
                                                      SpellTypes.THIRD: 3,
                                                  },
-                                                 num_spells_known=4 + 5 + 6)
+                                                 num_spells_known=4 + 5 + 6,
+                                                 num_cantrips_known=4, cantrips=cantrips)
         self.spellcasting = spellcasting
 
 
 class ClericSpellcastingAbility(spells.SpellcastingAbility):
-    def __init__(self, spellcasting_ability, spell_slots, list_spells_known, num_spells_known):
-        super(ClericSpellcastingAbility, self).__init__(spellcasting_ability, spell_slots, list_spells_known)
+    def __init__(self, spellcasting_ability,
+                 spell_slots, list_spells_known,
+                 num_spells_known,
+                 num_cantrips_known, cantrips):
+        super(ClericSpellcastingAbility, self).__init__(spellcasting_ability,
+                                                        spell_slots, list_spells_known,
+                                                        num_cantrips_known=num_cantrips_known, cantrips=cantrips)
         self.num_spells_known = num_spells_known
 
     def _verify(self):
