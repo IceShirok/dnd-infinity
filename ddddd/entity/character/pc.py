@@ -275,6 +275,17 @@ class PlayerCharacter(object):
             return list_cantrips
         return None
 
+    def calculate_damage_cantrips(self):
+        """Get a list of damaging cantrips, treated like weapons."""
+        damage_cantrips = list(filter(lambda c: isinstance(c, spells.DamageCantrip), self.cantrips))
+        bonuses = {}
+        for cantrip in damage_cantrips:
+            bonuses[cantrip.name] = {
+                'attack_bonus': cantrip.attack_bonus_calc(self.spell_attack_bonus, self.spell_save_dc),
+                'damage': cantrip.damage_calc(self.level),
+            }
+        return bonuses
+
     @property
     def casting_spells(self):
         """Retrieve a PC's spells (spells that require spell slots)."""

@@ -141,6 +141,13 @@
                         <td>{{ pc.calculate_weapon_bonuses()[weapon.name]['damage'] }}</td>
                     </tr>
                     {% endfor %}
+                    {% for cantrip in pc.calculate_damage_cantrips() %}
+                    <tr>
+                        <td>{{ cantrip }}</td>
+                        <td>{{ pc.calculate_damage_cantrips()[cantrip]['attack_bonus'] }}</td>
+                        <td>{{ pc.calculate_damage_cantrips()[cantrip]['damage'] }}</td>
+                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
 
