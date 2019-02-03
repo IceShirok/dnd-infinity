@@ -61,3 +61,12 @@ class Toughness(Trait):
         super(Toughness, self).__init__(name=name,
                                         description='Your hit point maximum increases by 1, \
                                                and it increases by 1 every time you gain a level.')
+
+
+class Expertise(Trait):
+    def __init__(self, skills, proficiencies, name=None):
+        super(Expertise, self).__init__(name=name if name else 'Expertise',
+                                        description='Your Proficiency Bonus is doubled for any ability check \
+                                        you make that uses the chosen proficiencies.')
+        self.skills = skills if skills else []
+        self.proficiencies = proficiencies if proficiencies else []

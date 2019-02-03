@@ -19,7 +19,7 @@
     </div>
 {%- endmacro %}
 
-{% macro skill_prof(name, icon, modifier, is_proficient) -%}
+{% macro skill_prof(name, icon, modifier, is_proficient, expertise=False) -%}
     <tr>
         <td>
             <i class="material-icons">{{ icon }}</i>
@@ -27,7 +27,9 @@
         </td>
         <td>{{ pmod(modifier) }}</td>
         <td>
-            {% if is_proficient %}
+            {% if expertise %}
+            <i class="material-icons">star_border</i>
+            {% elif is_proficient %}
             <i class="material-icons">check_box</i>
             {% else %}
             <i class="material-icons">check_box_outline_blank</i>
@@ -92,9 +94,10 @@
                                                     {{ skill_prof('Saving throw', 'warning', modifier, is_proficient) }}
 
                                                     {% for skill in pc.skills_by_ability[ability] %}
-                                                        {% set modifier = pc.skills_by_ability[ability][skill]['modifier'] %}
-                                                        {% set is_proficient = pc.skills_by_ability[ability][skill]['is_proficient'] %}
-                                                        {{ skill_prof(skill, ability_to_icon[ability], modifier, is_proficient) }}
+                                                    {% set modifier = pc.skills_by_ability[ability][skill]['modifier'] %}
+                                                    {% set is_proficient = pc.skills_by_ability[ability][skill]['is_proficient'] %}
+                                                    {% set expertise = pc.skills_by_ability[ability][skill]['expertise'] %}
+                                                        {{ skill_prof(skill, ability_to_icon[ability], modifier, is_proficient, expertise) }}
                                                     {% endfor %}
                                                 </tbody>
                                             </table>

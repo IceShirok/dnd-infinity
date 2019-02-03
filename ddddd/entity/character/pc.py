@@ -3,7 +3,7 @@ import math
 
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScore, Skills
-from ddddd.entity.character import equipment, spells
+from ddddd.entity.character import equipment, spells, trait
 
 import logging
 logger = logging.getLogger(__name__)
@@ -207,6 +207,7 @@ class PlayerCharacter(object):
     def skills_by_ability(self):
         """Calculates the PC's skill modifiers, and groups the skills by ability."""
         skill_proficiencies = (self.race.skills + self.classes.skills + self.background.skills)
+        expertise = list(filter(lambda exp: isinstance(exp, trait.Expertise), self.classes.features))
 
         _ability_scores = self.ability_scores
         skill_proficiencies_p = {}
@@ -216,11 +217,16 @@ class PlayerCharacter(object):
                 skill_proficiencies_p[ability][skill] = {
                     base.ABILITY: ability,
                     base.IS_PROFICIENT: False,
+                    base.EXPERTISE: False,
                 }
                 skill_proficiencies_p[ability][skill][base.MODIFIER] = _ability_scores[ability].modifier
                 if skill in skill_proficiencies:
                     skill_proficiencies_p[ability][skill][base.IS_PROFICIENT] = True
                     skill_proficiencies_p[ability][skill][base.MODIFIER] += self.proficiency_bonus
+                    for e in expertise:
+                        if skill in e.skills:
+                            skill_proficiencies_p[ability][skill][base.EXPERTISE] = True
+                            skill_proficiencies_p[ability][skill][base.MODIFIER] += self.proficiency_bonus
         return skill_proficiencies_p
     
     @property

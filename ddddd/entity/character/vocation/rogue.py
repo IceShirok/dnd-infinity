@@ -9,13 +9,8 @@ from ddddd.entity.character.cclass import PlayerClass
 #############################
 
 class Rogue(PlayerClass):
-    def __init__(self, skill_proficiencies):
+    def __init__(self, skill_proficiencies, expertise):
         def_features = [
-            trait.Trait(name='Expertise',
-                        description='At 1st level, choose two of your skill proficiencies, \
-                        or one of your skill proficiencies and your proficiency with Thieves'' Tools. \
-                        Your Proficiency Bonus is doubled for any ability check you make that uses \
-                        either of the chosen proficiencies.'),
             trait.Trait(name='Sneak Attack',
                         description='Beginning at 1st level, you know how to strike subtly \
                         and exploit a foe''s distraction.'),
@@ -23,7 +18,8 @@ class Rogue(PlayerClass):
                                  description='During your rogue Training you learned thieves'' cant, \
                                  a Secret mix of dialect, jargon, and code that allows you to hide messages \
                                  in seemingly normal conversation.',
-                                 languages=[base.Languages.THIEVES_CANT])
+                                 languages=[base.Languages.THIEVES_CANT]),
+            expertise,
         ]
 
         super(Rogue, self).__init__(name='Rogue',

@@ -146,7 +146,11 @@ def create_fethri(level=1):
     fethri_race = race.Tiefling(traits=tool_prof)
     fethri_class = rogue.Rogue(skill_proficiencies=[Skills.INVESTIGATION,
                                                     Skills.DECEPTION,
-                                                    Skills.STEALTH])
+                                                    Skills.STEALTH],
+                               expertise=trait.Expertise(skills=[Skills.INVESTIGATION,
+                                                                 Skills.DECEPTION],
+                                                         proficiencies=None)
+                               )
     if level > 1:
         fethri_class.level_to(level=level,
                               gaming_set='bone_dice',
