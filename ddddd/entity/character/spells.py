@@ -1,5 +1,6 @@
 
 from ddddd.entity import base
+from ddddd.entity.base import SpellTypes
 
 
 class SpellcastingAbility(object):
@@ -134,6 +135,16 @@ class DamageCantrip(Cantrip):
 # CANTRIPS
 ##############################
 
+# Some classes may follow this pattern
+def cantrips_by_level(level):
+    if level < 4:
+        return 3
+    elif level < 10:
+        return 4
+    else:
+        return 5
+
+
 def spell_dc_with_ability(ability):
     def spell_dc(_, spell_save_dc):
         return '{} DC {}'.format(ability, spell_save_dc)
@@ -212,9 +223,58 @@ MENDING = Cantrip(name='Mending',
 # SPELLS
 ##############################
 
+# Most pure spellcasting classes will follow this pattern
+def get_spell_slot_by_level(level):
+    spell_slots = {
+        SpellTypes.FIRST: 2
+    }
+    if level >= 2:
+        spell_slots[SpellTypes.FIRST] = 3
+    if level >= 3:
+        spell_slots[SpellTypes.FIRST] = 4
+        spell_slots[SpellTypes.SECOND] = 2
+    if level >= 4:
+        spell_slots[SpellTypes.SECOND] = 3
+    if level >= 5:
+        spell_slots[SpellTypes.SECOND] = 4
+        spell_slots[SpellTypes.THIRD] = 2
+    if level >= 6:
+        spell_slots[SpellTypes.THIRD] = 3
+    if level >= 7:
+        spell_slots[SpellTypes.FOURTH] = 1
+    if level >= 8:
+        spell_slots[SpellTypes.FOURTH] = 2
+    if level >= 9:
+        spell_slots[SpellTypes.FOURTH] = 3
+        spell_slots[SpellTypes.FIFTH] = 1
+    if level >= 10:
+        spell_slots[SpellTypes.FIFTH] = 2
+    if level >= 11:
+        spell_slots[SpellTypes.SIXTH] = 1
+    if level >= 12:
+        spell_slots[SpellTypes.SIXTH] = 1
+    if level >= 13:
+        spell_slots[SpellTypes.SEVENTH] = 1
+    if level >= 14:
+        spell_slots[SpellTypes.SEVENTH] = 1
+    if level >= 15:
+        spell_slots[SpellTypes.EIGHTH] = 1
+    if level >= 16:
+        spell_slots[SpellTypes.EIGHTH] = 1
+    if level >= 17:
+        spell_slots[SpellTypes.NINTH] = 1
+    if level >= 18:
+        spell_slots[SpellTypes.FIFTH] = 2
+    if level >= 19:
+        spell_slots[SpellTypes.SIXTH] = 2
+    if level >= 20:
+        spell_slots[SpellTypes.SEVENTH] = 2
+    return spell_slots
+
+
 # 1st level spells
 BLESS = Spell(name='Bless',
-              level=base.SpellTypes.FIRST,
+              level=SpellTypes.FIRST,
               magic_school='enchantment',
               casting_time='1 action',
               spell_range='30ft',
@@ -223,7 +283,7 @@ BLESS = Spell(name='Bless',
               description='You bless up to three creatures of your choice within range.')
 
 COMMAND = Spell(name='Command',
-                level=base.SpellTypes.FIRST,
+                level=SpellTypes.FIRST,
                 magic_school='enchantment',
                 casting_time='1 action',
                 spell_range='60ft',
