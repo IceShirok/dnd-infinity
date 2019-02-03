@@ -11,29 +11,25 @@ def index():
                            title='D&D Character Sheet')
 
 
-@app.route('/tamiphi')
+@app.route('/pc/<string:pc_name>')
 def create_tamiphi_def():
-    return redirect('/tamiphi/1')
+    return redirect('/pc/<string:pc_name>/1')
 
 
-@app.route('/tamiphi/<int:level>')
-def create_tamiphi(level):
+@app.route('/pc/<string:pc_name>/<int:level>')
+def generate_pc(pc_name, level):
+    create_pc = None
+    if pc_name == 'dorian':
+        create_pc = pc.create_dorian
+    elif pc_name == 'tamiphi':
+        create_pc = pc.create_tamiphi
+    elif pc_name == 'fethri':
+        create_pc = pc.create_fethri
+    else:
+        redirect('/')
     return render_template('character_sheet.html',
-                           title='D&D Character Sheet - Tamiphi',
-                           pc=pc.create_tamiphi(level=level),
-                           pmod=prettify_modifier)
-
-
-@app.route('/dorian')
-def create_dorian_def():
-    return redirect('/dorian/5')
-
-
-@app.route('/dorian/<int:level>')
-def create_dorian(level):
-    return render_template('character_sheet.html',
-                           title='D&D Character Sheet - Dorian',
-                           pc=pc.create_dorian(level=level),
+                           title='D&D Character Sheet - {}'.format(pc_name),
+                           pc=create_pc(level=level),
                            pmod=prettify_modifier)
 
 

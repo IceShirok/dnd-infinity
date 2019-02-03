@@ -57,6 +57,20 @@ class Criminal(PlayerBackground):
                                        languages=None)
 
 
+class Noble(PlayerBackground):
+    def __init__(self, tool_proficiency, languages):
+        feature = trait.Trait(name='Position of Privilege',
+                              description='Thanks to your noble birth, people are inclined to think the best of you.')
+        proficiencies = {
+            base.SKILLS: [Skills.PERSUASION, Skills.HISTORY],
+            base.TOOL_PROFICIENCY: tool_proficiency,
+        }
+        super(Noble, self).__init__(name='Noble',
+                                    feature=feature,
+                                    proficiencies=proficiencies,
+                                    languages=languages)
+
+
 class Sage(PlayerBackground):
     def __init__(self, languages):
         feature = trait.Trait(name='Researcher',

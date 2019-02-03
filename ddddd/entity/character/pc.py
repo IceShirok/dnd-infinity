@@ -3,7 +3,7 @@ import math
 
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScore, Skills
-from ddddd.entity.character import equipment, spells
+from ddddd.entity.character import equipment, spells, trait
 
 import logging
 logger = logging.getLogger(__name__)
@@ -207,6 +207,7 @@ class PlayerCharacter(object):
     def skills_by_ability(self):
         """Calculates the PC's skill modifiers, and groups the skills by ability."""
         skill_proficiencies = (self.race.skills + self.classes.skills + self.background.skills)
+        expertise = list(filter(lambda exp: isinstance(exp, trait.Expertise), self.classes.features))
 
         _ability_scores = self.ability_scores
         skill_proficiencies_p = {}
@@ -216,11 +217,16 @@ class PlayerCharacter(object):
                 skill_proficiencies_p[ability][skill] = {
                     base.ABILITY: ability,
                     base.IS_PROFICIENT: False,
+                    base.EXPERTISE: False,
                 }
                 skill_proficiencies_p[ability][skill][base.MODIFIER] = _ability_scores[ability].modifier
                 if skill in skill_proficiencies:
                     skill_proficiencies_p[ability][skill][base.IS_PROFICIENT] = True
                     skill_proficiencies_p[ability][skill][base.MODIFIER] += self.proficiency_bonus
+                    for e in expertise:
+                        if skill in e.skills:
+                            skill_proficiencies_p[ability][skill][base.EXPERTISE] = True
+                            skill_proficiencies_p[ability][skill][base.MODIFIER] += self.proficiency_bonus
         return skill_proficiencies_p
     
     @property
@@ -334,13 +340,26 @@ class PlayerCharacter(object):
         weapons = self.worn_items.weapons
         weapon_proficiencies = self.proficiencies[base.WEAPON_PROFICIENCY] if base.WEAPON_PROFICIENCY in self.proficiencies else []
         for weapon in weapons:
-            damage_bonus = self.ability_scores[base.AbilityScore.STR].modifier
+            str_mod = (base.AbilityScore.STR, self.ability_scores[base.AbilityScore.STR].modifier)
+            dex_mod = (base.AbilityScore.DEX, self.ability_scores[base.AbilityScore.DEX].modifier)
+
+            attack_mod = str_mod
+            # TODO make this more elegant
+            for w_prop in weapon.properties:
+                w_prop = w_prop.lower()
+                if 'ammunition' in w_prop:  # Weapon is ranged only
+                    attack_mod = dex_mod
+                elif 'finesse' in w_prop:  # Weapon is finesse
+                    attack_mod = dex_mod if dex_mod[1] > str_mod[1] else str_mod
+
+            attack_type, damage_bonus = attack_mod
             attack_prof = 0
             if weapon.category in weapon_proficiencies or weapon.name in weapon_proficiencies:
                 attack_prof = self.proficiency_bonus
             bonuses[weapon.name] = {
                 'weapon': weapon,
                 'attack_bonus': damage_bonus + attack_prof,
+                'attack_type': attack_type,
                 'damage': '{} + {}'.format(weapon.damage, damage_bonus),
             }
         return bonuses

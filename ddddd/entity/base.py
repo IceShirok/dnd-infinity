@@ -63,6 +63,7 @@ LANGUAGES = 'languages'
 SKILL_PROF = 'skill_proficiency'
 SKILL_PROFS = 'skill_proficiencies'
 IS_PROFICIENT = 'is_proficient'
+EXPERTISE = 'expertise'
 
 # Class-related constants
 CLASS = 'class'
@@ -220,6 +221,8 @@ class Languages(object):
     INFERNAL = 'infernal'
     CELESTIAL = 'celestial'
 
+    THIEVES_CANT = 'thieves cant'
+
     LANGUAGES = {
         COMMON,
         DWARVISH,
@@ -227,4 +230,6 @@ class Languages(object):
         DRACONIC,
         INFERNAL,
         CELESTIAL,
+
+        THIEVES_CANT,
     }
