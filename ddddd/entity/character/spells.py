@@ -1,7 +1,6 @@
 
-import json
-
 from ddddd.entity import base
+
 
 class SpellcastingAbility(object):
     """
@@ -68,15 +67,130 @@ class Spell(object):
         self.description = description
 
 
-# Cantrips (level 0 spells)
-CHILL_TOUCH = Spell(name='Chill Touch',
-                    level=base.SpellTypes.CANTRIPS,
-                    magic_school='necromancy',
-                    casting_time='1 action',
-                    spell_range='120ft',
-                    components=['verbal', 'somatic'],
-                    duration='1 round',
-                    description='You create a ghostly, skeletal hand in the space of a creature within range.')
+class Cantrip(Spell):
+    """
+    A cantrip is a spell that can be cast at will, without using a spell slot
+    and without being prepared in advance. Repeated practice has fixed the spell
+    in the caster's mind and infused the caster with the magic needed to produce
+    the effect over and over. A cantrip's spell level is 0.
+
+    A cantrip is its separate class because a cantrip is not exhausted like
+    a spell slot. It's better to say that it could be treated as a weapon.
+    """
+
+    def __init__(self, name, magic_school,
+                 casting_time, spell_range, components, duration,
+                 description):
+        super(Cantrip, self).__init__(name=name,
+                                      level=0,
+                                      magic_school=magic_school,
+                                      casting_time=casting_time,
+                                      spell_range=spell_range,
+                                      components=components,
+                                      duration=duration,
+                                      description=description)
+
+
+class DamageCantrip(Cantrip):
+    """
+    A damage cantrip is a cantrip that would act as the spellcaster's
+    magical weapon. This cantrip is able to spit out the calculations
+    for attack bonuses/spell save DC and damage like a weapon.
+    """
+    def __init__(self, name, magic_school,
+                 casting_time, spell_range, components, duration,
+                 description, attack_bonus_calc, damage_calc):
+        super(DamageCantrip, self).__init__(name=name,
+                                            magic_school=magic_school,
+                                            casting_time=casting_time,
+                                            spell_range=spell_range,
+                                            components=components,
+                                            duration=duration,
+                                            description=description)
+        self.attack_bonus_calc = attack_bonus_calc
+        self.damage_calc = damage_calc
+
+    def calculate_attack_bonus(self, spell_attack_bonus, spell_save_dc):
+        return self.attack_bonus_calc(spell_attack_bonus, spell_save_dc)
+
+    def calculate_damage_calc(self, caster_level):
+        return self.damage_calc(caster_level)
+
+
+##############################
+# CANTRIPS
+##############################
+
+def spell_dc_with_ability(ability):
+    def spell_dc(_, spell_save_dc):
+        return '{} DC {}'.format(ability, spell_save_dc)
+    return spell_dc
+
+
+def spell_attack(spell_attack_bonus, _):
+    return '{}'.format(spell_attack_bonus)
+
+
+def damage_by_level_with_dice(dice_format):
+    def damage_by_level(caster_level):
+        num_dice = 0
+        if caster_level < 5:
+            num_dice = 1
+        elif caster_level < 11:
+            num_dice = 2
+        elif caster_level < 17:
+            num_dice = 3
+        else:
+            num_dice = 4
+        return dice_format.format(num_dice)
+    return damage_by_level
+
+
+SACRED_FLAME = DamageCantrip(name='Sacred Flame',
+                             magic_school='evocation',
+                             casting_time='1 action',
+                             spell_range=60,
+                             components=['verbal', 'somatic'],
+                             duration='instantaneous',
+                             description='Flame-like radiance descends on a creature that you can see within range.',
+                             attack_bonus_calc=spell_dc_with_ability(base.AbilityScore.DEX),
+                             damage_calc=damage_by_level_with_dice('{}d8 fire'))
+
+GUIDANCE = Cantrip(name='Guidance',
+                   magic_school='divination',
+                   casting_time='1 action',
+                   spell_range='touch',
+                   components=['verbal', 'somatic'],
+                   duration='concentration, up to 1 minute',
+                   description='Once before the spell ends, the target can roll a d4 \
+                   and add the number rolled to one ability check of its choice.')
+
+SPARE_THE_DYING = Cantrip(name='Spare the Dying',
+                          magic_school='necromancy',
+                          casting_time='1 action',
+                          spell_range='touch',
+                          components=['verbal', 'somatic'],
+                          duration='instantaneous',
+                          description='You touch a living creature that has 0 hit points. \
+                          The creature becomes stable. \
+                          This spell has no effect on undead or constructs.')
+
+WORD_OF_RADIANCE = DamageCantrip(name='Word of Radiance',
+                                 magic_school='evocation',
+                                 casting_time='1 action',
+                                 spell_range='5 ft',
+                                 components=['verbal', 'material (a holy symbol)'],
+                                 duration='instantaneous',
+                                 description='You utter a divine word, and burning radiance erupts from you. \
+                                    Each creature of your choice that you can see within range must succeed on a \
+                                    Constitution saving throw or take Xd6 radiant damage.',
+                                 attack_bonus_calc=spell_dc_with_ability(base.AbilityScore.CON),
+                                 damage_calc=damage_by_level_with_dice('{}d6 radiant'))
+
+
+##############################
+# SPELLS
+##############################
 
 # 1st level spells
 BLESS = Spell(name='Bless',

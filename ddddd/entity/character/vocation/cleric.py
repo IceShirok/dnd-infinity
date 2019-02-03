@@ -29,11 +29,12 @@ class Cleric(PlayerClass):
             languages,
         ]
 
-        list_spells = []
+        list_spells = [
+            spells.SACRED_FLAME,
+            spells.GUIDANCE,
+            spells.SPARE_THE_DYING,
+        ]
         simple_spell_list = [
-            ('Sacred Flame', base.SpellTypes.CANTRIPS),
-            ('Guidance', base.SpellTypes.CANTRIPS),
-            ('Spare the Dying', base.SpellTypes.CANTRIPS),
             ('Command', base.SpellTypes.FIRST),
             ('Identify', base.SpellTypes.FIRST),
             ('Cure Wounds', base.SpellTypes.FIRST),
@@ -94,11 +95,12 @@ class Cleric(PlayerClass):
                         For 10 minutes, you have proficiency with the chosen skill or tool.')
         )
 
-        list_spells = []
+        list_spells = [
+            spells.SACRED_FLAME,
+            spells.GUIDANCE,
+            spells.SPARE_THE_DYING,
+        ]
         simple_spell_list = [
-            ('Sacred Flame', base.SpellTypes.CANTRIPS),
-            ('Guidance', base.SpellTypes.CANTRIPS),
-            ('Spare the Dying', base.SpellTypes.CANTRIPS),
             ('Command', base.SpellTypes.FIRST),
             ('Identify', base.SpellTypes.FIRST),
             ('Cure Wounds', base.SpellTypes.FIRST),
@@ -123,17 +125,19 @@ class Cleric(PlayerClass):
         return req
 
     def _add_level_3_features(self, **kwargs):
-        list_spells = []
+        list_spells = [
+            spells.SACRED_FLAME,
+            spells.GUIDANCE,
+            spells.SPARE_THE_DYING,
+        ]
         simple_spell_list = [
-            ('Sacred Flame', base.SpellTypes.CANTRIPS),
-            ('Guidance', base.SpellTypes.CANTRIPS),
-            ('Spare the Dying', base.SpellTypes.CANTRIPS),
             ('Command', base.SpellTypes.FIRST),
             ('Identify', base.SpellTypes.FIRST),
             ('Cure Wounds', base.SpellTypes.FIRST),
             ('Bless', base.SpellTypes.FIRST),
             ('Healing Word', base.SpellTypes.FIRST),
             ('Sanctuary', base.SpellTypes.FIRST),
+
             ('Enhance Ability', base.SpellTypes.SECOND),
             ('Lesser Restoration', base.SpellTypes.SECOND),
             ('Augury', base.SpellTypes.SECOND),
@@ -168,12 +172,13 @@ class Cleric(PlayerClass):
             else:
                 self.asi[ability] = self.asi[ability].combine(ability_score_increase[ability])
 
-        list_spells = []
+        list_spells = [
+            spells.SACRED_FLAME,
+            spells.GUIDANCE,
+            spells.SPARE_THE_DYING,
+            spells.WORD_OF_RADIANCE,
+        ]
         simple_spell_list = [
-            ('Sacred Flame', base.SpellTypes.CANTRIPS),
-            ('Guidance', base.SpellTypes.CANTRIPS),
-            ('Spare the Dying', base.SpellTypes.CANTRIPS),
-            ('Word of Radiance', base.SpellTypes.CANTRIPS),
             ('Command', base.SpellTypes.FIRST),
             ('Identify', base.SpellTypes.FIRST),
             ('Cure Wounds', base.SpellTypes.FIRST),
@@ -181,6 +186,7 @@ class Cleric(PlayerClass):
             ('Healing Word', base.SpellTypes.FIRST),
             ('Sanctuary', base.SpellTypes.FIRST),
             ('Guiding Bolt', base.SpellTypes.FIRST),
+
             ('Enhance Ability', base.SpellTypes.SECOND),
             ('Lesser Restoration', base.SpellTypes.SECOND),
             ('Spiritual Weapon', base.SpellTypes.SECOND),
@@ -226,12 +232,13 @@ class Cleric(PlayerClass):
                         description='')
         )
 
-        list_spells = []
+        list_spells = [
+            spells.SACRED_FLAME,
+            spells.GUIDANCE,
+            spells.SPARE_THE_DYING,
+            spells.WORD_OF_RADIANCE,
+        ]
         simple_spell_list = [
-            ('Sacred Flame', base.SpellTypes.CANTRIPS),
-            ('Guidance', base.SpellTypes.CANTRIPS),
-            ('Spare the Dying', base.SpellTypes.CANTRIPS),
-            ('Word of Radiance', base.SpellTypes.CANTRIPS),
             ('Command', base.SpellTypes.FIRST),
             ('Identify', base.SpellTypes.FIRST),
             ('Cure Wounds', base.SpellTypes.FIRST),
@@ -239,11 +246,13 @@ class Cleric(PlayerClass):
             ('Healing Word', base.SpellTypes.FIRST),
             ('Sanctuary', base.SpellTypes.FIRST),
             ('Guiding Bolt', base.SpellTypes.FIRST),
+
             ('Enhance Ability', base.SpellTypes.SECOND),
             ('Lesser Restoration', base.SpellTypes.SECOND),
             ('Spiritual Weapon', base.SpellTypes.SECOND),
             ('Augury', base.SpellTypes.SECOND),
             ('Suggestion', base.SpellTypes.SECOND),
+
             ('Nondetection', base.SpellTypes.THIRD),
             ('Speak with Dead', base.SpellTypes.THIRD),
             ('Tongues', base.SpellTypes.THIRD),

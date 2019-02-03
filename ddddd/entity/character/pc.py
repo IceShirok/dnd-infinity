@@ -3,7 +3,7 @@ import math
 
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScore, Skills
-from ddddd.entity.character import equipment
+from ddddd.entity.character import equipment, spells
 
 import logging
 logger = logging.getLogger(__name__)
@@ -258,10 +258,35 @@ class PlayerCharacter(object):
             base.BACKGROUND_FEATURES: [self.background.feature],
         }
 
+    #########################
+    # SPELLCASTING
+    #########################
+
     @property
     def spellcasting(self):
         """Retrieve a PC's spellcasting ability."""
         return self.classes.spellcasting
+
+    @property
+    def cantrips(self):
+        """Retrieve cantrips that the PC knows."""
+        if self.spellcasting:
+            list_cantrips = list(filter(lambda s: isinstance(s, spells.Cantrip), self.spellcasting.list_spells_known))
+            return list_cantrips
+        return None
+
+    @property
+    def casting_spells(self):
+        """Retrieve a PC's spells (spells that require spell slots)."""
+        if self.spellcasting:
+            spell_by_level = {}
+            list_spells = list(filter(lambda s: not isinstance(s, spells.Cantrip), self.spellcasting.list_spells_known))
+            for spell in list_spells:
+                if spell.level not in spell_by_level:
+                    spell_by_level[spell.level] = []
+                spell_by_level[spell.level].append(spell)
+            return spell_by_level
+        return None
 
     @property
     def spell_attack_bonus(self):
@@ -276,6 +301,10 @@ class PlayerCharacter(object):
         if self.spellcasting:
             return self.spellcasting.spell_save_dc(self.ability_scores, self.proficiency_bonus)
         return None
+
+    #########################
+    # EQUIPMENT
+    #########################
 
     @property
     def carrying_weight(self):

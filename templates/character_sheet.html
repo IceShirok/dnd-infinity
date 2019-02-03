@@ -155,7 +155,7 @@
                 <dt>Spell Attack Bonus</dt>
                 <dd>{{ pc.spell_attack_bonus }}</dd>
             </dl>
-            {% for spell_type in pc.spellcasting.spell_slots.keys() %}
+            {% for spell_type in pc.casting_spells.keys() %}
 
             <h5>
                 {{ spell_type }}
@@ -164,7 +164,7 @@
                 {% endfor %}
             </h5>
 
-            {% for spell in pc.spellcasting.list_spells_known %}
+            {% for spell in pc.casting_spells[spell_type] %}
             {% if spell.level == spell_type %}
             <div class="popover popover-bottom">
                 <p class="chip">{{ spell.name }}</p>
