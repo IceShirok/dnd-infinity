@@ -81,6 +81,36 @@ class Vocation(object, metaclass=abc.ABCMeta):
                 self._add_level_4_features(**kwargs)
             elif i == 5:
                 self._add_level_5_features(**kwargs)
+            elif i == 6:
+                self._add_level_6_features(**kwargs)
+            elif i == 7:
+                self._add_level_7_features(**kwargs)
+            elif i == 8:
+                self._add_level_8_features(**kwargs)
+            elif i == 9:
+                self._add_level_9_features(**kwargs)
+            elif i == 10:
+                self._add_level_10_features(**kwargs)
+            elif i == 11:
+                self._add_level_11_features(**kwargs)
+            elif i == 12:
+                self._add_level_12_features(**kwargs)
+            elif i == 13:
+                self._add_level_13_features(**kwargs)
+            elif i == 14:
+                self._add_level_14_features(**kwargs)
+            elif i == 15:
+                self._add_level_15_features(**kwargs)
+            elif i == 16:
+                self._add_level_16_features(**kwargs)
+            elif i == 17:
+                self._add_level_17_features(**kwargs)
+            elif i == 18:
+                self._add_level_18_features(**kwargs)
+            elif i == 19:
+                self._add_level_19_features(**kwargs)
+            elif i == 20:
+                self._add_level_20_features(**kwargs)
             else:
                 raise ValueError('Invalid level!')
 
@@ -98,4 +128,64 @@ class Vocation(object, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def _add_level_5_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_6_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_7_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_8_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_9_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_10_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_11_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_12_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_13_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_14_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_15_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_16_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_17_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_18_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_19_features(self, **kwargs):
+        return {}
+
+    @abc.abstractmethod
+    def _add_level_20_features(self, **kwargs):
         return {}

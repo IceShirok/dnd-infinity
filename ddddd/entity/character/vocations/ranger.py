@@ -198,6 +198,51 @@ class Ranger(Vocation):
                                                       spell_slots={SpellTypes.FIRST: 4, SpellTypes.SECOND: 2},
                                                       num_spells_known=4)
 
+    def _add_level_6_features(self, **kwargs):
+        return {}
+
+    def _add_level_7_features(self, **kwargs):
+        return {}
+
+    def _add_level_8_features(self, **kwargs):
+        return {}
+
+    def _add_level_9_features(self, **kwargs):
+        return {}
+
+    def _add_level_10_features(self, **kwargs):
+        return {}
+
+    def _add_level_11_features(self, **kwargs):
+        return {}
+
+    def _add_level_12_features(self, **kwargs):
+        return {}
+
+    def _add_level_13_features(self, **kwargs):
+        return {}
+
+    def _add_level_14_features(self, **kwargs):
+        return {}
+
+    def _add_level_15_features(self, **kwargs):
+        return {}
+
+    def _add_level_16_features(self, **kwargs):
+        return {}
+
+    def _add_level_17_features(self, **kwargs):
+        return {}
+
+    def _add_level_18_features(self, **kwargs):
+        return {}
+
+    def _add_level_19_features(self, **kwargs):
+        return {}
+
+    def _add_level_20_features(self, **kwargs):
+        return {}
+
 
 class RangerSpellcastingAbility(spells.SpellcastingAbility):
     def __init__(self, spellcasting_ability,
