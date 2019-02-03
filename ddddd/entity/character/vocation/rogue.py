@@ -1,14 +1,10 @@
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScore, Skills, Languages, SpellTypes
 from ddddd.entity.character import spells, trait
-from ddddd.entity.character.cclass import PlayerClass
+from ddddd.entity.character.cclass import Vocation
 
 
-#############################
-# Rogue
-#############################
-
-class Rogue(PlayerClass):
+class Rogue(Vocation):
     def __init__(self, skill_proficiencies, expertise):
         def_features = [
             trait.Trait(name='Sneak Attack',

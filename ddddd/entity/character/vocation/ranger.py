@@ -1,14 +1,10 @@
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScore, Skills, Languages, SpellTypes
 from ddddd.entity.character import spells, trait
-from ddddd.entity.character.cclass import PlayerClass
+from ddddd.entity.character.cclass import Vocation
 
 
-#############################
-# Ranger
-#############################
-
-class Ranger(PlayerClass):
+class Ranger(Vocation):
     FAVORED_ENEMY = 'favored_enemy'
     ENEMIES = 'enemies'
     NATURAL_EXPLORER = 'natural_explorer'

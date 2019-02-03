@@ -1,6 +1,4 @@
 
-from ddddd.entity import base
-
 
 class WornItems(object):
     """
