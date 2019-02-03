@@ -163,7 +163,10 @@ class RockGnome(Gnome):
                         description='Whenever you make an Intelligence (History) check related to Magic Items, \
                         alchemical Objects, or technological devices, you can add twice your Proficiency Bonus, \
                         instead of any Proficiency Bonus you normally apply.'),
-            trait.ToolProficiency(name='Tinker', proficiencies=['tinkers_tools']),
+            trait.ToolProficiency(name='Tinker',
+                                  description='Using those tools, you can spend 1 hour and 10 gp worth of materials \
+                                  to construct a Tiny clockwork device (AC 5, 1 hp).',
+                                  proficiencies=['tinkers_tools']),
         ]
         super(RockGnome, self).__init__(asi=asi,
                                         traits=traits)

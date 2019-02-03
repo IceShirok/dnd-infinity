@@ -18,30 +18,37 @@ class LanguagesKnown(Trait):
 
 
 class ProficiencyKnown(Trait):
-    def __init__(self, name, proficiencies, proficiency_type):
+    def __init__(self, name, proficiencies, proficiency_type, description=None):
+        description = description if description else 'these are the things you''re proficient in'
         super(ProficiencyKnown, self).__init__(name=name,
-                                               description='these are the things you''re proficient in')
+                                               description=description)
         self.proficiencies = proficiencies
         self.proficiency_type = proficiency_type
 
 
 class ArmorProficiency(ProficiencyKnown):
-    def __init__(self, proficiencies, name=None):
+    def __init__(self, proficiencies, name=None, description=None):
+        description = description if description else 'You gain proficiency with a type of armor.'
         super(ArmorProficiency, self).__init__(name=name if name else 'Armor Proficiency',
+                                               description=description,
                                                proficiencies=proficiencies,
                                                proficiency_type='Armor Proficiency')
 
 
 class WeaponProficiency(ProficiencyKnown):
-    def __init__(self, proficiencies, name=None):
+    def __init__(self, proficiencies, name=None, description=None):
+        description = description if description else 'You gain proficiency with a weapon.'
         super(WeaponProficiency, self).__init__(name=name if name else 'Weapon Proficiency',
+                                                description=description,
                                                 proficiencies=proficiencies,
                                                 proficiency_type='Weapon Proficiency')
 
 
 class ToolProficiency(ProficiencyKnown):
-    def __init__(self, proficiencies, name=None):
+    def __init__(self, proficiencies, name=None, description=None):
+        description = description if description else 'You gain proficiency with a tool.'
         super(ToolProficiency, self).__init__(name=name if name else 'Tool Proficiency',
+                                              description=description,
                                               proficiencies=proficiencies,
                                               proficiency_type='Tool Proficiency')
 
