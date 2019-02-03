@@ -168,3 +168,33 @@ class RockGnome(Gnome):
         super(RockGnome, self).__init__(asi=asi,
                                         traits=traits)
         self.name = 'Rock Gnome'
+
+
+#############################
+# TIEFLING
+#############################
+
+class Tiefling(Race):
+    def __init__(self, traits):
+        def_asi = {
+            base.AbilityScore.CHA: base.AbilityScoreIncrease(base.AbilityScore.CHA, 2),
+            base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 1)
+        }
+        def_traits = [
+            trait.Darkvision(range=60),
+            trait.Trait(name='Hellish Resistance',
+                        description='You have Resistance to fire damage.'),
+            # TODO I guess this trait can hold spellcasting stuff?
+            trait.Trait(name='Infernal Legacy',
+                        description='You know the Thaumaturgy cantrip.'),
+        ]
+        super(Tiefling, self).__init__(name='Tiefling',
+                                       asi=def_asi,
+                                       size=Sizes.MEDIUM,
+                                       speed=30,
+                                       languages=trait.LanguagesKnown(languages=[Languages.COMMON, Languages.INFERNAL]),
+                                       traits=def_traits + traits)
+
+    @property
+    def base_race(self):
+        return 'Tiefling'

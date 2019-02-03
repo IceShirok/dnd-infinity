@@ -1,10 +1,8 @@
 
-import json
-
 from ddddd.entity import base
 from ddddd.entity.base import Skills
 from ddddd.entity.character import race, background, pc, equipment
-from ddddd.entity.character.vocation import ranger, cleric
+from ddddd.entity.character.vocation import ranger, cleric, rogue
 from ddddd.entity.character import trait
 
 import logging
@@ -137,3 +135,64 @@ def create_tamiphi(level=1):
     tam_backpack = generate_backpack()
     tamiphi_pc = pc.PlayerCharacter(tamiphi_base, tam_race, tam_class, tam_bg, tam_equip, tam_backpack)
     return tamiphi_pc
+
+
+def create_fethri(level=1):
+    fethri_base = pc.PlayerBase("Fethri Winterwhisper", 10, 14, 12, 15, 11, 12, level=level)
+    tool_prof = [
+        trait.ToolProficiency(name='Tool Proficiency',
+                              proficiencies=['brewers_kit'])
+    ]
+    fethri_race = race.Tiefling(traits=tool_prof)
+    fethri_class = rogue.Rogue(skill_proficiencies=[Skills.INVESTIGATION,
+                                                    Skills.DECEPTION,
+                                                    Skills.STEALTH])
+    if level > 1:
+        fethri_class.level_to(level=level,
+                              fighting_style='two_weapon_fighting',
+                              archetype_feature='colossus_slayer',
+                              ability_score_increase={
+                                  base.AbilityScore.STR: base.AbilityScoreIncrease(base.AbilityScore.STR, 2),
+                              })
+    fethri_bg = background.Noble(tool_proficiency=trait.ToolProficiency(proficiencies=['chess_set']),
+                                 languages=trait.LanguagesKnown(languages=[base.Languages.DRACONIC]))
+
+    def generate_backpack():
+        logger.debug('Displaying equipment in backpack')
+        backpack = equipment.Backpack(copper_pieces=0, silver_pieces=0, gold_pieces=15, platnium_pieces=0, items=None)
+        backpack.add_item(equipment.Item('Ball Bearings', price=1, weight=2))
+        backpack.add_item(equipment.Item('String', price=0, weight=0, description='10 ft of string'))
+        backpack.add_item(equipment.Item('Bell', price=1, weight=0))
+        backpack.add_item(equipment.Item('Candle', price=0, weight=0, quantity=5))
+        backpack.add_item(equipment.Item('Crowbar', price=2, weight=5, quantity=2))
+        backpack.add_item(equipment.Item('Hammer', price=1, weight=3))
+        backpack.add_item(equipment.Item('Piton', price=0, weight=1, quantity=10))
+        backpack.add_item(equipment.Item('Hooded Lantern', price=4, weight=2))
+        backpack.add_item(equipment.Item('Flask of Oil', price=1, weight=1, quantity=2))
+        backpack.add_item(equipment.Item('Rations', price=0.5, weight=2, quantity=5))
+        backpack.add_item(equipment.Item('Tinderbox', price=1, weight=1))
+        backpack.add_item(equipment.Item('Waterskin', price=1, weight=5))
+        backpack.add_item(equipment.Item('Hempen Rope', price=1, weight=10, description='50 ft of rope'))
+
+        return backpack
+
+    def generate_equipment():
+        logger.debug('Displaying worn items')
+        worn_items = equipment.WornItems()
+
+        def calc_light_armor_rating(dex_mod):
+            # leather armor
+            return 11 + dex_mod
+
+        armor = equipment.Armor('Leather Armor', price=10, weight=10, armor_class=calc_light_armor_rating,
+                                strength=0, stealth='')
+        longbow = equipment.Weapon('longbow', category='martial', damage='1d8 piercing', price=50, weight=2,
+                                   properties=['ammunition (range 150/600)', 'heavy', 'two-handed'])
+        worn_items.don_armor(armor)
+        worn_items.equip_weapon(longbow)
+        return worn_items
+
+    fethri_equipment = generate_equipment()
+    fethri_backpack = generate_backpack()
+    fethri_pc = pc.PlayerCharacter(fethri_base, fethri_race, fethri_class, fethri_bg, fethri_equipment, fethri_backpack)
+    return fethri_pc

@@ -220,6 +220,8 @@ class Languages(object):
     INFERNAL = 'infernal'
     CELESTIAL = 'celestial'
 
+    THIEVES_CANT = 'thieves cant'
+
     LANGUAGES = {
         COMMON,
         DWARVISH,
@@ -227,4 +229,6 @@ class Languages(object):
         DRACONIC,
         INFERNAL,
         CELESTIAL,
+
+        THIEVES_CANT,
     }
