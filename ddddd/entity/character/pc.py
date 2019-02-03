@@ -1,6 +1,5 @@
 
 import math
-import json
 
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScore, Skills
@@ -15,7 +14,7 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 
-class PlayerBase(base.Jsonable):
+class PlayerBase(object):
     """
     A player character (PC) base will consist of the PC's name,
     base ability scores, and level by experience. Features that
@@ -51,25 +50,13 @@ class PlayerBase(base.Jsonable):
             AbilityScore.CHA: self.cha_,
         }
 
-    def __json__(self):
-        j = {
-            base.NAME: self.name,
-            base.BASE_ABILITY_SCORES: self.base_ability_scores,
-            base.LEVEL: self.level,
-            base.PROF_BONUS: self.proficiency_bonus,
-        }
-        return j
-
-    def __str__(self):
-        return json.dumps(self.__json__())
-
     @property
     def proficiency_bonus(self):
         """Proficiency bonus is based on a character's level."""
         return math.floor((self.level + 3) / 4) + 1
 
 
-class PlayerCharacter(base.Jsonable):
+class PlayerCharacter(object):
     """
     A player character (PC) in D&D.
     A PC consists of some base characteristics, a race, a class, and

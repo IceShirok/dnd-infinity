@@ -2,10 +2,8 @@
 import json
 
 from ddddd.entity import base
-from ddddd.entity.base import AbilityScore
 
-
-class SpellcastingAbility(base.Jsonable):
+class SpellcastingAbility(object):
     """
     An object representing a character's ability to cast spells.
     This is likely going to be delegated to the class factory, as each class
@@ -38,23 +36,6 @@ class SpellcastingAbility(base.Jsonable):
             if s.level not in self.spell_slots:
                 raise ValueError('Cannot cast a {}-level spell - you don''t have the spell slots for it!'.format(s.level))
 
-    def __json__(self):
-        spells_p = {}
-        for s in self.list_spells_known:
-            if s.level in spells_p:
-                spells_p[s.level].append(s.__json__())
-            else:
-                spells_p[s.level] = [s.__json__()]
-
-        return {
-            base.SPELLCASTING_ABILITY: self.spellcasting_ability,
-            base.LIST_SPELLS_KNOWN: spells_p,
-            base.SPELL_SLOTS: self.spell_slots,
-        }
-
-    def __str__(self):
-        return json.dumps(self.__json__(), indent=4)
-
 
 def generate_simple_spell(name, level):
     return Spell(name=name, level=level,
@@ -66,7 +47,7 @@ def generate_simple_spell(name, level):
                  description='This is a spell.')
 
 
-class Spell(base.Jsonable):
+class Spell(object):
     """
     A singular spell in D&D.
     I will very likely keep the majority of the information in a database
@@ -85,21 +66,6 @@ class Spell(base.Jsonable):
         self.components = components
         self.duration = duration
         self.description = description
-
-    def __json__(self):
-        return {
-            base.SPELL: self.name,
-            # 'level': self.level,
-            # 'magic_school': self.magic_school,
-            # 'casting_time': self.casting_time,
-            # 'range': self.spell_range,
-            # 'components': self.components,
-            # 'duration': self.duration,
-            # 'description': self.description,
-        }
-
-    def __str__(self):
-        return json.dumps(self.__json__(), indent=4)
 
 
 # Cantrips (level 0 spells)

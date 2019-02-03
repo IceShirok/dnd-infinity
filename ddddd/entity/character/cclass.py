@@ -5,7 +5,7 @@ from ddddd.entity import base
 from ddddd.entity.character import trait
 
 
-class PlayerClass(base.Jsonable, metaclass=abc.ABCMeta):
+class PlayerClass(object, metaclass=abc.ABCMeta):
     """
     A representation of a player character (PC) class
     for a particular class/level combination. This particular
@@ -23,23 +23,6 @@ class PlayerClass(base.Jsonable, metaclass=abc.ABCMeta):
         self.features = features
         self.asi = asi if asi else {}
         self.spellcasting = spellcasting
-
-    def __json__(self):
-        spellcasting_p = self.spellcasting
-        if spellcasting_p:
-            spellcasting_p = spellcasting_p.__json__()
-        j = {
-            base.CLASS: self.name,
-            base.LEVEL: self.level,
-            base.HIT_DIE: 'd{}'.format(self.hit_die),
-            base.PROFICIENCIES: self.proficiencies,
-            base.SAVING_THROWS: self.saving_throws,
-            base.SKILLS: self.skills,
-            base.FEATURES: self.features,
-            base.SPELLCASTING: spellcasting_p,
-            'ability_score_increase': self.asi,
-        }
-        return j
     
     @property
     def languages(self):
