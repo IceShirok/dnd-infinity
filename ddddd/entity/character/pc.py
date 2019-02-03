@@ -277,8 +277,7 @@ class PlayerCharacter(object):
     def cantrips(self):
         """Retrieve cantrips that the PC knows."""
         if self.spellcasting:
-            list_cantrips = list(filter(lambda s: isinstance(s, spells.Cantrip), self.spellcasting.list_spells_known))
-            return list_cantrips
+            return self.spellcasting.cantrips
         return None
 
     def calculate_damage_cantrips(self):
@@ -298,7 +297,7 @@ class PlayerCharacter(object):
         """Retrieve a PC's spells (spells that require spell slots)."""
         if self.spellcasting:
             spell_by_level = {}
-            list_spells = list(filter(lambda s: not isinstance(s, spells.Cantrip), self.spellcasting.list_spells_known))
+            list_spells = self.spellcasting.casting_spells
             for spell in list_spells:
                 if spell.level not in spell_by_level:
                     spell_by_level[spell.level] = []

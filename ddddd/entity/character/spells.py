@@ -21,17 +21,23 @@ class SpellcastingAbility(object):
     def spell_attack_bonus(self, ability_scores, proficiency_bonus):
         return ability_scores[self.spellcasting_ability].modifier + proficiency_bonus
 
+    @property
+    def cantrips(self):
+        return list(filter(lambda s: isinstance(s, Cantrip), self.list_spells_known))
+
+    @property
+    def casting_spells(self):
+        return list(filter(lambda s: not isinstance(s, Cantrip), self.list_spells_known))
+
     def _verify(self):
-        cantrips = list(filter(lambda x: x.level == 0, self.list_spells_known))
-        if len(cantrips) > 0:
+        if len(self.cantrips) > 0:
             if base.SpellTypes.CANTRIPS not in self.spell_slots:
                 raise ValueError('Cannot learn cantrips!')
             num_cantrips_know = self.spell_slots[base.SpellTypes.CANTRIPS]
-            if len(cantrips) != num_cantrips_know:
-                raise ValueError('Must have {} cantrips but inputted {} cantrips!'.format(num_cantrips_know, len(cantrips)))
+            if len(self.cantrips) != num_cantrips_know:
+                raise ValueError('Must have {} cantrips but inputted {} cantrips!'.format(num_cantrips_know, len(self.cantrips)))
 
-        spells = list(filter(lambda x: x.level != base.SpellTypes.CANTRIPS, self.list_spells_known))
-        for s in spells:
+        for s in self.casting_spells:
             if s.level not in self.spell_slots:
                 raise ValueError('Cannot cast a {}-level spell - you don''t have the spell slots for it!'.format(s.level))
 
