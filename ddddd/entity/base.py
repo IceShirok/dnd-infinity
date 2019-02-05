@@ -214,14 +214,16 @@ class Skills(object):
 
 
 class Languages(object):
-    COMMON = 'common'
-    DWARVISH = 'dwarvish'
-    GNOMISH = 'gnomish'
-    DRACONIC = 'draconic'
-    INFERNAL = 'infernal'
-    CELESTIAL = 'celestial'
+    COMMON = 'Common'
+    DWARVISH = 'Dwarvish'
+    GNOMISH = 'Gnomish'
+    DRACONIC = 'Draconic'
+    INFERNAL = 'Infernal'
+    CELESTIAL = 'Celestial'
+    ELVISH = 'Elvish'
+    UNDERCOMMON = 'Undercommon'
 
-    THIEVES_CANT = 'thieves cant'
+    THIEVES_CANT = "Thieves' Cant"
 
     LANGUAGES = {
         COMMON,
@@ -230,6 +232,8 @@ class Languages(object):
         DRACONIC,
         INFERNAL,
         CELESTIAL,
+        ELVISH,
+        UNDERCOMMON,
 
         THIEVES_CANT,
     }

@@ -82,9 +82,10 @@ class Ranger(Vocation):
 
     def _add_level_2_features(self, **kwargs):
         fighting_style = kwargs['fighting_style']
-        self.features['fighting_style'] = trait.Trait(name='Fighting Style',
-                                                      description='At 2nd level, you adopt a particular style of fighting \
-                                                      as your specialty. {}'.format(fighting_style))
+        self._append_feature('fighting_style',
+                             feature=trait.Trait(name='Fighting Style',
+                                                 description='At 2nd level, you adopt a particular style of fighting \
+                                                 as your specialty. {}'.format(fighting_style)))
 
         # TODO make this a bit more elegant...
         list_spells = []
@@ -117,15 +118,17 @@ class Ranger(Vocation):
         return req
 
     def _add_level_3_features(self, **kwargs):
-        self.features['primeval_awareness'] = trait.Trait(name='Primeval Awareness',
-                                                          description='Beginning at 3rd level, you can use your action and expend one Ranger spell slot \
-                                                          to focus your awareness on the region around you..')
+        self._append_feature('primeval_awareness',
+                             feature=trait.Trait(name='Primeval Awareness',
+                                                 description='Beginning at 3rd level, you can use your action and expend one Ranger spell slot \
+                                                 to focus your awareness on the region around you..'))
 
         archetype_feature = kwargs['archetype_feature']
         # TODO clean up the martial specialized features
-        self.features['ranger_archetype'] = trait.Trait(name='Ranger Archetype',
-                                                        description='Emulating the Hunter archetype means accepting your place as a bulwark \
-                                                        between civilization and the terrors of The Wilderness.'.format(archetype_feature))
+        self._append_feature('ranger_archetype',
+                             feature=trait.Trait(name='Ranger Archetype',
+                                                 description='Emulating the Hunter archetype means accepting your place as a bulwark \
+                                                 between civilization and the terrors of The Wilderness.'.format(archetype_feature)))
 
         # TODO make this a bit more elegant...
         list_spells = []
@@ -151,12 +154,7 @@ class Ranger(Vocation):
         return req
 
     def _add_level_4_features(self, **kwargs):
-        ability_score_increase = kwargs['ability_score_increase']
-        for ability in ability_score_increase.keys():
-            if ability not in self.asi:
-                self.asi[ability] = ability_score_increase[ability]
-            else:
-                self.asi[ability] = self.asi[ability].combine(ability_score_increase[ability])
+        self._aggregate_asi_or_feat(kwargs, level=4)
 
     def _level_5_requirements(self):
         req = {
@@ -172,9 +170,10 @@ class Ranger(Vocation):
         return req
 
     def _add_level_5_features(self, **kwargs):
-        self.features['extra_attack'] = trait.Trait(name='Extra Attack',
+        self._append_feature('extra_attack',
+                             feature=trait.Trait(name='Extra Attack',
                                                     description='Beginning at 5th level, you can Attack twice, instead of once, \
-                                                    whenever you take the Attack action on Your Turn.')
+                                                    whenever you take the Attack action on Your Turn.'))
 
         # TODO make this a bit more elegant...
         list_spells = []
