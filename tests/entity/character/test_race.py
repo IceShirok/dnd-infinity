@@ -66,6 +66,17 @@ class TestDwarfRace(unittest.TestCase):
 
         self.assertTrue(isinstance(self.dwarf.languages, trait.LanguagesKnown))
 
+    def test_base_race(self):
+        self.assertEqual(self.dwarf.base_race, 'Dwarf')
+
+    def test_str_movement_multiplier(self):
+        result = self.dwarf.str_movement_multiplier
+        self.assertEqual(result, 1)
+
+    def test_skills(self):
+        result = self.dwarf.skills
+        self.assertEqual(result, [])
+
     def test_proficiencies(self):
         prof = self.dwarf.proficiencies
 
@@ -102,6 +113,21 @@ class TestHillDwarfRace(unittest.TestCase):
     def test_base_race(self):
         self.assertEqual(self.hill_dwarf.base_race, 'Dwarf')
 
+    def test_str_movement_multiplier(self):
+        result = self.hill_dwarf.str_movement_multiplier
+        self.assertEqual(result, 1)
+
+    def test_skills(self):
+        result = self.hill_dwarf.skills
+        self.assertEqual(result, [])
+
+    def test_proficiencies(self):
+        prof = self.hill_dwarf.proficiencies
+
+        self.assertEqual(4, len(prof[base.WEAPON_PROFICIENCY].proficiencies))
+
+        self.assertEqual('brewers_kit', prof[base.TOOL_PROFICIENCY].proficiencies[0])
+
 
 ###########################
 # GNOME
@@ -122,6 +148,17 @@ class TestGnomeRace(unittest.TestCase):
         self.assertEqual(expected_trait_names, result)
 
         self.assertTrue(isinstance(self.gnome.languages, trait.LanguagesKnown))
+
+    def test_base_race(self):
+        self.assertEqual(self.gnome.base_race, 'Gnome')
+
+    def test_str_movement_multiplier(self):
+        result = self.gnome.str_movement_multiplier
+        self.assertEqual(result, 1)
+
+    def test_skills(self):
+        result = self.gnome.skills
+        self.assertEqual(result, [])
 
     def test_proficiencies(self):
         self.assertEqual(len(self.gnome.proficiencies), 0)
@@ -145,6 +182,17 @@ class TestRockGnomeRace(unittest.TestCase):
     def test_base_race(self):
         self.assertEqual(self.rock_gnome.base_race, 'Gnome')
 
+    def test_str_movement_multiplier(self):
+        result = self.rock_gnome.str_movement_multiplier
+        self.assertEqual(result, 1)
+
+    def test_skills(self):
+        result = self.rock_gnome.skills
+        self.assertEqual(result, [])
+
+    def test_proficiencies(self):
+        self.assertEqual(len(self.rock_gnome.proficiencies), 1)
+
 
 ###########################
 # TIEFLING
@@ -166,3 +214,14 @@ class TestTieflingRace(unittest.TestCase):
 
     def test_base_race(self):
         self.assertEqual(self.tiefling.base_race, 'Tiefling')
+
+    def test_str_movement_multiplier(self):
+        result = self.tiefling.str_movement_multiplier
+        self.assertEqual(result, 1)
+
+    def test_skills(self):
+        result = self.tiefling.skills
+        self.assertEqual(result, [])
+
+    def test_proficiencies(self):
+        self.assertEqual(len(self.tiefling.proficiencies), 0)
