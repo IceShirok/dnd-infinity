@@ -317,15 +317,15 @@ class PlayerCharacter(object):
         vocation_bonuses = list(filter(lambda f: isinstance(f, trait.EnhanceDamage), self.vocation_features))
 
         for cantrip in damage_cantrips:
-            cantrip_bonus = 0
+            total_damage = cantrip.damage_calc(self.level)
             for bonus in vocation_bonuses:
                 if bonus.qualifies(cantrip):
-                    cantrip_bonus += bonus.attack_bonus
+                    total_damage = '{} + {}'.format(total_damage, bonus.attack_bonus)
 
             bonuses[cantrip.name] = {
                 'cantrip': cantrip,
                 'attack_bonus': cantrip.attack_bonus_calc(self.spell_attack_bonus, self.spell_save_dc),
-                'damage': '{} + {}'.format(cantrip.damage_calc(self.level), cantrip_bonus),
+                'damage': total_damage,
             }
         return bonuses
 
@@ -383,7 +383,10 @@ class PlayerCharacter(object):
             if weapons.is_proficient(weapon, weapon_proficiencies):
                 attack_bonus += self.proficiency_bonus
 
-            weapon_damage_list = [str(weapon.damage), str(damage_bonus)]
+            weapon_damage_list = [str(weapon.damage)]
+            if damage_bonus:  # only add damage bonus if it's not zero
+                weapon_damage_list.append(str(damage_bonus))
+
             for bonus in vocation_bonuses:
                 if bonus.qualifies(weapon):
                     weapon_damage_list.append('{} [{}]'.format(bonus.attack_bonus, bonus.name))
