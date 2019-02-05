@@ -123,67 +123,125 @@ class TestPlayerCharacterDorian(unittest.TestCase):
     #########################
 
     def test_saving_throws(self):
-        pass
+        saves = self.dorian.saving_throws
+        expected = {
+            'STR': {
+                'modifier': 5,
+                'is_proficient': True,
+            },
+            'DEX': {
+                'modifier': 2,
+                'is_proficient': True,
+            },
+            'CON': {
+                'modifier': 3,
+                'is_proficient': False,
+            },
+            'INT': {
+                'modifier': 1,
+                'is_proficient': False,
+            },
+            'WIS': {
+                'modifier': 2,
+                'is_proficient': False,
+            },
+            'CHA': {
+                'modifier': -1,
+                'is_proficient': False,
+            },
+        }
+        self.assertEqual(saves, expected)
 
     def test_skills_by_ability(self):
-        pass
+        skillz = self.dorian.skills_by_ability
+
+        athletics = skillz['STR']['Athletics']
+        self.assertEqual(athletics['ability'], 'STR')
+        self.assertEqual(athletics['is_proficient'], True)
+        self.assertEqual(athletics['expertise'], False)
+
+        athletics = skillz['DEX']['Acrobatics']
+        self.assertEqual(athletics['ability'], 'DEX')
+        self.assertEqual(athletics['is_proficient'], False)
+        self.assertEqual(athletics['expertise'], False)
 
     def test_proficiencies(self):
-        pass
+        prof = self.dorian.proficiencies
+        self.assertEqual(set(prof['Weapon Proficiency']), {'simple', 'martial'})
+        self.assertEqual(len(prof['Armor Proficiency']), 3)
+        self.assertEqual(len(prof['Tool Proficiency']), 3)
 
     def test_languages(self):
-        pass
+        lang = self.dorian.languages
+        self.assertEqual(len(lang), 3)
 
     #########################
     # FEATURES & TRAITS
     #########################
 
     def test_feats(self):
-        pass
+        self.assertEqual(self.dorian.feats, [])
 
-    def test_racial_features(self):
-        pass
+    def test_racial_traits(self):
+        self.assertEqual(len(self.dorian.racial_traits), 6)
 
     def test_vocation_features(self):
-        pass
+        self.assertEqual(len(self.dorian.vocation_features), 3)
 
     def test_background_feature(self):
-        pass
+        self.assertEqual(len(self.dorian.background_feature), 1)
 
     def test_features(self):
-        pass
+        features = self.dorian.features
+        self.assertEqual(features['Racial Traits'], self.dorian.racial_traits)
+        self.assertEqual(features['Class Features'], self.dorian.vocation_features)
+        self.assertEqual(features['Background Features'], list(self.dorian.background_feature))
 
     #########################
     # SPELLCASTING
     #########################
 
     def test_spellcasting(self):
-        pass
+        self.assertEqual(self.dorian.spellcasting, None)
 
     def test_cantrips(self):
-        pass
+        self.assertEqual(self.dorian.cantrips, None)
 
     def test_calculate_damage_cantrips(self):
-        pass
+        self.assertEqual(self.dorian.calculate_damage_cantrips(), {})
 
     def test_casting_spells(self):
-        pass
+        self.assertEqual(self.dorian.casting_spells, None)
 
     def test_spell_attack_bonus(self):
-        pass
+        self.assertEqual(self.dorian.spell_attack_bonus, None)
 
     def test_spell_save_dc(self):
-        pass
+        self.assertEqual(self.dorian.spell_save_dc, None)
 
     #########################
     # EQUIPMENT
     #########################
 
     def test_carrying_weight(self):
-        pass
+        self.assertEqual(self.dorian.carrying_weight, 146)
 
     def test_carrying_capacity(self):
-        pass
+        self.assertEqual(self.dorian.carrying_capacity, 240)
 
     def test_calculate_weapon_bonuses(self):
-        pass
+        weapon_bonuses = self.dorian.calculate_weapon_bonuses()
+
+        weapon_bonus_list = set(weapon_bonuses.keys())
+        weapons_list = set(map(lambda w: w.name, self.dorian.worn_items.weapons))
+        self.assertEqual(weapon_bonus_list, weapons_list)
+
+        handaxe_bonus = weapon_bonuses['Handaxe']
+        self.assertEqual(handaxe_bonus['attack_bonus'], 5)
+        self.assertEqual(handaxe_bonus['attack_type'], 'STR')
+        self.assertEqual(handaxe_bonus['damage'], '1d6 slashing + 3')
+
+        handaxe_bonus = weapon_bonuses['Longbow']
+        self.assertEqual(handaxe_bonus['attack_bonus'], 2)
+        self.assertEqual(handaxe_bonus['attack_type'], 'DEX')
+        self.assertEqual(handaxe_bonus['damage'], '1d8 piercing')
