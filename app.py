@@ -2,7 +2,16 @@ from flask import Flask, render_template, redirect, url_for, abort
 from ddddd import pc_playground as pc
 from ddddd.entity.base import prettify_modifier
 
+import logging
+
 app = Flask(__name__)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 
 @app.route('/')
@@ -12,8 +21,14 @@ def index():
 
 
 @app.errorhandler(500)
+def server_error(e):
+    logger.error(e)
+    return render_template('broken.html'), 500
+
+
 @app.errorhandler(404)
 def page_not_found(e):
+    logger.error(e)
     return render_template('lost.html',
                            available_pc=pc.get_available_characters()), 404
 
@@ -39,4 +54,5 @@ def generate_pc(pc_name, level):
 
 if __name__ == '__main__':
     app.register_error_handler(404, page_not_found)
+    app.register_error_handler(500, server_error)
     app.run(host='localhost')
