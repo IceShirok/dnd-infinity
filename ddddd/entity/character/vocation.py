@@ -20,10 +20,30 @@ class Vocation(object, metaclass=abc.ABCMeta):
         self.proficiencies = proficiencies
         self.saving_throws = saving_throws
         self.skills = skill_proficiencies
-        self.features = features
+        self._features = features
         self.asi = asi if asi else {}
         self.spellcasting = spellcasting
         self.feats = feats if feats else []
+
+    def _append_feature(self, f_key, feature):
+        self._features[f_key] = feature
+
+    def _aggregate_asi_or_feat(self, kwargs, level):
+        asi_key = 'ability_score_increase_{}'.format(level)
+        feat_key = 'feat_{}'.format(level)
+        if asi_key in kwargs:
+            asi = kwargs[asi_key]
+            for ability in asi.keys():
+                if ability not in self.asi:
+                    self.asi[ability] = asi[ability]
+                else:
+                    self.asi[ability] = self.asi[ability].combine(asi[ability])
+        elif feat_key in kwargs:
+            self.feats.append(kwargs[feat_key])
+
+    @property
+    def features(self):
+        return list(self._features.values())
     
     @property
     def languages(self):

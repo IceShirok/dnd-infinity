@@ -56,7 +56,7 @@ def create_dorian(level=5):
         vocation.level_to(level=level,
                           fighting_style='two_weapon_fighting',
                           archetype_feature='colossus_slayer',
-                          ability_score_increase={
+                          ability_score_increase_4={
                               base.AbilityScore.STR: base.AbilityScoreIncrease(base.AbilityScore.STR, 2),
                           })
     bg = background.Criminal()
@@ -143,9 +143,9 @@ def create_fethri(level=1):
     if level > 1:
         vocation.level_to(level=level,
                           gaming_set='bone_dice',
-                          languages=trait.LanguagesKnown(languages=[base.Languages.CELESTIAL,
-                                                                    base.Languages.DWARVISH]),
-                          ability_score_increase={
+                          languages=trait.LanguagesKnown(languages=[base.Languages.UNDERCOMMON,
+                                                                    base.Languages.ELVISH]),
+                          ability_score_increase_4={
                               base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 2),
                           })
     background_ = background.Noble(tool_proficiency=trait.ToolProficiency(proficiencies=['chess_set']),
@@ -154,7 +154,6 @@ def create_fethri(level=1):
     worn_items = items.WornItems()
     worn_items.don_armor(armor.LEATHER_ARMOR)
     worn_items.equip_weapon(weapons.RAPIER)
-    worn_items.equip_weapon(weapons.LONGSWORD)
 
     backpack = items.generate_burglars_pack()
     fethri = pc.PlayerCharacter(base_, race_, vocation, background_, worn_items, backpack)

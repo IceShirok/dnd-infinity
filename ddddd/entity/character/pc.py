@@ -208,7 +208,7 @@ class PlayerCharacter(object):
     def skills_by_ability(self):
         """Calculates the PC's skill modifiers, and groups the skills by ability."""
         skill_proficiencies = (self.race.skills + self.vocation.skills + self.background.skills)
-        expertise = list(filter(lambda exp: isinstance(exp, trait.Expertise), self.vocation.features))
+        expertise = list(filter(lambda exp: isinstance(exp, trait.Expertise), self.vocation_features))
 
         _ability_scores = self.ability_scores
         skill_proficiencies_p = {}
@@ -277,7 +277,7 @@ class PlayerCharacter(object):
     @property
     def vocation_features(self):
         """Returns all features from the vocation"""
-        return list(self.vocation.features.values())
+        return self.vocation.features
 
     @property
     def background_feature(self):
@@ -395,21 +395,3 @@ class PlayerCharacter(object):
                 'damage': ' + '.join(weapon_damage_list),
             }
         return bonuses
-
-
-class SneakAttack(trait.EnhanceDamage):
-    def __init__(self, level):
-        attack_bonus = '{}d6'.format(math.floor((level+1)/2))
-        super(SneakAttack, self).__init__(name='Sneak Attack',
-                                          description='Beginning at 1st level, you know how to strike subtly \
-                                          and exploit a foe''s distraction. \
-                                          Sneak attack bonus = {}'.format(attack_bonus),
-                                          attack_bonus=attack_bonus)
-
-    def qualifies(self, weapon):
-        if not isinstance(weapon, weapons.Weapon):  # Must be a weapon
-            return False
-        for prop in [weapons.FINESSE, weapons.AMMUNITION, weapons.THROWN]:
-            if prop in weapon.properties:  # Must be a finesse or ranged weapon
-                return True
-        return False

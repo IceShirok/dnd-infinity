@@ -67,20 +67,22 @@ class Cleric(Vocation):
         return req
 
     def _add_level_2_features(self, **kwargs):
-        self.features['channel_divinity'] = trait.Trait(name='Channel Divinity',
-                                                        description='At 2nd level, you gain the ability to channel divine energy directly \
-                        from your deity, using that energy to fuel magical effects. When you finish a short \
-                        or long rest, you regain your expended uses.')
+        self._append_feature('channel_divinity',
+                             feature=trait.Trait(name='Channel Divinity',
+                                                 description='At 2nd level, you gain the ability to channel divine energy directly \
+                                                 from your deity, using that energy to fuel magical effects. When you finish a short \
+                                                 or long rest, you regain your expended uses.'))
 
-        self.features['channel_divinity_turn_undead'] = trait.Trait(name='Channel Divinity: Turn Undead',
-                                                                    description='As an action, you present your holy symbol \
-                        and speak a prayer censuring the undead.')
+        self._append_feature('channel_divinity_turn_undead',
+                             feature=trait.Trait(name='Channel Divinity: Turn Undead',
+                                                 description='As an action, you present your holy symbol \
+                                                 and speak a prayer censuring the undead.'))
 
-        self.features['channel_divinity_knowledge_of_the_ages'] = trait.Trait(
-            name='Channel Divinity: Knowledge of the Ages',
-            description='Starting at 2nd level, you can use your Channel Divinity to tap into \
-                        a divine well of knowledge. As an action, you choose one skill or tool. \
-                        For 10 minutes, you have proficiency with the chosen skill or tool.')
+        self._append_feature('channel_divinity_knowledge_of_the_ages',
+                             feature=trait.Trait(name='Channel Divinity: Knowledge of the Ages',
+                                                 description='Starting at 2nd level, you can use your Channel Divinity to tap into \
+                                                 a divine well of knowledge. As an action, you choose one skill or tool. \
+                                                 For 10 minutes, you have proficiency with the chosen skill or tool.'))
 
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
@@ -172,14 +174,19 @@ class Cleric(Vocation):
         return req
 
     def _add_level_5_features(self, **kwargs):
-        self.features['channel_divinity_destroy_undead'] = trait.Trait(
-            name='Channel Divinity: Destroy Undead (CR 1/2)',
-            description='Starting at 5th level, when an undead fails its saving throw \
-                        against your Turn Undead feature, the creature is instantly destroyed \
-                        if its challenge rating is at or below CR 1/2.')
+        self._append_feature('channel_divinity_destroy_undead',
+                             feature=trait.Trait(
+                                 name='Channel Divinity: Destroy Undead (CR 1/2)',
+                                 description='Starting at 5th level, when an undead fails its saving throw \
+                                             against your Turn Undead feature, the creature is instantly destroyed \
+                                             if its challenge rating is at or below CR 1/2.'))
 
         # TODO work on the mechanic to override stuff
-        self.features['channel_divinity'] = trait.Trait(name='Channel Divinity (2/rest)', description='')
+        self._append_feature('channel_divinity',
+                             feature=trait.Trait(name='Channel Divinity (2/rest)',
+                                                 description='At 2nd level, you gain the ability to channel divine energy directly \
+                                                 from your deity, using that energy to fuel magical effects. When you finish a short \
+                                                 or long rest, you regain your expended uses.'))
 
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
@@ -208,9 +215,10 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_6_features(self, **kwargs):
-        self.features['channel_divinity_read_thoughts'] = trait.Trait(name='Channel Divinity: Read Thoughts',
-                                                                                description='At 6th level, you can use your Channel Divinity to read \
-                                                                                a creature''s thoguhts.')
+        self._append_feature('channel_divinity_read_thoughts',
+                             feature=trait.Trait(name='Channel Divinity: Read Thoughts',
+                                                 description='At 6th level, you can use your Channel Divinity to read \
+                                                 a creature''s thoguhts.'))
 
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
@@ -240,7 +248,9 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_7_features(self, **kwargs):
-        self.features['potent_spellcasting'] = PotentSpellcasting(wis_mod=4)
+        # TODO fix the wisdom modifier
+        self._append_feature('potent_spellcasting',
+                             feature=PotentSpellcasting(wis_mod=4))
 
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
@@ -276,11 +286,12 @@ class Cleric(Vocation):
     def _add_level_8_features(self, **kwargs):
         self._aggregate_asi_or_feat(kwargs, 8)
 
-        self.features['channel_divinity_destroy_undead'] = trait.Trait(
-            name='Channel Divinity: Destroy Undead (CR 1)',
-            description='Starting at 5th level, when an undead fails its saving throw \
-                        against your Turn Undead feature, the creature is instantly destroyed \
-                        if its challenge rating is at or below CR 1.')
+        self._append_feature('channel_divinity_destroy_undead',
+                             feature=trait.Trait(
+                                 name='Channel Divinity: Destroy Undead (CR 1)',
+                                 description='Starting at 5th level, when an undead fails its saving throw \
+                                            against your Turn Undead feature, the creature is instantly destroyed \
+                                            if its challenge rating is at or below CR 1.'))
 
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
@@ -354,9 +365,10 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_10_features(self, **kwargs):
-        self.features['divine_intervention'] = trait.Trait(name='Divine Intervention',
-                                                           description='Beginning at 10th level, you can call on your deity \
-                                                           to intervene on your behalf when your need is great.')
+        self._append_feature('divine_intervention',
+                             feature=trait.Trait(name='Divine Intervention',
+                                                 description='Beginning at 10th level, you can call on your deity \
+                                                 to intervene on your behalf when your need is great.'))
 
         new_cantrip = kwargs['cantrip_10']
         self.spellcasting.cantrips.append(new_cantrip)
@@ -400,11 +412,12 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_11_features(self, **kwargs):
-        self.features['channel_divinity_destroy_undead'] = trait.Trait(
-            name='Channel Divinity: Destroy Undead (CR 2)',
-            description='Starting at 5th level, when an undead fails its saving throw \
-                        against your Turn Undead feature, the creature is instantly destroyed \
-                        if its challenge rating is at or below CR 2.')
+        self._append_feature('channel_divinity_destroy_undead',
+                             feature=trait.Trait(
+                                 name='Channel Divinity: Destroy Undead (CR 2)',
+                                 description='Starting at 5th level, when an undead fails its saving throw \
+                                 against your Turn Undead feature, the creature is instantly destroyed \
+                                 if its challenge rating is at or below CR 2.'))
 
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
@@ -535,11 +548,12 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_14_features(self, **kwargs):
-        self.features['channel_divinity_destroy_undead'] = trait.Trait(
-            name='Channel Divinity: Destroy Undead (CR 3)',
-            description='Starting at 5th level, when an undead fails its saving throw \
-                        against your Turn Undead feature, the creature is instantly destroyed \
-                        if its challenge rating is at or below CR 3.')
+        self._append_feature('channel_divinity_destroy_undead',
+                             feature=trait.Trait(
+                                 name='Channel Divinity: Destroy Undead (CR 3)',
+                                 description='Starting at 5th level, when an undead fails its saving throw \
+                                 against your Turn Undead feature, the creature is instantly destroyed \
+                                 if its challenge rating is at or below CR 3.'))
 
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
@@ -683,14 +697,17 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_17_features(self, **kwargs):
-        self.features['visions_of_the_past'] = trait.Trait(name='Visions of the Past',
-                                                           description='Starting at 17th level, you can call up \
-                        visions of the past that relate to an object you hold or your immediate surroundings.')
-        self.features['channel_divinity_destroy_undead'] = trait.Trait(
-            name='Channel Divinity: Destroy Undead (CR 4)',
-            description='Starting at 5th level, when an undead fails its saving throw \
-                        against your Turn Undead feature, the creature is instantly destroyed \
-                        if its challenge rating is at or below CR 4.')
+        self._append_feature('visions_of_the_past',
+                             feature=trait.Trait(name='Visions of the Past',
+                                                 description='Starting at 17th level, you can call up \
+                                                 visions of the past that relate to an object you hold or your immediate surroundings.'))
+
+        self._append_feature('channel_divinity_destroy_undead',
+                             feature=trait.Trait(
+                                 name='Channel Divinity: Destroy Undead (CR 4)',
+                                 description='Starting at 5th level, when an undead fails its saving throw \
+                                 against your Turn Undead feature, the creature is instantly destroyed \
+                                 if its challenge rating is at or below CR 4.'))
 
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
@@ -742,7 +759,11 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_18_features(self, **kwargs):
-        self.features['channel_divinity'] = trait.Trait(name='Channel Divinity (3/rest)', description='')
+        self._append_feature('channel_divinity',
+                             feature=trait.Trait(name='Channel Divinity (3/rest)',
+                                                 description='At 2nd level, you gain the ability to channel divine energy directly \
+                                                 from your deity, using that energy to fuel magical effects. When you finish a short \
+                                                 or long rest, you regain your expended uses.'))
 
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
@@ -849,9 +870,10 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_20_features(self, **kwargs):
-        self.features['divine_intervention'] = trait.Trait(name='Improved Divine Intervention',
-                                                           description='At 20th level, your call for intervention succeeds automatically, \
-                                                           no roll required.')
+        self._append_feature('divine_intervention',
+                             feature=trait.Trait(name='Improved Divine Intervention',
+                                                 description='At 20th level, your call for intervention succeeds automatically, \
+                                                 no roll required.'))
 
         simple_spell_list = [
             ('Command', base.SpellTypes.FIRST),
@@ -904,19 +926,6 @@ class Cleric(Vocation):
                                                  num_spells_known=5 + 20 + 10,
                                                  num_cantrips_known=spells.cantrips_by_level(5), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
-
-    def _aggregate_asi_or_feat(self, kwargs, level):
-        asi_key = 'ability_score_increase_{}'.format(level)
-        feat_key = 'feat_{}'.format(level)
-        if asi_key in kwargs:
-            asi = kwargs[asi_key]
-            for ability in asi.keys():
-                if ability not in self.asi:
-                    self.asi[ability] = asi[ability]
-                else:
-                    self.asi[ability] = self.asi[ability].combine(asi[ability])
-        elif feat_key in kwargs:
-            self.feats.append(kwargs[feat_key])
 
 
 class PotentSpellcasting(trait.EnhanceDamage):
