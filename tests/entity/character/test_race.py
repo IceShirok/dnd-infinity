@@ -225,3 +225,40 @@ class TestTieflingRace(unittest.TestCase):
 
     def test_proficiencies(self):
         self.assertEqual(len(self.tiefling.proficiencies), 0)
+
+
+###########################
+# DRAGONBORN
+###########################
+
+class TestDragonbornRace(unittest.TestCase):
+    def setUp(self):
+        self.dragonborn = race.Dragonborn('bronze')
+
+    def test_default_traits(self):
+        self.assertEqual(2, self.dragonborn.asi['STR'].score_increase)
+        self.assertEqual(1, self.dragonborn.asi['CHA'].score_increase)
+
+        expected_trait_names = {'Draconic Ancestry',
+                                'Damage Resistance',
+                                'Breath Weapon'}
+        result = set(map(lambda t: t.name, self.dragonborn.traits))
+        self.assertEqual(expected_trait_names, result)
+
+    def test_race(self):
+        self.assertEqual(self.dragonborn.name, 'Bronze Dragonborn')
+
+    def test_base_race(self):
+        self.assertEqual(self.dragonborn.base_race, 'Dragonborn')
+
+    def test_str_movement_multiplier(self):
+        result = self.dragonborn.str_movement_multiplier
+        self.assertEqual(result, 1)
+
+    def test_skills(self):
+        result = self.dragonborn.skills
+        self.assertEqual(result, [])
+
+    def test_proficiencies(self):
+        self.assertEqual(len(self.dragonborn.proficiencies), 0)
+

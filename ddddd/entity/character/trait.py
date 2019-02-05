@@ -90,6 +90,14 @@ class EnhanceDamage(Trait):
         return True
 
 
+class DamageResistance(Trait):
+    def __init__(self, damage_type, name=None, description=None):
+        name = name if name else 'Damage Resistance'
+        description = description if description else 'You have Resistance with {} damage.'.format(damage_type)
+        super(DamageResistance, self).__init__(name, description)
+        self.resistance = damage_type
+
+
 # TODO refactor this into a feat later
 # for now, feats can be treated like traits
 class WarCaster(Trait):
