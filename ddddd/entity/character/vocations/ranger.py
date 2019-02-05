@@ -15,13 +15,13 @@ class Ranger(Vocation):
     def __init__(self, skill_proficiencies, favored_enemy=None, languages=None, favored_terrain=None):
         def_features = {
             'favored_enemy': trait.Trait(name='Favored Enemy',
-                        description='Beginning at 1st level, you have significant experience studying, tracking, \
-                        hunting, and even talking to a certain type of enemy. {}'.format(favored_enemy)),
+                                         description='Beginning at 1st level, you have significant experience studying, tracking, \
+                                         hunting, and even talking to a certain type of enemy. {}'.format(favored_enemy)),
             'favored_enemy_languages': trait.LanguagesKnown(languages=[languages], name='Favored Enemy Languages',
-                                 description='You learn a language that your favored enemy would typically know.'),
+                                                            description='You learn a language that your favored enemy would typically know.'),
             'natural_explorer': trait.Trait(name='Natural Explorer',
-                        description='You are particularly familiar with one type of natural environment \
-                        and are adept at traveling and surviving in such regions. {}'.format(favored_terrain)),
+                                            description='You are particularly familiar with one type of natural environment \
+                                            and are adept at traveling and surviving in such regions. {}'.format(favored_terrain)),
         }
 
         super(Ranger, self).__init__(name='Ranger',

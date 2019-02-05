@@ -1,7 +1,7 @@
 
 from ddddd.entity import base
 from ddddd.entity.character import trait
-from ddddd.entity.base import AbilityScore, Languages, Sizes
+from ddddd.entity.base import Languages, Sizes
 
 import logging
 logger = logging.getLogger(__name__)
@@ -159,7 +159,7 @@ class RockGnome(Gnome):
             base.AbilityScore.CON: base.AbilityScoreIncrease(base.AbilityScore.CON, 1)
         }
         traits = [
-            trait.Trait(name='Artificer''s Lore',
+            trait.Trait(name="Artificer's Lore",
                         description='Whenever you make an Intelligence (History) check related to Magic Items, \
                         alchemical Objects, or technological devices, you can add twice your Proficiency Bonus, \
                         instead of any Proficiency Bonus you normally apply.'),
