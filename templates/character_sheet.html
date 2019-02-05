@@ -250,6 +250,13 @@
                     {% endfor %}
                 </div>
             {% endfor %}
+
+            <div>
+                <h4>Languages</h4>
+                {% for p in pc.languages %}
+                <span class="chip">{{ p }}</span>
+                {% endfor %}
+            </div>
         </div>
     </div>
 
@@ -258,7 +265,7 @@
             <h3>Traits & Features <i class="material-icons">style</i></h3>
             <div class="columns">
                 <div class="column col-6">
-                    {{ feature_list('Racial Features', pc.racial_features) }}
+                    {{ feature_list('Racial Traits', pc.racial_traits) }}
                     {{ feature_list('Background Features', pc.background_feature) }}
                     {% if pc.feats %}
                         {{ feature_list('Feats', pc.feats) }}

@@ -201,3 +201,98 @@ class Tiefling(Race):
     @property
     def base_race(self):
         return 'Tiefling'
+
+
+#############################
+# DRAGONBORN
+#############################
+
+class Dragonborn(Race):
+    def __init__(self, draconic_ancestry):
+        def_asi = {
+            base.AbilityScore.STR: base.AbilityScoreIncrease(base.AbilityScore.STR, 2),
+            base.AbilityScore.CHA: base.AbilityScoreIncrease(base.AbilityScore.CHA, 1)
+        }
+        super(Dragonborn, self).__init__(name=self.get_draconic_race(draconic_ancestry),
+                                         asi=def_asi,
+                                         size=Sizes.MEDIUM,
+                                         speed=30,
+                                         languages=trait.LanguagesKnown(languages=[Languages.COMMON, Languages.DRACONIC]),
+                                         traits=self.get_draconic_ancestry_traits(draconic_ancestry))
+
+    @property
+    def base_race(self):
+        return 'Dragonborn'
+
+    def get_draconic_race(self, draconic_ancestry):
+        if draconic_ancestry not in self._DRACONIC_ANCESTRY:
+            raise ValueError('{} is not a valid draconic ancestry!')
+        return '{} Dragonborn'.format(draconic_ancestry.capitalize())
+
+    def get_draconic_ancestry_traits(self, draconic_ancestry):
+        if draconic_ancestry not in self._DRACONIC_ANCESTRY:
+            raise ValueError('{} is not a valid draconic ancestry!')
+        ancestry_details = self._DRACONIC_ANCESTRY[draconic_ancestry]
+
+        traits = [
+            trait.Trait(name='Draconic Ancestry',
+                        description='You have Draconic ancestry with a {} dragon.'.format(draconic_ancestry)),
+            trait.DamageResistance(damage_type=ancestry_details['damage_type']),
+            trait.Trait(name='Breath Weapon',
+                        description='You can use your action to exhale destructive energy.')
+        ]
+
+        return traits
+
+    _DRACONIC_ANCESTRY = {
+        'black': {
+            'damage_type': 'acid',
+            'breath_weapon': '5 by 30 ft line',
+            'breath_weapon_save': 'DEX',
+        },
+        'blue': {
+            'damage_type': 'lightning',
+            'breath_weapon': '5 by 30 ft line',
+            'breath_weapon_save': 'DEX',
+        },
+        'brass': {
+            'damage_type': 'fire',
+            'breath_weapon': '5 by 30 ft line',
+            'breath_weapon_save': 'DEX',
+        },
+        'bronze': {
+            'damage_type': 'lightning',
+            'breath_weapon': '5 by 30 ft line',
+            'breath_weapon_save': 'DEX',
+        },
+        'copper': {
+            'damage_type': 'acid',
+            'breath_weapon': '5 by 30 ft line',
+            'breath_weapon_save': 'DEX',
+        },
+        'gold': {
+            'damage_type': 'fire',
+            'breath_weapon': '15 ft cone',
+            'breath_weapon_save': 'CON',
+        },
+        'green': {
+            'damage_type': 'poison',
+            'breath_weapon': '15 ft cone',
+            'breath_weapon_save': 'CON',
+        },
+        'red': {
+            'damage_type': 'fire',
+            'breath_weapon': '15 ft cone',
+            'breath_weapon_save': 'CON',
+        },
+        'silver': {
+            'damage_type': 'cold',
+            'breath_weapon': '15 ft cone',
+            'breath_weapon_save': 'CON',
+        },
+        'white': {
+            'damage_type': 'cold',
+            'breath_weapon': '15 ft cone',
+            'breath_weapon_save': 'CON',
+        },
+    }

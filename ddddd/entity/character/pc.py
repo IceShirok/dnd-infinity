@@ -237,14 +237,12 @@ class PlayerCharacter(object):
             base.WEAPON_PROFICIENCY: [],
             base.ARMOR_PROFICIENCY: [],
             base.TOOL_PROFICIENCY: [],
-            base.LANGUAGES: [],
         }
         for prof_group in [self.race.proficiencies, self.vocation.proficiencies, self.background.proficiencies]:
             for prof in prof_group.keys():
                 if prof not in p:
                     p[prof] = []
                 p[prof] = p[prof] + prof_group[prof].proficiencies
-        p[base.LANGUAGES] = self.languages
 
         # Weapon proficiencies are a bit strange because there are weapon categories
         # and specific weapon proficiencies.
@@ -270,7 +268,7 @@ class PlayerCharacter(object):
         return self.vocation.feats
 
     @property
-    def racial_features(self):
+    def racial_traits(self):
         """Returns all features from race"""
         return self.race.traits
 
@@ -288,9 +286,9 @@ class PlayerCharacter(object):
     def features(self):
         """Aggregates all features that the PC possesses."""
         return {
-            base.RACIAL_TRAITS: self.racial_features,
+            base.RACIAL_TRAITS: self.racial_traits,
             base.VOCATION_FEATURES: self.vocation_features,
-            base.BACKGROUND_FEATURES: [self.background_feature],
+            base.BACKGROUND_FEATURES: self.background_feature,
         }
 
     #########################
@@ -311,8 +309,11 @@ class PlayerCharacter(object):
 
     def calculate_damage_cantrips(self):
         """Get a list of damaging cantrips, treated like weapons."""
-        damage_cantrips = list(filter(lambda c: isinstance(c, spells.DamageCantrip), self.cantrips))
         bonuses = {}
+        if not self.spellcasting or not self.cantrips:
+            return bonuses
+
+        damage_cantrips = list(filter(lambda c: isinstance(c, spells.DamageCantrip), self.cantrips))
 
         vocation_bonuses = list(filter(lambda f: isinstance(f, trait.EnhanceDamage), self.vocation_features))
 
