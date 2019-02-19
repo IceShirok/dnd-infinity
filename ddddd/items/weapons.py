@@ -1,4 +1,5 @@
 from ddddd.entity import base
+from ddddd.items import currency
 from ddddd.items.items import Item
 
 
@@ -34,23 +35,23 @@ THROWN = 'thrown'
 #############################
 
 MACE = Weapon('Mace', category=SIMPLE, damage='1d6 bludgeoning',
-              price=5, weight=4,
+              price=currency.GoldPieces(5), weight=4,
               properties=[])
 
 HANDAXE = Weapon('Handaxe', category=SIMPLE, damage='1d6 slashing',
-                 price=5, weight=2,
+                 price=currency.GoldPieces(5), weight=2,
                  properties=[LIGHT, 'thrown (range 20/60)'])
 
 RAPIER = Weapon('Rapier', category=MARTIAL, damage='1d8 piercing',
-                price=25, weight=2,
+                price=currency.GoldPieces(25), weight=2,
                 properties=[FINESSE])
 
 LONGBOW = Weapon('Longbow', category=MARTIAL, damage='1d8 piercing',
-                 price=50, weight=2,
+                 price=currency.GoldPieces(50), weight=2,
                  properties=['ammunition (range 150/600)', HEAVY, TWO_HANDED])
 
 LONGSWORD = Weapon('Longsword', category=MARTIAL, damage='1d8 piercing',
-                   price=15, weight=3,
+                   price=currency.GoldPieces(15), weight=3,
                    properties=['versatile (1d10)'])
 
 WEAPON_TYPE_TO_WEAPONS = {

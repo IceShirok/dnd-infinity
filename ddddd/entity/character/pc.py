@@ -371,6 +371,16 @@ class PlayerCharacter(object):
         """Calculate the maximum amount of weight the PC can carry."""
         return self.ability_scores[AbilityScore.STR].score * 15 * self.race.str_movement_multiplier
 
+    @property
+    def total_equipment_worth(self):
+        """Calculate the total worth of the backpack's contents."""
+        return self.worn_items.total_item_worth
+
+    @property
+    def total_backpack_worth(self):
+        """Calculate the total worth of the backpack's contents."""
+        return self.backpack.total_item_worth
+
     def calculate_weapon_bonuses(self):
         """Calculate weapon bonuses."""
         bonuses = {}

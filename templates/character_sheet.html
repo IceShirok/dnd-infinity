@@ -292,6 +292,7 @@
                 <div class="column col-4">
                     <div class="sheet-box">
                         <h4>Equipped Items</h4>
+                        <p>Total worth: {{ pc.total_equipment_worth }}GP</p>
                         {% if pc.worn_items.armor %}
                             <div class="chip">{{ pc.worn_items.armor.name }} (armor)</div>
                         {% endif %}
@@ -304,6 +305,7 @@
                 <div class="column col-6">
                     <div class="sheet-box">
                         <h4>Backpack</h4>
+                        <p>Total worth: {{ pc.total_backpack_worth }}GP</p>
                         {% for item in pc.backpack.items %}
                             {% if item.quantity > 1 %}
                                 <div class="chip">{{ item.name }} ({{ item.quantity }})</div>

@@ -1,3 +1,6 @@
+from ddddd.items import currency
+from ddddd.items.currency import CopperPieces, SilverPieces, GoldPieces
+
 
 class Item(object):
     """
@@ -8,10 +11,10 @@ class Item(object):
     Quantity is used if the item is atomic. i.e. candles are
     either usable or not usable. Healing kits have number of uses.
     """
-    def __init__(self, name, price=0, weight=0, description=None, quantity=1):
+    def __init__(self, name, price=None, weight=0, description=None, quantity=1):
         self.name = name
         self.description = description
-        self.price = price
+        self.price = price if price else CopperPieces(0)
         self.weight = weight
         self.quantity = quantity
 
@@ -65,6 +68,15 @@ class WornItems(object):
             total += weapon.weight
         return total
 
+    @property
+    def total_item_worth(self):
+        total = []
+        if self.armor:
+            total.append(self.armor.price)
+        for weapon in self.weapons:
+            total.append(weapon.price)
+        return currency.convert_to_gold(total).amt
+
 
 class Backpack(object):
     """
@@ -80,10 +92,10 @@ class Backpack(object):
                  gold_pieces=0,
                  platnium_pieces=0,
                  items=None):
-        self.copper_pieces = copper_pieces
-        self.silver_pieces = silver_pieces
-        self.gold_pieces = gold_pieces
-        self.platnium_pieces = platnium_pieces
+        self.money_pouch = currency.MoneyPouch(currency.CopperPieces(copper_pieces),
+                                               currency.SilverPieces(silver_pieces),
+                                               currency.GoldPieces(gold_pieces),
+                                               currency.PlatinumPieces(platnium_pieces))
 
         self.items = items if items else []
 
@@ -99,10 +111,11 @@ class Backpack(object):
 
     @property
     def total_item_worth(self):
-        total = 0
+        total = list(self.money_pouch.money.values())
         for item in self.items:
-            total += (item.price * item.quantity)
-        return total
+            for i in range(0, item.quantity):
+                total.append(item.price)
+        return currency.convert_to_gold(total).amt
 
 
 #############################
@@ -110,30 +123,30 @@ class Backpack(object):
 #############################
 
 def generate_explorers_pack():
-    backpack = Backpack(copper_pieces=0, silver_pieces=0, gold_pieces=0, platnium_pieces=0, items=None)
-    backpack.add_item(Item('Bedroll', price=1, weight=7))
-    backpack.add_item(Item('Mess Kit', price=1, weight=1))
-    backpack.add_item(Item('Tinderbox', price=1, weight=1))
-    backpack.add_item(Item('Torches', price=1, weight=0, quantity=10))
-    backpack.add_item(Item('Rations', price=0.5, weight=2, quantity=10))
-    backpack.add_item(Item('Waterskin', price=1, weight=5))
-    backpack.add_item(Item('Hempen Rope', price=1, weight=10, description='50 ft of rope'))
+    backpack = Backpack(copper_pieces=0, silver_pieces=0, gold_pieces=10, platnium_pieces=0, items=None)
+    backpack.add_item(Item('Bedroll', price=GoldPieces(1), weight=7))
+    backpack.add_item(Item('Mess Kit', price=GoldPieces(1), weight=1))
+    backpack.add_item(Item('Tinderbox', price=GoldPieces(1), weight=1))
+    backpack.add_item(Item('Torches', price=GoldPieces(1), weight=0, quantity=10))
+    backpack.add_item(Item('Rations', price=SilverPieces(5), weight=2, quantity=10))
+    backpack.add_item(Item('Waterskin', price=GoldPieces(1), weight=5))
+    backpack.add_item(Item('Hempen Rope', price=GoldPieces(1), weight=10, description='50 ft of rope'))
     return backpack
 
 
 def generate_burglars_pack():
-    backpack = Backpack(copper_pieces=0, silver_pieces=0, gold_pieces=0, platnium_pieces=0, items=None)
-    backpack.add_item(Item('Ball Bearings', price=1, weight=2))
-    backpack.add_item(Item('String', price=0, weight=0, description='10 ft of string'))
-    backpack.add_item(Item('Bell', price=1, weight=0))
-    backpack.add_item(Item('Candle', price=0, weight=0, quantity=5))
-    backpack.add_item(Item('Crowbar', price=2, weight=5, quantity=2))
-    backpack.add_item(Item('Hammer', price=1, weight=3))
-    backpack.add_item(Item('Piton', price=0, weight=1, quantity=10))
-    backpack.add_item(Item('Hooded Lantern', price=4, weight=2))
-    backpack.add_item(Item('Flask of Oil', price=1, weight=1, quantity=2))
-    backpack.add_item(Item('Rations', price=0.5, weight=2, quantity=5))
-    backpack.add_item(Item('Tinderbox', price=1, weight=1))
-    backpack.add_item(Item('Waterskin', price=1, weight=5))
-    backpack.add_item(Item('Hempen Rope', price=1, weight=10, description='50 ft of rope'))
+    backpack = Backpack(copper_pieces=0, silver_pieces=0, gold_pieces=10, platnium_pieces=0, items=None)
+    backpack.add_item(Item('Ball Bearings', price=GoldPieces(1), weight=2))
+    backpack.add_item(Item('String', price=SilverPieces(2), weight=0, description='10 ft of string'))
+    backpack.add_item(Item('Bell', price=GoldPieces(1), weight=0))
+    backpack.add_item(Item('Candle', price=SilverPieces(2), weight=0, quantity=5))
+    backpack.add_item(Item('Crowbar', price=GoldPieces(2), weight=5, quantity=2))
+    backpack.add_item(Item('Hammer', price=GoldPieces(1), weight=3))
+    backpack.add_item(Item('Piton', price=SilverPieces(2), weight=1, quantity=10))
+    backpack.add_item(Item('Hooded Lantern', price=GoldPieces(4), weight=2))
+    backpack.add_item(Item('Flask of Oil', price=GoldPieces(1), weight=1, quantity=2))
+    backpack.add_item(Item('Rations', price=SilverPieces(5), weight=2, quantity=5))
+    backpack.add_item(Item('Tinderbox', price=GoldPieces(1), weight=1))
+    backpack.add_item(Item('Waterskin', price=GoldPieces(1), weight=5))
+    backpack.add_item(Item('Hempen Rope', price=GoldPieces(1), weight=10, description='50 ft of rope'))
     return backpack

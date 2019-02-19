@@ -1,4 +1,4 @@
-
+from ddddd.items import currency
 from ddddd.items.items import Item
 
 
@@ -38,14 +38,14 @@ def calc_heavy_armor_rating():
 # ARMOR
 #############################
 
-LEATHER_ARMOR = Armor('Leather Armor', price=10, weight=10,
+LEATHER_ARMOR = Armor('Leather Armor', price=currency.GoldPieces(10), weight=10,
                       armor_class=calc_light_armor_rating,
                       strength=0, stealth='')
 
-CHAIN_SHIRT = Armor('Chain Shirt', price=50, weight=20,
+CHAIN_SHIRT = Armor('Chain Shirt', price=currency.GoldPieces(50), weight=20,
                     armor_class=calc_medium_armor_rating,
                     strength=0, stealth='')
 
-CHAIN_MAIL = Armor('Chain Mail', price=75, weight=55,
+CHAIN_MAIL = Armor('Chain Mail', price=currency.GoldPieces(75), weight=55,
                    armor_class=calc_heavy_armor_rating,
                    strength=15, stealth='disadvantage')
