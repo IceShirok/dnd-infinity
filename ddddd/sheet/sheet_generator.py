@@ -136,7 +136,8 @@ def generate_character_sheet(pc):
             add_feature_subsection('Feats', pc.feats, doc)
         add_feature_subsection('Class Features', pc.vocation_features, doc)
 
-    add_spellcasting_page(pc, doc)
+    if pc.spellcasting:
+        add_spellcasting_page(pc, doc)
     add_equipment_page(pc, doc)
 
     doc.generate_pdf(clean_tex=False)
@@ -211,7 +212,7 @@ def add_equipment_page(pc, doc):
 
 
 def main():
-    pc = get_available_characters()['tamiphi']['create'](3)
+    pc = get_available_characters()['fethri']['create'](3)
     generate_character_sheet(pc)
 
 
