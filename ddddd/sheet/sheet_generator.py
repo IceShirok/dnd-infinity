@@ -1,4 +1,4 @@
-from pylatex import Document, Section, Subsection, Command, LineBreak, LongTable, Itemize
+from pylatex import Document, Section, Subsection, Command, LineBreak, LongTable, Itemize, LargeText
 from pylatex.utils import italic, NoEscape, bold
 
 from ddddd.entity import base
@@ -129,13 +129,45 @@ def generate_character_sheet(pc):
                         cantrip_details = pc.calculate_damage_cantrips()[cantrip_name]
 
                         cantrip_row = [
-                            cantrip_details.name,
+                            cantrip_name,
                             cantrip_details['attack_bonus'],
                             cantrip_details['damage'],
                         ]
                         data_table.add_row(cantrip_row)
 
-        # TODO add section for spellcasting, too lazy right now
+        with doc.create(Subsection('Spellcasting', numbering=False)):
+            doc.append(bold('Spellcasting Ability'))
+            doc.append(' {}'.format(pc.spellcasting.spellcasting_ability))
+            doc.append(LineBreak())
+
+            doc.append(bold('Spell Save DC'))
+            doc.append(' {}'.format(pc.spell_save_dc))
+            doc.append(LineBreak())
+
+            doc.append(bold('Spell Attack Bonus'))
+            doc.append(' {}'.format(base.prettify_modifier(pc.spell_attack_bonus)))
+            doc.append(LineBreak())
+
+            def generate_spell_card(spell, doc):
+                doc.append(LargeText(spell.name))
+                with doc.create(LongTable("l l")) as data_table:
+                    data_table.add_row(['Name', spell.name])
+                    data_table.add_row(['Type', '{}-level {}'.format(spell.level, spell.magic_school)])
+                    data_table.add_row(['Casting time', spell.casting_time])
+                    data_table.add_row(['Range', spell.spell_range])
+                    data_table.add_row(['Components', ', '.join(spell.components)])
+                    data_table.add_row(['Duration', spell.duration])
+                    data_table.add_row(['Description', spell.description])
+
+            if pc.spellcasting and pc.cantrips:
+                with doc.create(Subsection('Cantrips', numbering=False)):
+                    for cantrip in pc.cantrips:
+                        generate_spell_card(cantrip, doc)
+
+            for spell_type in pc.casting_spells.keys():
+                with doc.create(Subsection(spell_type, numbering=False)):
+                    for spell in pc.casting_spells[spell_type]:
+                        generate_spell_card(spell, doc)
 
     with doc.create(Section('Proficiencies', numbering=False)):
         with doc.create(Subsection('Languages', numbering=False)):
@@ -198,8 +230,8 @@ def generate_character_sheet(pc):
 
 
 def main():
-    fethri = get_available_characters()['fethri']['create'](3)
-    generate_character_sheet(fethri)
+    pc = get_available_characters()['tamiphi']['create'](3)
+    generate_character_sheet(pc)
 
 
 if __name__ == '__main__':
