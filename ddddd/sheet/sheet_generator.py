@@ -1,4 +1,4 @@
-from pylatex import Document, Section, Subsection, Command, LineBreak, LongTable, Itemize, LargeText
+from pylatex import Document, Section, Subsection, Command, LineBreak, LongTable, Itemize, LargeText, NewPage
 from pylatex.utils import italic, NoEscape, bold
 
 from ddddd.entity import base
@@ -18,31 +18,17 @@ def generate_character_sheet(pc):
     doc.append(NoEscape(r'\maketitle'))
 
     with doc.create(Section('Basics', numbering=False)):
-        doc.append(bold('Class and Level'))
-        doc.append(' {} {}'.format(pc.vocation_name, pc.level))
-        doc.append(LineBreak())
-
-        doc.append(bold('Background'))
-        doc.append(' {}'.format(pc.background_name))
-        doc.append(LineBreak())
-
-        doc.append(bold('Race'))
-        doc.append(' {} ({})'.format(pc.base_race_name, pc.race_name))
-        doc.append(LineBreak())
+        with doc.create(LongTable("l l")) as data_table:
+            data_table.add_row(['Class and Level', '{} {}'.format(pc.vocation_name, pc.level)])
+            data_table.add_row(['Background', '{}'.format(pc.background_name)])
+            data_table.add_row(['Race', '{} ({})'.format(pc.base_race_name, pc.race_name)])
 
     with doc.create(Section('Basic Combat Stuff', numbering=False)):
-        doc.append(bold('Armor Class'))
-        armor_class_source = pc.worn_items.armor.name if pc.worn_items.armor else 'dodgy stuff'
-        doc.append(' {} ({})'.format(pc.armor_class, armor_class_source))
-        doc.append(LineBreak())
-
-        doc.append(bold('Initiative'))
-        doc.append(' {}'.format(pc.initiative))
-        doc.append(LineBreak())
-
-        doc.append(bold('Speed'))
-        doc.append(' {} ft'.format(pc.speed))
-        doc.append(LineBreak())
+        with doc.create(LongTable("l l")) as data_table:
+            armor_class_source = pc.worn_items.armor.name if pc.worn_items.armor else 'dodgy stuff'
+            data_table.add_row(['Armor Class', '{} ({})'.format(pc.armor_class, armor_class_source)])
+            data_table.add_row(['Initiative', '{}'.format(pc.initiative)])
+            data_table.add_row(['Speed', '{} ft'.format(pc.speed)])
 
     with doc.create(Section('Ability Scores', numbering=False)):
         doc.append(bold('Proficiency Bonus'))
@@ -89,21 +75,11 @@ def generate_character_sheet(pc):
                             data_table.add_row(skill_row)
 
     with doc.create(Section('Health Stuff', numbering=False)):
-        doc.append(bold('Hit Points'))
-        doc.append(' {} / {}'.format(pc.max_hit_points, pc.max_hit_points))
-        doc.append(LineBreak())
-
-        doc.append(bold('Temporary Hit Points'))
-        doc.append(' {}'.format(0))
-        doc.append(LineBreak())
-
-        doc.append(bold('Total Hit Dice'))
-        doc.append(' {}'.format(pc.total_hit_dice_prettified))
-        doc.append(LineBreak())
-
-        doc.append(bold('Death Saves'))
-        doc.append(' To be formatted later once I learn how to make proper LaTeX documents.')
-        doc.append(LineBreak())
+        with doc.create(LongTable("l l")) as data_table:
+            data_table.add_row(['Hit Points', '{} / {}'.format(pc.max_hit_points, pc.max_hit_points)])
+            data_table.add_row(['Temporary Hit Points', '{}'.format(0)])
+            data_table.add_row(['Total Hit Dice', '{}'.format(pc.total_hit_dice_prettified)])
+            data_table.add_row(['Death Saves', 'TBD'])
 
     with doc.create(Section('Attacks and Spellcasting', numbering=False)):
         with doc.create(Subsection('Attacks', numbering=False)):
@@ -135,40 +111,6 @@ def generate_character_sheet(pc):
                         ]
                         data_table.add_row(cantrip_row)
 
-        with doc.create(Subsection('Spellcasting', numbering=False)):
-            doc.append(bold('Spellcasting Ability'))
-            doc.append(' {}'.format(pc.spellcasting.spellcasting_ability))
-            doc.append(LineBreak())
-
-            doc.append(bold('Spell Save DC'))
-            doc.append(' {}'.format(pc.spell_save_dc))
-            doc.append(LineBreak())
-
-            doc.append(bold('Spell Attack Bonus'))
-            doc.append(' {}'.format(base.prettify_modifier(pc.spell_attack_bonus)))
-            doc.append(LineBreak())
-
-            def generate_spell_card(spell, doc):
-                doc.append(LargeText(spell.name))
-                with doc.create(LongTable("l l")) as data_table:
-                    data_table.add_row(['Name', spell.name])
-                    data_table.add_row(['Type', '{}-level {}'.format(spell.level, spell.magic_school)])
-                    data_table.add_row(['Casting time', spell.casting_time])
-                    data_table.add_row(['Range', spell.spell_range])
-                    data_table.add_row(['Components', ', '.join(spell.components)])
-                    data_table.add_row(['Duration', spell.duration])
-                    data_table.add_row(['Description', spell.description])
-
-            if pc.spellcasting and pc.cantrips:
-                with doc.create(Subsection('Cantrips', numbering=False)):
-                    for cantrip in pc.cantrips:
-                        generate_spell_card(cantrip, doc)
-
-            for spell_type in pc.casting_spells.keys():
-                with doc.create(Subsection(spell_type, numbering=False)):
-                    for spell in pc.casting_spells[spell_type]:
-                        generate_spell_card(spell, doc)
-
     with doc.create(Section('Proficiencies', numbering=False)):
         with doc.create(Subsection('Languages', numbering=False)):
             with doc.create(Itemize()) as itemize:
@@ -193,6 +135,48 @@ def generate_character_sheet(pc):
         if pc.feats:
             add_feature_subsection('Feats', pc.feats, doc)
         add_feature_subsection('Class Features', pc.vocation_features, doc)
+
+    add_spellcasting_page(pc, doc)
+    add_equipment_page(pc, doc)
+
+    doc.generate_pdf(clean_tex=False)
+    doc.generate_tex()
+
+
+def generate_spell_card(spell, doc):
+    doc.append(LargeText(spell.name))
+    with doc.create(LongTable("l l")) as data_table:
+        data_table.add_row(['Name', spell.name])
+        data_table.add_row(['Type', '{}-level {}'.format(spell.level, spell.magic_school)])
+        data_table.add_row(['Casting time', spell.casting_time])
+        data_table.add_row(['Range', spell.spell_range])
+        data_table.add_row(['Components', ', '.join(spell.components)])
+        data_table.add_row(['Duration', spell.duration])
+        data_table.add_row(['Description', spell.description])
+
+
+def add_spellcasting_page(pc, doc):
+    doc.append(NewPage())
+
+    with doc.create(Section('Spellcasting', numbering=False)):
+        with doc.create(LongTable("l l")) as data_table:
+            data_table.add_row(['Spellcasting Ability', pc.spellcasting.spellcasting_ability])
+            data_table.add_row(['Spell Save DC', pc.spell_save_dc])
+            data_table.add_row(['Spell Attack Bonus', base.prettify_modifier(pc.spell_attack_bonus)])
+
+        if pc.spellcasting and pc.cantrips:
+            with doc.create(Subsection('Cantrips', numbering=False)):
+                for cantrip in pc.cantrips:
+                    generate_spell_card(cantrip, doc)
+
+        for spell_type in pc.casting_spells.keys():
+            with doc.create(Subsection(spell_type, numbering=False)):
+                for spell in pc.casting_spells[spell_type]:
+                    generate_spell_card(spell, doc)
+
+
+def add_equipment_page(pc, doc):
+    doc.append(NewPage())
 
     with doc.create(Section('Equipment', numbering=False)):
         doc.append(bold('Carrying Capacity'))
@@ -224,9 +208,6 @@ def generate_character_sheet(pc):
                         itemize.add_item('{} ({})'.format(item.name, item.quantity))
                     else:
                         itemize.add_item(item.name)
-
-    doc.generate_pdf(clean_tex=False)
-    doc.generate_tex()
 
 
 def main():
