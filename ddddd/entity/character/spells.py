@@ -137,9 +137,9 @@ class DamageCantrip(Cantrip):
 
 # Some classes may follow this pattern
 def cantrips_by_level(level):
-    if level < 4:
+    if level <= 4:
         return 3
-    elif level < 10:
+    elif level <= 10:
         return 4
     else:
         return 5
@@ -248,7 +248,7 @@ def get_spell_slot_by_level(level):
         spell_slots[SpellTypes.FOURTH] = 3
         spell_slots[SpellTypes.FIFTH] = 1
     if level >= 10:
-        spell_slots[SpellTypes.FIFTH] = 2
+        spell_slots[SpellTypes.FIFTH] = 1
     if level >= 11:
         spell_slots[SpellTypes.SIXTH] = 1
     if level >= 12:
