@@ -57,7 +57,7 @@ class ProficiencyKnown(Feature):
 
 class ArmorProficiency(ProficiencyKnown):
     def __init__(self, proficiencies, name=None, description=None):
-        description = description if description else 'You gain proficiency with a type of armor.'
+        description = description if description else 'You gain proficiency with {} armor.'.format(format_list_as_english_string(proficiencies))
         super(ArmorProficiency, self).__init__(name=name if name else 'Armor Proficiency',
                                                description=description,
                                                proficiencies=proficiencies,
@@ -66,7 +66,7 @@ class ArmorProficiency(ProficiencyKnown):
 
 class WeaponProficiency(ProficiencyKnown):
     def __init__(self, proficiencies, name=None, description=None):
-        description = description if description else 'You gain proficiency with a weapon.'
+        description = description if description else 'You gain proficiency with the {}.'.format(format_list_as_english_string(proficiencies))
         super(WeaponProficiency, self).__init__(name=name if name else 'Weapon Proficiency',
                                                 description=description,
                                                 proficiencies=proficiencies,
@@ -75,7 +75,7 @@ class WeaponProficiency(ProficiencyKnown):
 
 class ToolProficiency(ProficiencyKnown):
     def __init__(self, proficiencies, name=None, description=None):
-        description = description if description else 'You gain proficiency with a tool.'
+        description = description if description else 'You gain proficiency with {}.'.format(format_list_as_english_string(proficiencies))
         super(ToolProficiency, self).__init__(name=name if name else 'Tool Proficiency',
                                               description=description,
                                               proficiencies=proficiencies,
@@ -86,9 +86,9 @@ class Darkvision(Feature):
     def __init__(self, range):
         super(Darkvision, self).__init__(name='Darkvision',
                                          description='Accustomed to life underground, you have superior vision in dark \
-                                         and dim Conditions. You can see in dim light within 60 feet of you as if it \
+                                         and dim Conditions. You can see in dim light within {} feet of you as if it \
                                          were bright light, and in Darkness as if it were dim light. You can''t \
-                                         discern color in Darkness, only shades of gray.')
+                                         discern color in Darkness, only shades of gray.'.format(range))
         self.range = range
 
 
@@ -96,7 +96,7 @@ class Toughness(Feature):
     def __init__(self, name):
         super(Toughness, self).__init__(name=name,
                                         description='Your hit point maximum increases by 1, \
-                                               and it increases by 1 every time you gain a level.')
+                                                     and it increases by 1 every time you gain a level.')
 
 
 class Expertise(Feature):
