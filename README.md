@@ -14,6 +14,13 @@ how to integrate these tools together.
 
 Of course, I don't plan to make money off this project - this project is here simply to learn. :)
 
+## Unit Tests
+
+To run the project's unit tests, simply run:
+```bash
+python -m unittest discover
+```
+
 ## Web Application
 
 The web application currently serves as a testing ground to view the PC model in a web browser.
@@ -25,6 +32,13 @@ $env:FLASK_APP = "app"
 $env:FLASK_DEBUG = "development"
 flask run
 ```
+
+## Character Sheet PDF Generator (WIP)
+
+The character sheet PDF generator creates a PDF from the PC model in LaTeX.
+
+While there is a working version of the generator, the LaTeX document format is still being
+worked on to make it more tabletop-friendly.
 
 ## Awesome Sauce
 
