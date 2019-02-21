@@ -3,7 +3,7 @@ import math
 
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScore, Skills
-from ddddd.entity.character import spells, trait
+from ddddd.entity.character import spells, feature
 from ddddd.items import items, weapons
 
 import logging
@@ -167,7 +167,7 @@ class PlayerCharacter(object):
         hit_points = 0
         hit_die = self.vocation.hit_die
         con_modifier = self.ability_scores[AbilityScore.CON].modifier
-        toughness = len(list(filter(lambda exp: isinstance(exp, trait.Toughness), self.race.traits)))
+        toughness = len(list(filter(lambda exp: isinstance(exp, feature.Toughness), self.race.traits)))
 
         for _ in range(0, self.vocation.level):
             if hit_points <= 0:
@@ -208,7 +208,7 @@ class PlayerCharacter(object):
     def skills_by_ability(self):
         """Calculates the PC's skill modifiers, and groups the skills by ability."""
         skill_proficiencies = (self.race.skills + self.vocation.skills + self.background.skills)
-        expertise = list(filter(lambda exp: isinstance(exp, trait.Expertise), self.vocation_features))
+        expertise = list(filter(lambda exp: isinstance(exp, feature.Expertise), self.vocation_features))
 
         _ability_scores = self.ability_scores
         skill_proficiencies_p = {}
@@ -315,7 +315,7 @@ class PlayerCharacter(object):
 
         damage_cantrips = list(filter(lambda c: isinstance(c, spells.DamageCantrip), self.cantrips))
 
-        vocation_bonuses = list(filter(lambda f: isinstance(f, trait.EnhanceDamage), self.vocation_features))
+        vocation_bonuses = list(filter(lambda f: isinstance(f, feature.EnhanceDamage), self.vocation_features))
 
         for cantrip in damage_cantrips:
             total_damage = cantrip.damage_calc(self.level)
@@ -386,7 +386,7 @@ class PlayerCharacter(object):
         bonuses = {}
         weapons_ = self.worn_items.weapons
         weapon_proficiencies = self.proficiencies[base.WEAPON_PROFICIENCY] if base.WEAPON_PROFICIENCY in self.proficiencies else []
-        vocation_bonuses = list(filter(lambda f: isinstance(f, trait.EnhanceDamage), self.vocation_features))
+        vocation_bonuses = list(filter(lambda f: isinstance(f, feature.EnhanceDamage), self.vocation_features))
 
         for weapon in weapons_:
             attack_type, damage_bonus = weapons.determine_attack_bonus_type(weapon, self.ability_scores)

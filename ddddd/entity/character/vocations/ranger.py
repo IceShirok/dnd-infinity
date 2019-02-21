@@ -1,6 +1,6 @@
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScore, Skills, Languages, SpellTypes
-from ddddd.entity.character import spells, trait
+from ddddd.entity.character import spells, feature
 from ddddd.entity.character.vocation import Vocation
 
 
@@ -14,26 +14,22 @@ class Ranger(Vocation):
 
     def __init__(self, skill_proficiencies, favored_enemy=None, languages=None, favored_terrain=None):
         def_features = {
-            'favored_enemy': trait.Trait(name='Favored Enemy',
-                                         description='Beginning at 1st level, you have significant experience studying, tracking, \
-                                         hunting, and even talking to a certain type of enemy. {}'.format(favored_enemy)),
-            'favored_enemy_languages': trait.LanguagesKnown(languages=[languages], name='Favored Enemy Languages',
-                                                            description='You learn a language that your favored enemy would typically know.'),
-            'natural_explorer': trait.Trait(name='Natural Explorer',
-                                            description='You are particularly familiar with one type of natural environment \
-                                            and are adept at traveling and surviving in such regions. {}'.format(favored_terrain)),
+            'favored_enemy': FavoredEnemy([favored_enemy]),
+            'favored_enemy_languages': feature.LanguagesKnown(languages=[languages], name='Favored Enemy Languages',
+                                                              description='You learn a language that your favored enemy would typically know.'),
+            'natural_explorer': NaturalExplorer([favored_terrain]),
         }
 
         super(Ranger, self).__init__(name='Ranger',
                                      level=1,
                                      hit_die=10,
                                      proficiencies={
-                                         base.ARMOR_PROFICIENCY: trait.ArmorProficiency(name='Armor Proficiency',
-                                                                                        proficiencies=['light',
+                                         base.ARMOR_PROFICIENCY: feature.ArmorProficiency(name='Armor Proficiency',
+                                                                                          proficiencies=['light',
                                                                                                        'medium',
                                                                                                        'shields']),
-                                         base.WEAPON_PROFICIENCY: trait.WeaponProficiency(name='Weapon Proficiency',
-                                                                                          proficiencies=['simple',
+                                         base.WEAPON_PROFICIENCY: feature.WeaponProficiency(name='Weapon Proficiency',
+                                                                                            proficiencies=['simple',
                                                                                                          'martial']),
                                      },
                                      saving_throws=[AbilityScore.STR, AbilityScore.DEX],
@@ -83,8 +79,8 @@ class Ranger(Vocation):
     def _add_level_2_features(self, **kwargs):
         fighting_style = kwargs['fighting_style']
         self._append_feature('fighting_style',
-                             feature=trait.Trait(name='Fighting Style',
-                                                 description='At 2nd level, you adopt a particular style of fighting \
+                             feature=feature.Feature(name='Fighting Style',
+                                                     description='At 2nd level, you adopt a particular style of fighting \
                                                  as your specialty. {}'.format(fighting_style)))
 
         # TODO make this a bit more elegant...
@@ -119,15 +115,15 @@ class Ranger(Vocation):
 
     def _add_level_3_features(self, **kwargs):
         self._append_feature('primeval_awareness',
-                             feature=trait.Trait(name='Primeval Awareness',
-                                                 description='Beginning at 3rd level, you can use your action and expend one Ranger spell slot \
+                             feature=feature.Feature(name='Primeval Awareness',
+                                                     description='Beginning at 3rd level, you can use your action and expend one Ranger spell slot \
                                                  to focus your awareness on the region around you..'))
 
         archetype_feature = kwargs['archetype_feature']
         # TODO clean up the martial specialized features
         self._append_feature('ranger_archetype',
-                             feature=trait.Trait(name='Ranger Archetype',
-                                                 description='Emulating the Hunter archetype means accepting your place as a bulwark \
+                             feature=feature.Feature(name='Ranger Archetype',
+                                                     description='Emulating the Hunter archetype means accepting your place as a bulwark \
                                                  between civilization and the terrors of The Wilderness.'.format(archetype_feature)))
 
         # TODO make this a bit more elegant...
@@ -171,8 +167,8 @@ class Ranger(Vocation):
 
     def _add_level_5_features(self, **kwargs):
         self._append_feature('extra_attack',
-                             feature=trait.Trait(name='Extra Attack',
-                                                    description='Beginning at 5th level, you can Attack twice, instead of once, \
+                             feature=feature.Feature(name='Extra Attack',
+                                                     description='Beginning at 5th level, you can Attack twice, instead of once, \
                                                     whenever you take the Attack action on Your Turn.'))
 
         # TODO make this a bit more elegant...
@@ -250,3 +246,27 @@ class RangerSpellcastingAbility(spells.SpellcastingAbility):
         if len(self.casting_spells) != self.num_spells_known:
             raise ValueError('Must have {} spells but inputted {} spells!'.format(self.num_spells_known,
                                                                                   len(self.casting_spells)))
+
+
+###############################
+# Ranger-specific traits
+###############################
+
+class FavoredEnemy(feature.Feature):
+    def __init__(self, favored_enemies):
+        desc = 'Beginning at 1st level, you have significant experience studying, tracking, \
+                hunting, and even talking to a certain type of enemy.'
+        final_desc = '{} Your favored enemies are {}.'.format(desc, feature.format_list_as_english_string(favored_enemies))
+        super(FavoredEnemy, self).__init__(name='Favored Enemy',
+                                           description=final_desc)
+        self.favored_enemies = favored_enemies
+
+
+class NaturalExplorer(feature.Feature):
+    def __init__(self, favored_terrains):
+        desc = 'You are particularly familiar with one type of natural environment \
+                and are adept at traveling and surviving in such regions.'
+        final_desc = '{} Your favored terrains are {}.'.format(desc, feature.format_list_as_english_string(favored_terrains))
+        super(NaturalExplorer, self).__init__(name='Natural Explorer',
+                                              description=final_desc)
+        self.favored_terrains = favored_terrains

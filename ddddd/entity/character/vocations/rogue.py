@@ -2,7 +2,7 @@ import math
 
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScore
-from ddddd.entity.character import trait
+from ddddd.entity.character import feature
 from ddddd.entity.character.vocation import Vocation
 from ddddd.items import weapons
 
@@ -11,11 +11,11 @@ class Rogue(Vocation):
     def __init__(self, skill_proficiencies, expertise):
         def_features = {
             'sneak_attack': SneakAttack(level=1),
-            'thieves_cant': trait.LanguagesKnown(name='Thieves'' Cant',
-                                                 description='During your rogue Training you learned thieves'' cant, \
+            'thieves_cant': feature.LanguagesKnown(name='Thieves'' Cant',
+                                                   description='During your rogue Training you learned thieves'' cant, \
                                                  a Secret mix of dialect, jargon, and code that allows you to hide messages \
                                                  in seemingly normal conversation.',
-                                                 languages=[base.Languages.THIEVES_CANT]),
+                                                   languages=[base.Languages.THIEVES_CANT]),
             'expertise': expertise,
         }
 
@@ -23,15 +23,15 @@ class Rogue(Vocation):
                                     level=1,
                                     hit_die=8,
                                     proficiencies={
-                                        base.ARMOR_PROFICIENCY: trait.ArmorProficiency(name='Armor Proficiency',
-                                                                                       proficiencies=['light']),
-                                        base.WEAPON_PROFICIENCY: trait.WeaponProficiency(name='Weapon Proficiency',
-                                                                                         proficiencies=['simple',
+                                        base.ARMOR_PROFICIENCY: feature.ArmorProficiency(name='Armor Proficiency',
+                                                                                         proficiencies=['light']),
+                                        base.WEAPON_PROFICIENCY: feature.WeaponProficiency(name='Weapon Proficiency',
+                                                                                           proficiencies=['simple',
                                                                                                         'hand crossbow',
                                                                                                         'longsword',
                                                                                                         'rapier',
                                                                                                         'shortsword']),
-                                        base.TOOL_PROFICIENCY: trait.ToolProficiency(proficiencies=['thieves_tools'])
+                                        base.TOOL_PROFICIENCY: feature.ToolProficiency(proficiencies=['thieves_tools'])
                                     },
                                     saving_throws=[AbilityScore.DEX, AbilityScore.INT],
                                     skill_proficiencies=skill_proficiencies,
@@ -49,8 +49,8 @@ class Rogue(Vocation):
         self._append_feature('sneak_attack',
                              feature=SneakAttack(level=2))
         self._append_feature('cunning_action',
-                             feature=trait.Trait(name='Cunning Action',
-                                                 description='Starting at 2nd level, your quick thinking and agility \
+                             feature=feature.Feature(name='Cunning Action',
+                                                     description='Starting at 2nd level, your quick thinking and agility \
                                                  allow you to move and act quickly.'))
 
     def _level_3_requirements(self):
@@ -65,18 +65,18 @@ class Rogue(Vocation):
             self.proficiencies[base.TOOL_PROFICIENCY].proficiencies.append(proficiency)
 
         self._append_feature('master_of_intrigue',
-                             feature=trait.Trait(name='Master of Intrigue',
-                                                 description='You can unerringly mimic the speech patterns and accent of a creature \
+                             feature=feature.Feature(name='Master of Intrigue',
+                                                     description='You can unerringly mimic the speech patterns and accent of a creature \
                                                  that you hear speak for at least 1 minute.'))
 
         new_languages = kwargs[base.LANGUAGES]
         self._append_feature('master_of_intrigue_languages',
-                             feature=trait.LanguagesKnown(name='Master of Intrigue: Languages',
-                                                          languages=new_languages.languages))
+                             feature=feature.LanguagesKnown(name='Master of Intrigue: Languages',
+                                                            languages=new_languages.languages))
 
         self._append_feature('master_of_tactics',
-                             feature=trait.Trait(name='Master of Tactics',
-                                                 description='Starting at 3rd level, you can use the Help action as a bonus action. \
+                             feature=feature.Feature(name='Master of Tactics',
+                                                     description='Starting at 3rd level, you can use the Help action as a bonus action. \
                                                  Additionally, when you use the Help action to aid an ally in attacking a creature, \
                                                  the target of that attack can be within 30 feet of you, rather than 5 feet of you, \
                                                  if the target can see or hear you.'))
@@ -98,8 +98,8 @@ class Rogue(Vocation):
                              feature=SneakAttack(level=5))
 
         self._append_feature('uncanny_dodge',
-                             feature=trait.Trait(name='Uncanny Dodge',
-                                                 description='Starting at 5th level, when an attacker that \
+                             feature=feature.Feature(name='Uncanny Dodge',
+                                                     description='Starting at 5th level, when an attacker that \
                                                  you can see hits you with an Attack, you can use your Reaction \
                                                  to halve the attack''s damage against you.'))
 
@@ -149,7 +149,7 @@ class Rogue(Vocation):
         return {}
 
 
-class SneakAttack(trait.EnhanceDamage):
+class SneakAttack(feature.EnhanceDamage):
     def __init__(self, level):
         attack_bonus = '{}d6'.format(math.floor((level+1)/2))
         super(SneakAttack, self).__init__(name='Sneak Attack',

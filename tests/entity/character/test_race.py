@@ -1,15 +1,15 @@
 import unittest
 
 from ddddd.entity import base
-from ddddd.entity.character import race, trait
+from ddddd.entity.character import race, feature
 
 
 class TestRace(unittest.TestCase):
     def setUp(self):
         traits = [
-            trait.Darkvision(range=60),
-            trait.ToolProficiency(name='Tool Proficiency',
-                                  proficiencies=['brewers_kit'])
+            feature.Darkvision(range=60),
+            feature.ToolProficiency(name='Tool Proficiency',
+                                    proficiencies=['brewers_kit'])
         ]
         self.race = race.Race(name='race',
                               asi={},
@@ -31,7 +31,7 @@ class TestRace(unittest.TestCase):
         self.assertEqual(len(result), 1)
 
         prof_result = result.get('Tool Proficiency')
-        self.assertTrue(isinstance(prof_result, trait.ToolProficiency))
+        self.assertTrue(isinstance(prof_result, feature.ToolProficiency))
 
     def test_verify(self):
         self.assertEqual(self.race.verify(), {})
@@ -46,8 +46,8 @@ class TestRace(unittest.TestCase):
 class TestDwarfRace(unittest.TestCase):
     def setUp(self):
         tool_prof = [
-            trait.ToolProficiency(name='Tool Proficiency',
-                                  proficiencies=['brewers_kit'])
+            feature.ToolProficiency(name='Tool Proficiency',
+                                    proficiencies=['brewers_kit'])
         ]
         self.dwarf = race.Dwarf(asi={},
                                 traits=tool_prof)
@@ -64,7 +64,7 @@ class TestDwarfRace(unittest.TestCase):
         result = set(map(lambda t: t.name, self.dwarf.traits))
         self.assertEqual(expected_trait_names, result)
 
-        self.assertTrue(isinstance(self.dwarf.languages, trait.LanguagesKnown))
+        self.assertTrue(isinstance(self.dwarf.languages, feature.LanguagesKnown))
 
     def test_base_race(self):
         self.assertEqual(self.dwarf.base_race, 'Dwarf')
@@ -92,8 +92,8 @@ class TestDwarfRace(unittest.TestCase):
 class TestHillDwarfRace(unittest.TestCase):
     def setUp(self):
         tool_prof = [
-            trait.ToolProficiency(name='Tool Proficiency',
-                                  proficiencies=['brewers_kit'])
+            feature.ToolProficiency(name='Tool Proficiency',
+                                    proficiencies=['brewers_kit'])
         ]
         self.hill_dwarf = race.HillDwarf(traits=tool_prof)
 
@@ -147,7 +147,7 @@ class TestGnomeRace(unittest.TestCase):
         result = set(map(lambda t: t.name, self.gnome.traits))
         self.assertEqual(expected_trait_names, result)
 
-        self.assertTrue(isinstance(self.gnome.languages, trait.LanguagesKnown))
+        self.assertTrue(isinstance(self.gnome.languages, feature.LanguagesKnown))
 
     def test_base_race(self):
         self.assertEqual(self.gnome.base_race, 'Gnome')

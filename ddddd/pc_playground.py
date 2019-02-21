@@ -2,7 +2,7 @@ from ddddd.entity import base
 from ddddd.entity.base import Skills
 from ddddd.entity.character import race, background, pc, spells
 from ddddd.entity.character.vocations import ranger, cleric, rogue
-from ddddd.entity.character import trait
+from ddddd.entity.character import feature
 from ddddd.items import items, armor, weapons
 
 import logging
@@ -44,8 +44,8 @@ def create_dorian(level=5):
     """
     base_ = pc.PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=level)
     tool_prof = [
-        trait.ToolProficiency(name='Tool Proficiency',
-                              proficiencies=['brewers_kit'])
+        feature.ToolProficiency(name='Tool Proficiency',
+                                proficiencies=['brewers_kit'])
     ]
     race_ = race.HillDwarf(traits=tool_prof)
     vocation = ranger.Ranger(skill_proficiencies=[Skills.ATHLETICS, Skills.ANIMAL_HANDLING, Skills.SURVIVAL],
@@ -87,7 +87,7 @@ def create_tamiphi(level=1):
     """
     base_ = pc.PlayerBase("Tamiphi Tockentell", 10, 12, 15, 14, 18, 7, level=level)
     race_ = race.RockGnome()
-    class_languages = trait.LanguagesKnown(languages=[base.Languages.DRACONIC, base.Languages.DWARVISH])
+    class_languages = feature.LanguagesKnown(languages=[base.Languages.DRACONIC, base.Languages.DWARVISH])
     class_cantrips = [spells.SACRED_FLAME, spells.GUIDANCE, spells.SPARE_THE_DYING]
     vocation = cleric.Cleric(skill_proficiencies=[Skills.INSIGHT, Skills.RELIGION, Skills.ARCANA, Skills.PERSUASION],
                              languages=class_languages, cantrips=class_cantrips)
@@ -97,7 +97,7 @@ def create_tamiphi(level=1):
                           ability_score_increase_4={
                               base.AbilityScore.WIS: base.AbilityScoreIncrease(base.AbilityScore.WIS, 2),
                           },
-                          feat_8=trait.WarCaster(),
+                          feat_8=feature.WarCaster(),
                           cantrip_10=spells.MENDING,
                           ability_score_increase_12={
                               base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 2),
@@ -108,7 +108,7 @@ def create_tamiphi(level=1):
                           ability_score_increase_19={
                               base.AbilityScore.CON: base.AbilityScoreIncrease(base.AbilityScore.CON, 2),
                           })
-    bg_languages = trait.LanguagesKnown(languages=[base.Languages.CELESTIAL, base.Languages.INFERNAL])
+    bg_languages = feature.LanguagesKnown(languages=[base.Languages.CELESTIAL, base.Languages.INFERNAL])
     background_ = background.Sage(bg_languages)
 
     worn_items = items.WornItems()
@@ -136,20 +136,20 @@ def create_fethri(level=1):
     vocation = rogue.Rogue(skill_proficiencies=[Skills.INVESTIGATION,
                                                 Skills.DECEPTION,
                                                 Skills.STEALTH],
-                           expertise=trait.Expertise(skills=[Skills.INVESTIGATION,
-                                                             Skills.DECEPTION],
-                                                     proficiencies=None)
+                           expertise=feature.Expertise(skills=[Skills.INVESTIGATION,
+                                                               Skills.DECEPTION],
+                                                       proficiencies=None)
                            )
     if level > 1:
         vocation.level_to(level=level,
                           gaming_set='bone_dice',
-                          languages=trait.LanguagesKnown(languages=[base.Languages.UNDERCOMMON,
-                                                                    base.Languages.ELVISH]),
+                          languages=feature.LanguagesKnown(languages=[base.Languages.UNDERCOMMON,
+                                                                      base.Languages.ELVISH]),
                           ability_score_increase_4={
                               base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 2),
                           })
-    background_ = background.Noble(tool_proficiency=trait.ToolProficiency(proficiencies=['chess_set']),
-                                   languages=trait.LanguagesKnown(languages=[base.Languages.DRACONIC]))
+    background_ = background.Noble(tool_proficiency=feature.ToolProficiency(proficiencies=['chess_set']),
+                                   languages=feature.LanguagesKnown(languages=[base.Languages.DRACONIC]))
 
     worn_items = items.WornItems()
     worn_items.don_armor(armor.LEATHER_ARMOR)

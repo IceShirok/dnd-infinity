@@ -1,6 +1,6 @@
 
 from ddddd.entity import base
-from ddddd.entity.character import trait
+from ddddd.entity.character import feature
 from ddddd.entity.base import Languages, Sizes
 
 import logging
@@ -38,7 +38,7 @@ class Race(object):
     def proficiencies(self):
         prof = {}
         for p in self.traits:
-            if isinstance(p, trait.ProficiencyKnown):
+            if isinstance(p, feature.ProficiencyKnown):
                 prof[p.proficiency_type] = p
         return prof
 
@@ -79,15 +79,15 @@ class Dwarf(Race):
             base.AbilityScore.CON: base.AbilityScoreIncrease(base.AbilityScore.CON, 2)
         }
         def_traits = [
-            trait.Darkvision(range=60),
-            trait.Trait(name='Dwarven Resilience',
-                        description='You have advantage on Saving Throws against poison, \
+            feature.Darkvision(range=60),
+            feature.Feature(name='Dwarven Resilience',
+                            description='You have advantage on Saving Throws against poison, \
                                               and you have Resistance against poison damage.'),
-            trait.WeaponProficiency(name='Dwarven Combat Training',
-                                    proficiencies=['battleaxe', 'handaxe',
+            feature.WeaponProficiency(name='Dwarven Combat Training',
+                                      proficiencies=['battleaxe', 'handaxe',
                                                    'light_hammer', 'warhammer']),
-            trait.Trait(name='Stonecunning',
-                        description='Whenever you make an Intelligence (History) check related \
+            feature.Feature(name='Stonecunning',
+                            description='Whenever you make an Intelligence (History) check related \
                                         to the Origin of stonework, you are considered proficient in the \
                                         History skill and add double your Proficiency Bonus to the check, \
                                         instead of your normal Proficiency Bonus.'),
@@ -97,7 +97,7 @@ class Dwarf(Race):
                                     asi={**def_asi, **asi},
                                     size=Sizes.MEDIUM,
                                     speed=25,
-                                    languages=trait.LanguagesKnown(languages=[Languages.COMMON, Languages.DWARVISH]),
+                                    languages=feature.LanguagesKnown(languages=[Languages.COMMON, Languages.DWARVISH]),
                                     traits=def_traits+traits)
 
     @property
@@ -119,7 +119,7 @@ class HillDwarf(Dwarf):
             base.AbilityScore.WIS: base.AbilityScoreIncrease(base.AbilityScore.WIS, 1)
         }
         def_traits = [
-            trait.Toughness(name='Dwarven Toughness'),
+            feature.Toughness(name='Dwarven Toughness'),
         ]
         super(HillDwarf, self).__init__(asi=def_asi,
                                         traits=def_traits+traits)
@@ -136,16 +136,16 @@ class Gnome(Race):
             base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 2)
         }
         def_traits = [
-            trait.Darkvision(range=60),
-            trait.Trait(name='Gnome Cunning',
-                        description='You have advantage on all Intelligence, Wisdom, \
+            feature.Darkvision(range=60),
+            feature.Feature(name='Gnome Cunning',
+                            description='You have advantage on all Intelligence, Wisdom, \
                         and Charisma Saving Throws against magic.'),
         ]
         super(Gnome, self).__init__(name='Gnome',
                                     asi={**def_asi, **asi},
                                     size=Sizes.SMALL,
                                     speed=25,
-                                    languages=trait.LanguagesKnown(languages=[Languages.COMMON, Languages.GNOMISH]),
+                                    languages=feature.LanguagesKnown(languages=[Languages.COMMON, Languages.GNOMISH]),
                                     traits=def_traits+traits)
 
     @property
@@ -159,14 +159,14 @@ class RockGnome(Gnome):
             base.AbilityScore.CON: base.AbilityScoreIncrease(base.AbilityScore.CON, 1)
         }
         traits = [
-            trait.Trait(name="Artificer's Lore",
-                        description='Whenever you make an Intelligence (History) check related to Magic Items, \
+            feature.Feature(name="Artificer's Lore",
+                            description='Whenever you make an Intelligence (History) check related to Magic Items, \
                         alchemical Objects, or technological devices, you can add twice your Proficiency Bonus, \
                         instead of any Proficiency Bonus you normally apply.'),
-            trait.ToolProficiency(name='Tinker',
-                                  description='Using those tools, you can spend 1 hour and 10 gp worth of materials \
+            feature.ToolProficiency(name='Tinker',
+                                    description='Using those tools, you can spend 1 hour and 10 gp worth of materials \
                                   to construct a Tiny clockwork device (AC 5, 1 hp).',
-                                  proficiencies=['tinkers_tools']),
+                                    proficiencies=['tinkers_tools']),
         ]
         super(RockGnome, self).__init__(asi=asi,
                                         traits=traits)
@@ -184,18 +184,18 @@ class Tiefling(Race):
             base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 1)
         }
         def_traits = [
-            trait.Darkvision(range=60),
-            trait.Trait(name='Hellish Resistance',
-                        description='You have Resistance to fire damage.'),
+            feature.Darkvision(range=60),
+            feature.Feature(name='Hellish Resistance',
+                            description='You have Resistance to fire damage.'),
             # TODO I guess this trait can hold spellcasting stuff?
-            trait.Trait(name='Infernal Legacy',
-                        description='You know the Thaumaturgy cantrip.'),
+            feature.Feature(name='Infernal Legacy',
+                            description='You know the Thaumaturgy cantrip.'),
         ]
         super(Tiefling, self).__init__(name='Tiefling',
                                        asi=def_asi,
                                        size=Sizes.MEDIUM,
                                        speed=30,
-                                       languages=trait.LanguagesKnown(languages=[Languages.COMMON, Languages.INFERNAL]),
+                                       languages=feature.LanguagesKnown(languages=[Languages.COMMON, Languages.INFERNAL]),
                                        traits=def_traits)
 
     @property
@@ -217,7 +217,7 @@ class Dragonborn(Race):
                                          asi=def_asi,
                                          size=Sizes.MEDIUM,
                                          speed=30,
-                                         languages=trait.LanguagesKnown(languages=[Languages.COMMON, Languages.DRACONIC]),
+                                         languages=feature.LanguagesKnown(languages=[Languages.COMMON, Languages.DRACONIC]),
                                          traits=self.get_draconic_ancestry_traits(draconic_ancestry))
 
     @property
@@ -235,11 +235,11 @@ class Dragonborn(Race):
         ancestry_details = self._DRACONIC_ANCESTRY[draconic_ancestry]
 
         traits = [
-            trait.Trait(name='Draconic Ancestry',
-                        description='You have Draconic ancestry with a {} dragon.'.format(draconic_ancestry)),
-            trait.DamageResistance(damage_type=ancestry_details['damage_type']),
-            trait.Trait(name='Breath Weapon',
-                        description='You can use your action to exhale destructive energy.')
+            feature.Feature(name='Draconic Ancestry',
+                            description='You have Draconic ancestry with a {} dragon.'.format(draconic_ancestry)),
+            feature.DamageResistance(damage_type=ancestry_details['damage_type']),
+            feature.Feature(name='Breath Weapon',
+                            description='You can use your action to exhale destructive energy.')
         ]
 
         return traits
