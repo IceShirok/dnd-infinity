@@ -1,24 +1,24 @@
 import unittest
-from ddddd.entity.character import background, trait
+from ddddd.entity.character import background, feature
 
 
 class TestBackground(unittest.TestCase):
     def setUp(self):
         prof = {
             'skills': ['stealth', 'deception'],
-            'Tool Proficiency': trait.ToolProficiency(proficiencies=['thieves_tools', 'bone_dice']),
-            'Weapon Proficiency': trait.WeaponProficiency(proficiencies=['warhammer']),
-            'Armor Proficiency': trait.ArmorProficiency(proficiencies=['light']),
+            'Tool Proficiency': feature.ToolProficiency(proficiencies=['thieves_tools', 'bone_dice']),
+            'Weapon Proficiency': feature.WeaponProficiency(proficiencies=['warhammer']),
+            'Armor Proficiency': feature.ArmorProficiency(proficiencies=['light']),
         }
-        lang = trait.LanguagesKnown(languages=['Elvish'])
+        lang = feature.LanguagesKnown(languages=['Elvish'])
         self.bg = background.Background(name='background',
-                                        feature=trait.Trait(name='Trait', description=''),
+                                        feature=feature.Feature(name='Trait', description=''),
                                         proficiencies=prof,
                                         languages=lang)
 
     def test_feature(self):
         result = self.bg.feature
-        self.assertTrue(isinstance(result, trait.Trait))
+        self.assertTrue(isinstance(result, feature.Feature))
 
     def test_all_proficiencies(self):
         prof = self.bg.background_proficiencies
@@ -40,7 +40,7 @@ class TestCriminalBackground(unittest.TestCase):
 
     def test_feature(self):
         result = self.criminal.feature
-        self.assertTrue(isinstance(result, trait.Trait))
+        self.assertTrue(isinstance(result, feature.Feature))
 
     def test_all_proficiencies(self):
         prof = self.criminal.background_proficiencies
@@ -53,13 +53,13 @@ class TestCriminalBackground(unittest.TestCase):
 
 class TestNobleBackground(unittest.TestCase):
     def setUp(self):
-        tool = trait.ToolProficiency(proficiencies=['chess_set'])
-        lang = trait.LanguagesKnown(languages=['elvish', 'dwarvish'])
+        tool = feature.ToolProficiency(proficiencies=['chess_set'])
+        lang = feature.LanguagesKnown(languages=['elvish', 'dwarvish'])
         self.noble = background.Noble(tool_proficiency=tool, languages=lang)
 
     def test_feature(self):
         result = self.noble.feature
-        self.assertTrue(isinstance(result, trait.Trait))
+        self.assertTrue(isinstance(result, feature.Feature))
 
     def test_all_proficiencies(self):
         prof = self.noble.background_proficiencies
@@ -72,12 +72,12 @@ class TestNobleBackground(unittest.TestCase):
 
 class TestSageBackground(unittest.TestCase):
     def setUp(self):
-        lang = trait.LanguagesKnown(languages=['elvish', 'dwarvish'])
+        lang = feature.LanguagesKnown(languages=['elvish', 'dwarvish'])
         self.sage = background.Sage(languages=lang)
 
     def test_feature(self):
         result = self.sage.feature
-        self.assertTrue(isinstance(result, trait.Trait))
+        self.assertTrue(isinstance(result, feature.Feature))
 
     def test_all_proficiencies(self):
         prof = self.sage.background_proficiencies

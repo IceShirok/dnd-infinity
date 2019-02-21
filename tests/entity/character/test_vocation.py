@@ -2,26 +2,26 @@ import unittest
 
 from ddddd.entity import base
 from ddddd.entity.base import AbilityScoreIncrease
-from ddddd.entity.character import vocation, trait
+from ddddd.entity.character import vocation, feature
 
 
 class TestVocation(unittest.TestCase):
     def setUp(self):
         prof = {
-            base.ARMOR_PROFICIENCY: trait.ArmorProficiency(name='Armor Proficiency',
-                                                           proficiencies=['light',
+            base.ARMOR_PROFICIENCY: feature.ArmorProficiency(name='Armor Proficiency',
+                                                             proficiencies=['light',
                                                                           'medium',
                                                                           'shields']),
-            base.WEAPON_PROFICIENCY: trait.WeaponProficiency(name='Weapon Proficiency',
+            base.WEAPON_PROFICIENCY: feature.WeaponProficiency(name='Weapon Proficiency',
 
-                                                             proficiencies=['simple',
+                                                               proficiencies=['simple',
                                                                             'martial']),
         }
         saves = ['STR', 'DEX']
         skills = ['Athletics', 'Acrobatics', 'Animal Handling']
         features = {
-            'favored_enemy': trait.Trait(name='Favored Enemy', description=''),
-            'favored_terrain': trait.Trait(name='Favored Terrain', description=''),
+            'favored_enemy': feature.Feature(name='Favored Enemy', description=''),
+            'favored_terrain': feature.Feature(name='Favored Terrain', description=''),
         }
         self.vocation = vocation.Vocation(name='Vocation',
                                           level=1,
@@ -37,13 +37,13 @@ class TestVocation(unittest.TestCase):
         self.assertTrue(isinstance(result, list))
 
     def test_append_feature_add(self):
-        self.vocation._append_feature('favored_flavor', trait.Trait(name='Favored Flavor', description=''))
+        self.vocation._append_feature('favored_flavor', feature.Feature(name='Favored Flavor', description=''))
         result = self.vocation.features
 
         self.assertEqual(len(result), 3)
 
     def test_append_feature_replace(self):
-        self.vocation._append_feature('favored_terrain', trait.Trait(name='Improved Favored Terrain', description=''))
+        self.vocation._append_feature('favored_terrain', feature.Feature(name='Improved Favored Terrain', description=''))
         result = self.vocation.features
 
         self.assertEqual(len(result), 2)
@@ -52,8 +52,8 @@ class TestVocation(unittest.TestCase):
         self.assertEqual(len(replaced), 1)
 
     def test_languages(self):
-        self.vocation._append_feature('language_1', trait.LanguagesKnown(languages=['elvish', 'dwarvish']))
-        self.vocation._append_feature('language_2', trait.LanguagesKnown(languages=['draconic', 'undercommon']))
+        self.vocation._append_feature('language_1', feature.LanguagesKnown(languages=['elvish', 'dwarvish']))
+        self.vocation._append_feature('language_2', feature.LanguagesKnown(languages=['draconic', 'undercommon']))
         result = self.vocation.languages
 
         self.assertEqual(len(result.languages), 4)
@@ -82,13 +82,13 @@ class TestVocation(unittest.TestCase):
 
     def test_aggregate_feat(self):
         kwargs = {
-            'feat_1': trait.Trait(name='feat', description=''),
+            'feat_1': feature.Feature(name='feat', description=''),
         }
         self.vocation._aggregate_asi_or_feat(kwargs, level=1)
         self.assertEqual(len(self.vocation.feats), 1)
 
         kwargs = {
-            'feat_2': trait.Trait(name='feat', description=''),
+            'feat_2': feature.Feature(name='feat', description=''),
         }
         self.vocation._aggregate_asi_or_feat(kwargs, level=2)
         self.assertEqual(len(self.vocation.feats), 2)

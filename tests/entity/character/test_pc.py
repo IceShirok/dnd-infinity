@@ -2,7 +2,7 @@ import unittest
 
 from ddddd.entity import base
 from ddddd.entity.base import Skills
-from ddddd.entity.character import race, trait, pc, background
+from ddddd.entity.character import race, feature, pc, background
 from ddddd.entity.character.vocations import ranger
 from ddddd.items import items, armor, weapons
 
@@ -41,8 +41,8 @@ class TestPlayerCharacterDorian(unittest.TestCase):
     def setUp(self):
         base_ = pc.PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=1)
         tool_prof = [
-            trait.ToolProficiency(name='Tool Proficiency',
-                                  proficiencies=['brewers_kit'])
+            feature.ToolProficiency(name='Tool Proficiency',
+                                    proficiencies=['brewers_kit'])
         ]
         race_ = race.HillDwarf(traits=tool_prof)
         vocation = ranger.Ranger(skill_proficiencies=[Skills.ATHLETICS, Skills.ANIMAL_HANDLING, Skills.SURVIVAL],

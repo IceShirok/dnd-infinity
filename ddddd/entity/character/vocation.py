@@ -1,5 +1,5 @@
 
-from ddddd.entity.character import trait
+from ddddd.entity.character import feature
 
 
 class Vocation(object):
@@ -45,8 +45,8 @@ class Vocation(object):
     
     @property
     def languages(self):
-        lang = list(filter(lambda f: isinstance(f, trait.LanguagesKnown), self.features))
-        agg_languages = trait.LanguagesKnown(languages=[])
+        lang = list(filter(lambda f: isinstance(f, feature.LanguagesKnown), self.features))
+        agg_languages = feature.LanguagesKnown(languages=[])
         for l_feature in lang:
             agg_languages.languages = agg_languages.languages + l_feature.languages
         return agg_languages

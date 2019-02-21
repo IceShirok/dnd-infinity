@@ -2,13 +2,20 @@
 from ddddd.entity import base
 
 
-class Trait(object):
+class Feature(object):
     """
     This is the representation of a "trait" or "feature" for a player character (PC).
-    Traits comprise of a name and description, and optionally a list of specific
+    Features comprise of a name and description, and optionally a list of specific
     tidbits (i.e. favored enemies) and/or functionality (toughness -> more HP).
 
-    Traits are considered immutable, so aggregating traits must result in a new
+    For the sake of DDD, I chose the name "feature" over "trait" because more
+    modules refer these types of "miscellaneous flairs for a PC" as a "feature"
+    (from vocation and background) than a "trait" (race). This may get slightly
+    confusing as "feats" are a subset of "features".
+
+    Features <- racial "traits", vocation "features", background "feature", "feats"
+
+    Features are considered immutable, so aggregating traits must result in a new
     trait object.
     """
     def __init__(self, name, description):
@@ -29,7 +36,7 @@ def format_list_as_english_string(a_list):
         return ', '.join(capped_list[:-1]) + last_item
 
 
-class LanguagesKnown(Trait):
+class LanguagesKnown(Feature):
     def __init__(self, languages, name=None, description=None):
         name = name if name else base.LANGUAGES
         self.languages = languages
@@ -39,7 +46,7 @@ class LanguagesKnown(Trait):
                                              description=final_desc)
 
 
-class ProficiencyKnown(Trait):
+class ProficiencyKnown(Feature):
     def __init__(self, name, proficiencies, proficiency_type, description=None):
         description = description if description else 'these are the things you''re proficient in'
         super(ProficiencyKnown, self).__init__(name=name,
@@ -75,7 +82,7 @@ class ToolProficiency(ProficiencyKnown):
                                               proficiency_type='Tool Proficiency')
 
 
-class Darkvision(Trait):
+class Darkvision(Feature):
     def __init__(self, range):
         super(Darkvision, self).__init__(name='Darkvision',
                                          description='Accustomed to life underground, you have superior vision in dark \
@@ -85,14 +92,14 @@ class Darkvision(Trait):
         self.range = range
 
 
-class Toughness(Trait):
+class Toughness(Feature):
     def __init__(self, name):
         super(Toughness, self).__init__(name=name,
                                         description='Your hit point maximum increases by 1, \
                                                and it increases by 1 every time you gain a level.')
 
 
-class Expertise(Trait):
+class Expertise(Feature):
     def __init__(self, skills, proficiencies, name=None, description=None):
         self.skills = skills if skills else []
         self.proficiencies = proficiencies if proficiencies else []
@@ -103,7 +110,7 @@ class Expertise(Trait):
                                         description=final_desc)
 
 
-class EnhanceDamage(Trait):
+class EnhanceDamage(Feature):
     def __init__(self, name, description, attack_bonus):
         super(EnhanceDamage, self).__init__(name, description)
         self.attack_bonus = attack_bonus
@@ -113,7 +120,7 @@ class EnhanceDamage(Trait):
         return True
 
 
-class DamageResistance(Trait):
+class DamageResistance(Feature):
     def __init__(self, damage_type, name=None, description=None):
         name = name if name else 'Damage Resistance'
         description = description if description else 'You have Resistance with {} damage.'.format(damage_type)
@@ -123,7 +130,7 @@ class DamageResistance(Trait):
 
 # TODO refactor this into a feat later
 # for now, feats can be treated like traits
-class WarCaster(Trait):
+class WarCaster(Feature):
     def __init__(self):
         super(WarCaster, self).__init__(name='War Caster',
                                         description='You have advantage one Constitution saves \
