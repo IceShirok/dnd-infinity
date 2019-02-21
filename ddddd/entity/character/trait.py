@@ -3,18 +3,40 @@ from ddddd.entity import base
 
 
 class Trait(object):
+    """
+    This is the representation of a "trait" or "feature" for a player character (PC).
+    Traits comprise of a name and description, and optionally a list of specific
+    tidbits (i.e. favored enemies) and/or functionality (toughness -> more HP).
+
+    Traits are considered immutable, so aggregating traits must result in a new
+    trait object.
+    """
     def __init__(self, name, description):
         self.name = name
         self.description = description
 
 
+def format_list_as_english_string(a_list):
+    capped_list = list(map(lambda x: x.capitalize(), a_list))
+    if len(capped_list) == 0:
+        return ''
+    elif len(capped_list) == 1:
+        return capped_list[0]
+    elif len(capped_list) == 2:
+        return '{} and {}'.format(capped_list[0], capped_list[1])
+    else:
+        last_item = ', and {}'.format(capped_list[-1])
+        return ', '.join(capped_list[:-1]) + last_item
+
+
 class LanguagesKnown(Trait):
     def __init__(self, languages, name=None, description=None):
         name = name if name else base.LANGUAGES
-        description = description if description else 'these are the languages you know'
-        super(LanguagesKnown, self).__init__(name=name,
-                                             description=description)
         self.languages = languages
+        flavor = '{} '.format(description) if description else ''
+        final_desc = '{}You know {}.'.format(flavor, format_list_as_english_string(languages))
+        super(LanguagesKnown, self).__init__(name=name,
+                                             description=final_desc)
 
 
 class ProficiencyKnown(Trait):
@@ -72,12 +94,13 @@ class Toughness(Trait):
 
 class Expertise(Trait):
     def __init__(self, skills, proficiencies, name=None, description=None):
-        description = description if description else 'Your Proficiency Bonus is doubled for any ability check \
-                                        you make that uses the chosen proficiencies.'
-        super(Expertise, self).__init__(name=name if name else 'Expertise',
-                                        description=description)
         self.skills = skills if skills else []
         self.proficiencies = proficiencies if proficiencies else []
+        flavor = '{} '.format(description) if description else 'Your Proficiency Bonus is doubled for any ability check \
+                                                                you make that uses the chosen proficiencies. '
+        final_desc = '{}You have expertise in {}.'.format(flavor, format_list_as_english_string(self.skills + self.proficiencies))
+        super(Expertise, self).__init__(name=name if name else 'Expertise',
+                                        description=final_desc)
 
 
 class EnhanceDamage(Trait):

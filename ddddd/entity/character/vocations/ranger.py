@@ -14,14 +14,10 @@ class Ranger(Vocation):
 
     def __init__(self, skill_proficiencies, favored_enemy=None, languages=None, favored_terrain=None):
         def_features = {
-            'favored_enemy': trait.Trait(name='Favored Enemy',
-                                         description='Beginning at 1st level, you have significant experience studying, tracking, \
-                                         hunting, and even talking to a certain type of enemy. {}'.format(favored_enemy)),
+            'favored_enemy': FavoredEnemy([favored_enemy]),
             'favored_enemy_languages': trait.LanguagesKnown(languages=[languages], name='Favored Enemy Languages',
                                                             description='You learn a language that your favored enemy would typically know.'),
-            'natural_explorer': trait.Trait(name='Natural Explorer',
-                                            description='You are particularly familiar with one type of natural environment \
-                                            and are adept at traveling and surviving in such regions. {}'.format(favored_terrain)),
+            'natural_explorer': NaturalExplorer([favored_terrain]),
         }
 
         super(Ranger, self).__init__(name='Ranger',
@@ -250,3 +246,27 @@ class RangerSpellcastingAbility(spells.SpellcastingAbility):
         if len(self.casting_spells) != self.num_spells_known:
             raise ValueError('Must have {} spells but inputted {} spells!'.format(self.num_spells_known,
                                                                                   len(self.casting_spells)))
+
+
+###############################
+# Ranger-specific traits
+###############################
+
+class FavoredEnemy(trait.Trait):
+    def __init__(self, favored_enemies):
+        desc = 'Beginning at 1st level, you have significant experience studying, tracking, \
+                hunting, and even talking to a certain type of enemy.'
+        final_desc = '{} Your favored enemies are {}.'.format(desc, trait.format_list_as_english_string(favored_enemies))
+        super(FavoredEnemy, self).__init__(name='Favored Enemy',
+                                           description=final_desc)
+        self.favored_enemies = favored_enemies
+
+
+class NaturalExplorer(trait.Trait):
+    def __init__(self, favored_terrains):
+        desc = 'You are particularly familiar with one type of natural environment \
+                and are adept at traveling and surviving in such regions.'
+        final_desc = '{} Your favored terrains are {}.'.format(desc, trait.format_list_as_english_string(favored_terrains))
+        super(NaturalExplorer, self).__init__(name='Natural Explorer',
+                                              description=final_desc)
+        self.favored_terrains = favored_terrains
