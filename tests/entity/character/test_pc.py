@@ -236,12 +236,12 @@ class TestPlayerCharacterDorian(unittest.TestCase):
         weapons_list = set(map(lambda w: w.name, self.dorian.worn_items.weapons))
         self.assertEqual(weapon_bonus_list, weapons_list)
 
-        handaxe_bonus = weapon_bonuses['Handaxe']
+        handaxe_bonus = weapon_bonuses['handaxe']
         self.assertEqual(handaxe_bonus['attack_bonus'], 5)
         self.assertEqual(handaxe_bonus['attack_type'], 'STR')
         self.assertEqual(handaxe_bonus['damage'], '1d6 slashing + 3')
 
-        handaxe_bonus = weapon_bonuses['Longbow']
+        handaxe_bonus = weapon_bonuses['longbow']
         self.assertEqual(handaxe_bonus['attack_bonus'], 2)
         self.assertEqual(handaxe_bonus['attack_type'], 'DEX')
         self.assertEqual(handaxe_bonus['damage'], '1d8 piercing')
