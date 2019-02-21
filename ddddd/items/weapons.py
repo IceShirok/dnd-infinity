@@ -34,23 +34,23 @@ THROWN = 'thrown'
 # WEAPONS
 #############################
 
-MACE = Weapon('Mace', category=SIMPLE, damage='1d6 bludgeoning',
+MACE = Weapon('mace', category=SIMPLE, damage='1d6 bludgeoning',
               price=currency.GoldPieces(5), weight=4,
               properties=[])
 
-HANDAXE = Weapon('Handaxe', category=SIMPLE, damage='1d6 slashing',
+HANDAXE = Weapon('handaxe', category=SIMPLE, damage='1d6 slashing',
                  price=currency.GoldPieces(5), weight=2,
                  properties=[LIGHT, 'thrown (range 20/60)'])
 
-RAPIER = Weapon('Rapier', category=MARTIAL, damage='1d8 piercing',
+RAPIER = Weapon('rapier', category=MARTIAL, damage='1d8 piercing',
                 price=currency.GoldPieces(25), weight=2,
                 properties=[FINESSE])
 
-LONGBOW = Weapon('Longbow', category=MARTIAL, damage='1d8 piercing',
+LONGBOW = Weapon('longbow', category=MARTIAL, damage='1d8 piercing',
                  price=currency.GoldPieces(50), weight=2,
                  properties=['ammunition (range 150/600)', HEAVY, TWO_HANDED])
 
-LONGSWORD = Weapon('Longsword', category=MARTIAL, damage='1d8 piercing',
+LONGSWORD = Weapon('lsongsword', category=MARTIAL, damage='1d8 piercing',
                    price=currency.GoldPieces(15), weight=3,
                    properties=['versatile (1d10)'])
 
@@ -66,12 +66,12 @@ def get_aggregated_weapon_proficiencies(proficiencies):
         return [SIMPLE, MARTIAL]
     elif SIMPLE in proficiencies:
         for weapon in WEAPON_TYPE_TO_WEAPONS[SIMPLE]:
-            if weapon in prof_agg:
+            if weapon.name in prof_agg:
                 prof_agg.remove(weapon.name)
         return prof_agg
     elif MARTIAL in proficiencies:
         for weapon in WEAPON_TYPE_TO_WEAPONS[MARTIAL]:
-            if weapon in prof_agg:
+            if weapon.name in prof_agg:
                 prof_agg.remove(weapon.name)
         return prof_agg
     return prof_agg
