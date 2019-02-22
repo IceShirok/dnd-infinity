@@ -38,44 +38,6 @@ class Ranger(Vocation):
                                      spellcasting=None,
                                      asi=None)
 
-    def _level_1_requirements(self):
-        return {
-            base.SKILL_PROF: {
-                base.SKILLS: [Skills.ANIMAL_HANDLING, Skills.ATHLETICS,
-                              Skills.INSIGHT, Skills.INVESTIGATION, Skills.NATURE,
-                              Skills.PERCEPTION, Skills.STEALTH, Skills.SURVIVAL],
-                base.CHOICES: 3,
-            },
-            self.FAVORED_ENEMY: {
-                self.ENEMIES: ['aberrations', 'fey', 'elementals', 'plants'],
-                base.CHOICES: 1,
-            },
-            base.LANGUAGES: {
-                base.LANGUAGES: Languages.LANGUAGES,
-                base.CHOICES: 1,
-            },
-            self.NATURAL_EXPLORER: {
-                self.TERRAINS: ['forest', 'grassland', 'swamp'],
-                base.CHOICES: 1,
-            }
-        }
-
-    def _level_2_requirements(self):
-        req = {
-            self.FIGHTING_STYLE: {
-                self.STYLES: ['archery', 'defense', 'dueling', 'two_weapon_fighting'],
-                base.CHOICES: 1,
-            },
-            base.SPELLCASTING: {
-                base.SPELLCASTING_ABILITY: AbilityScore.WIS,
-                base.NUM_SPELLS_KNOWN: 2,
-                base.SPELL_SLOTS: {
-                    SpellTypes.FIRST: 2
-                }
-            }
-        }
-        return req
-
     def _add_level_2_features(self, **kwargs):
         fighting_style = kwargs['fighting_style']
         self._append_feature('fighting_style',
@@ -95,23 +57,6 @@ class Ranger(Vocation):
                                                       casting_spells=list_spells,
                                                       spell_slots={SpellTypes.FIRST: 2},
                                                       num_spells_known=2)
-
-    def _level_3_requirements(self):
-        req = {
-            'archetype_feature': {
-                'name': 'Hunter',
-                'features': ['colossus_slayer', 'giant_killer', 'horde_breaker'],
-                base.CHOICES: 1,
-            },
-            base.SPELLCASTING: {
-                base.SPELLCASTING_ABILITY: AbilityScore.WIS,
-                base.NUM_SPELLS_KNOWN: 3,
-                base.SPELL_SLOTS: {
-                    SpellTypes.FIRST: 3
-                }
-            }
-        }
-        return req
 
     def _add_level_3_features(self, **kwargs):
         self._append_feature('primeval_awareness',
@@ -140,30 +85,8 @@ class Ranger(Vocation):
                                                       spell_slots={SpellTypes.FIRST: 3},
                                                       num_spells_known=3)
 
-    def _level_4_requirements(self):
-        req = {
-            'ability_score_increase': {
-                'name': 'Ability Score Increase',
-                'description': 'You can increase one ability score of your choice by 2, or you can increase two Ability Scores of your choice by 1.',
-            },
-        }
-        return req
-
     def _add_level_4_features(self, **kwargs):
         self._aggregate_asi_or_feat(kwargs, level=4)
-
-    def _level_5_requirements(self):
-        req = {
-            base.SPELLCASTING: {
-                base.SPELLCASTING_ABILITY: AbilityScore.WIS,
-                base.NUM_SPELLS_KNOWN: 4,
-                base.SPELL_SLOTS: {
-                    SpellTypes.FIRST: 4,
-                    SpellTypes.SECOND: 2,
-                }
-            },
-        }
-        return req
 
     def _add_level_5_features(self, **kwargs):
         self._append_feature('extra_attack',
