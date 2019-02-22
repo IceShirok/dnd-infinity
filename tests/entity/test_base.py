@@ -76,6 +76,22 @@ class TestAbilityScore(unittest.TestCase):
             ability.with_ability_score_increase(bad)
 
 
+class TestSavingThrow(unittest.TestCase):
+    def test_unskilled(self):
+        skill = base.SavingThrow(ability_score=base.AbilityScore('DEX', 16),
+                                 proficiency_bonus=2,
+                                 is_proficient=False)
+        self.assertEqual('DEX', skill.ability)
+        self.assertEqual(3, skill.modifier)
+
+    def test_proficient(self):
+        skill = base.SavingThrow(ability_score=base.AbilityScore('DEX', 16),
+                                 proficiency_bonus=2,
+                                 is_proficient=True)
+        self.assertEqual('DEX', skill.ability)
+        self.assertEqual(5, skill.modifier)
+
+
 class TestSkillProficiency(unittest.TestCase):
     def test_unskilled(self):
         skill = base.SkillProficiency(name='Athletics',

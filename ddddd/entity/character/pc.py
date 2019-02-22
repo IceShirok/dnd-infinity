@@ -198,11 +198,11 @@ class PlayerCharacter(object):
         saving_throws_p = {}
         _ability_scores = self.ability_scores
         for a in _ability_scores.keys():
-            saving_throws_p[a] = {base.MODIFIER: _ability_scores[a].modifier}
-            saving_throws_p[a][base.IS_PROFICIENT] = False
+            saving_throws_p[a] = base.SavingThrow(_ability_scores[a],
+                                                  self.proficiency_bonus,
+                                                  is_proficient=False)
             if a in saving_throws:
-                saving_throws_p[a][base.MODIFIER] += self.proficiency_bonus
-                saving_throws_p[a][base.IS_PROFICIENT] = True
+                saving_throws_p[a].is_proficient = True
         return saving_throws_p
 
     @property

@@ -51,10 +51,10 @@ def generate_character_sheet(pc):
         for ability in pc.ability_scores.keys():
             with doc.create(Subsection('Ability Proficiencies: {}'.format(ability), numbering=False)):
                 with doc.create(LongTable("l l l")) as data_table:
-                    save_proficiency = 'proficient' if pc.saving_throws[ability]['is_proficient'] else '-'
+                    save_proficiency = 'proficient' if pc.saving_throws[ability].is_proficient else '-'
                     saving_throw_row = [
                         'Saving Throw',
-                        base.prettify_modifier(pc.saving_throws[ability]['modifier']),
+                        base.prettify_modifier(pc.saving_throws[ability].modifier),
                         save_proficiency,
                     ]
                     data_table.add_row(saving_throw_row)

@@ -106,8 +106,8 @@
                                         <div class="card-body">
                                             <table>
                                                 <tbody>
-                                                    {% set modifier = pc.saving_throws[ability]['modifier'] %}
-                                                    {% set is_proficient = pc.saving_throws[ability]['is_proficient'] %}
+                                                    {% set modifier = pc.saving_throws[ability].modifier %}
+                                                    {% set is_proficient = pc.saving_throws[ability].is_proficient %}
                                                     {{ skill_prof('Saving throw', 'warning', modifier, is_proficient) }}
 
                                                     {% for skill in pc.skills_by_ability[ability] %}

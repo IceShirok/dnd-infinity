@@ -74,6 +74,7 @@ class TestPlayerCharacterTamiphiLevel1(unittest.TestCase):
 
     def test_saving_throws(self):
         saves = self.tamiphi.saving_throws
+        result = dict(map(lambda s: (s, {'modifier': saves[s].modifier, 'is_proficient': saves[s].is_proficient}), saves))
         expected = {
             'STR': {
                 'modifier': 0,
@@ -100,7 +101,7 @@ class TestPlayerCharacterTamiphiLevel1(unittest.TestCase):
                 'is_proficient': True,
             },
         }
-        self.assertEqual(saves, expected)
+        self.assertEqual(expected, result)
 
     def test_skills_by_ability(self):
         skillz = self.tamiphi.skills_by_ability
