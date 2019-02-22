@@ -162,6 +162,7 @@ class PlayerCharacter(object):
     def max_hit_points(self):
         """
         Calculate max HP based on class hit die, CON modifier, and a few features.
+        Note that the average hit die must be (1 + max_hd)/2 because of dice stuff.
         :return: the max HP for the PC
         """
         hit_points = 0
@@ -173,7 +174,7 @@ class PlayerCharacter(object):
             if hit_points <= 0:
                 hit_points = hit_die + con_modifier + toughness
             else:
-                hit_points += math.ceil(hit_die/2) + con_modifier + toughness
+                hit_points += math.ceil((1+hit_die)/2) + con_modifier + toughness
         return hit_points
     
     @property
