@@ -7,10 +7,10 @@ from ddddd.entity.character import spells
 class TestSpellFunctions(unittest.TestCase):
     def test_cantrips_by_level(self):
         self.assertEqual(3, spells.cantrips_by_level(1))
-        self.assertEqual(3, spells.cantrips_by_level(4))
-        self.assertEqual(4, spells.cantrips_by_level(5))
-        self.assertEqual(4, spells.cantrips_by_level(10))
-        self.assertEqual(5, spells.cantrips_by_level(11))
+        self.assertEqual(3, spells.cantrips_by_level(3))
+        self.assertEqual(4, spells.cantrips_by_level(4))
+        self.assertEqual(4, spells.cantrips_by_level(9))
+        self.assertEqual(5, spells.cantrips_by_level(10))
         self.assertEqual(5, spells.cantrips_by_level(20))
 
     def test_spell_dc_with_ability(self):

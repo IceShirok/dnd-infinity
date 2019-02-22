@@ -137,9 +137,9 @@ class DamageCantrip(Cantrip):
 
 # Some classes may follow this pattern
 def cantrips_by_level(level):
-    if level <= 4:
+    if level < 4:
         return 3
-    elif level <= 10:
+    elif level < 10:
         return 4
     else:
         return 5
