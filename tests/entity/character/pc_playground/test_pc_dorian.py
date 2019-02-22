@@ -74,6 +74,7 @@ class TestPlayerCharacterDorian(unittest.TestCase):
 
     def test_saving_throws(self):
         saves = self.dorian.saving_throws
+        result = dict(map(lambda s: (s, {'modifier': saves[s].modifier, 'is_proficient': saves[s].is_proficient}), saves))
         expected = {
             'STR': {
                 'modifier': 5,
@@ -100,20 +101,22 @@ class TestPlayerCharacterDorian(unittest.TestCase):
                 'is_proficient': False,
             },
         }
-        self.assertEqual(saves, expected)
+        self.assertEqual(expected, result)
 
     def test_skills_by_ability(self):
         skillz = self.dorian.skills_by_ability
 
         athletics = skillz['STR']['Athletics']
-        self.assertEqual(athletics['ability'], 'STR')
-        self.assertEqual(athletics['is_proficient'], True)
-        self.assertEqual(athletics['expertise'], False)
+        self.assertEqual(athletics.ability, 'STR')
+        self.assertEqual(athletics.is_proficient, True)
+        self.assertEqual(athletics.expertise, False)
+        self.assertEqual(athletics.modifier, 5)
 
         athletics = skillz['DEX']['Acrobatics']
-        self.assertEqual(athletics['ability'], 'DEX')
-        self.assertEqual(athletics['is_proficient'], False)
-        self.assertEqual(athletics['expertise'], False)
+        self.assertEqual(athletics.ability, 'DEX')
+        self.assertEqual(athletics.is_proficient, False)
+        self.assertEqual(athletics.expertise, False)
+        self.assertEqual(athletics.modifier, 0)
 
     def test_proficiencies(self):
         prof = self.dorian.proficiencies

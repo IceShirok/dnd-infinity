@@ -74,6 +74,7 @@ class TestPlayerCharacterTamiphiLevel1(unittest.TestCase):
 
     def test_saving_throws(self):
         saves = self.tamiphi.saving_throws
+        result = dict(map(lambda s: (s, {'modifier': saves[s].modifier, 'is_proficient': saves[s].is_proficient}), saves))
         expected = {
             'STR': {
                 'modifier': 0,
@@ -100,25 +101,28 @@ class TestPlayerCharacterTamiphiLevel1(unittest.TestCase):
                 'is_proficient': True,
             },
         }
-        self.assertEqual(saves, expected)
+        self.assertEqual(expected, result)
 
     def test_skills_by_ability(self):
         skillz = self.tamiphi.skills_by_ability
 
         athletics = skillz['STR']['Athletics']
-        self.assertEqual(athletics['ability'], 'STR')
-        self.assertEqual(athletics['is_proficient'], False)
-        self.assertEqual(athletics['expertise'], False)
+        self.assertEqual(athletics.ability, 'STR')
+        self.assertEqual(athletics.is_proficient, False)
+        self.assertEqual(athletics.expertise, False)
+        self.assertEqual(athletics.modifier, 0)
 
         arcana = skillz['INT']['Arcana']
-        self.assertEqual(arcana['ability'], 'INT')
-        self.assertEqual(arcana['is_proficient'], True)
-        self.assertEqual(arcana['expertise'], True)
+        self.assertEqual(arcana.ability, 'INT')
+        self.assertEqual(arcana.is_proficient, True)
+        self.assertEqual(arcana.expertise, True)
+        self.assertEqual(arcana.modifier, 7)
 
         persuasion = skillz['CHA']['Persuasion']
-        self.assertEqual(persuasion['ability'], 'CHA')
-        self.assertEqual(persuasion['is_proficient'], True)
-        self.assertEqual(persuasion['expertise'], False)
+        self.assertEqual(persuasion.ability, 'CHA')
+        self.assertEqual(persuasion.is_proficient, True)
+        self.assertEqual(persuasion.expertise, False)
+        self.assertEqual(persuasion.modifier, 0)
 
     def test_proficiencies(self):
         prof = self.tamiphi.proficiencies

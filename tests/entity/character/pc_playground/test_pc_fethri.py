@@ -79,6 +79,7 @@ class TestPlayerCharacterFethriLevel1(unittest.TestCase):
 
     def test_saving_throws(self):
         saves = self.fethri.saving_throws
+        result = dict(map(lambda s: (s, {'modifier': saves[s].modifier, 'is_proficient': saves[s].is_proficient}), saves))
         expected = {
             'STR': {
                 'modifier': 0,
@@ -105,25 +106,28 @@ class TestPlayerCharacterFethriLevel1(unittest.TestCase):
                 'is_proficient': False,
             },
         }
-        self.assertEqual(saves, expected)
+        self.assertEqual(expected, result)
 
     def test_skills_by_ability(self):
         skillz = self.fethri.skills_by_ability
 
         athletics = skillz['STR']['Athletics']
-        self.assertEqual(athletics['ability'], 'STR')
-        self.assertEqual(athletics['is_proficient'], False)
-        self.assertEqual(athletics['expertise'], False)
+        self.assertEqual(athletics.ability, 'STR')
+        self.assertEqual(athletics.is_proficient, False)
+        self.assertEqual(athletics.expertise, False)
+        self.assertEqual(athletics.modifier, 0)
 
         stealth = skillz['DEX']['Stealth']
-        self.assertEqual(stealth['ability'], 'DEX')
-        self.assertEqual(stealth['is_proficient'], True)
-        self.assertEqual(stealth['expertise'], False)
+        self.assertEqual(stealth.ability, 'DEX')
+        self.assertEqual(stealth.is_proficient, True)
+        self.assertEqual(stealth.expertise, False)
+        self.assertEqual(stealth.modifier, 4)
 
         investigation = skillz['INT']['Investigation']
-        self.assertEqual(investigation['ability'], 'INT')
-        self.assertEqual(investigation['is_proficient'], True)
-        self.assertEqual(investigation['expertise'], True)
+        self.assertEqual(investigation.ability, 'INT')
+        self.assertEqual(investigation.is_proficient, True)
+        self.assertEqual(investigation.expertise, True)
+        self.assertEqual(investigation.modifier, 7)
 
     def test_proficiencies(self):
         prof = self.fethri.proficiencies
@@ -267,6 +271,7 @@ class TestPlayerCharacterFethriLevel4(unittest.TestCase):
 
     def test_saving_throws(self):
         saves = self.fethri.saving_throws
+        result = dict(map(lambda s: (s, {'modifier': saves[s].modifier, 'is_proficient': saves[s].is_proficient}), saves))
         expected = {
             'STR': {
                 'modifier': 0,
@@ -293,25 +298,28 @@ class TestPlayerCharacterFethriLevel4(unittest.TestCase):
                 'is_proficient': False,
             },
         }
-        self.assertEqual(saves, expected)
+        self.assertEqual(expected, result)
 
     def test_skills_by_ability(self):
         skillz = self.fethri.skills_by_ability
 
         athletics = skillz['STR']['Athletics']
-        self.assertEqual(athletics['ability'], 'STR')
-        self.assertEqual(athletics['is_proficient'], False)
-        self.assertEqual(athletics['expertise'], False)
+        self.assertEqual(athletics.ability, 'STR')
+        self.assertEqual(athletics.is_proficient, False)
+        self.assertEqual(athletics.expertise, False)
+        self.assertEqual(athletics.modifier, 0)
 
         stealth = skillz['DEX']['Stealth']
-        self.assertEqual(stealth['ability'], 'DEX')
-        self.assertEqual(stealth['is_proficient'], True)
-        self.assertEqual(stealth['expertise'], False)
+        self.assertEqual(stealth.ability, 'DEX')
+        self.assertEqual(stealth.is_proficient, True)
+        self.assertEqual(stealth.expertise, False)
+        self.assertEqual(stealth.modifier, 5)
 
         investigation = skillz['INT']['Investigation']
-        self.assertEqual(investigation['ability'], 'INT')
-        self.assertEqual(investigation['is_proficient'], True)
-        self.assertEqual(investigation['expertise'], True)
+        self.assertEqual(investigation.ability, 'INT')
+        self.assertEqual(investigation.is_proficient, True)
+        self.assertEqual(investigation.expertise, True)
+        self.assertEqual(investigation.modifier, 7)
 
     def test_proficiencies(self):
         prof = self.fethri.proficiencies
