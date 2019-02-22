@@ -1,5 +1,6 @@
 import unittest
 
+from ddddd import pc_playground
 from ddddd.entity import base
 from ddddd.entity.base import Skills
 from ddddd.entity.character import race, feature, pc, background
@@ -15,25 +16,7 @@ class TestPlayerCharacterFethriLevel1(unittest.TestCase):
     haven't caught these cases already.
     """
     def setUp(self):
-        base_ = pc.PlayerBase("Fethri Winterwhisper", 10, 14, 12, 15, 11, 12, level=1)
-        race_ = race.Tiefling()
-        vocation = rogue.Rogue(skill_proficiencies=[Skills.INVESTIGATION,
-                                                    Skills.DECEPTION,
-                                                    Skills.STEALTH],
-                               expertise=feature.Expertise(skills=[Skills.INVESTIGATION,
-                                                                   Skills.DECEPTION],
-                                                           proficiencies=None)
-                               )
-        background_ = background.Noble(tool_proficiency=feature.ToolProficiency(proficiencies=['chess_set']),
-                                       languages=feature.LanguagesKnown(languages=[base.Languages.DRACONIC]))
-
-        worn_items = items.WornItems()
-        worn_items.don_armor(armor.LEATHER_ARMOR)
-        worn_items.equip_weapon(weapons.RAPIER)
-
-        backpack = items.generate_burglars_pack()
-        fethri = pc.PlayerCharacter(base_, race_, vocation, background_, worn_items, backpack)
-        self.fethri = fethri
+        self.fethri = pc_playground.create_fethri(1)
 
     def test_name(self):
         self.assertEqual(self.fethri.name, 'Fethri Winterwhisper')
@@ -219,35 +202,9 @@ class TestPlayerCharacterFethriLevel1(unittest.TestCase):
         self.assertEqual(rapier_bonus['damage'], '1d8 piercing + 2 + 1d6 [Sneak Attack]')
 
 
-class TestPlayerCharacterFethriLevel3(unittest.TestCase):
+class TestPlayerCharacterFethriLevel4(unittest.TestCase):
     def setUp(self):
-        base_ = pc.PlayerBase("Fethri Winterwhisper", 10, 14, 12, 15, 11, 12, level=4)
-        race_ = race.Tiefling()
-        vocation = rogue.Rogue(skill_proficiencies=[Skills.INVESTIGATION,
-                                                    Skills.DECEPTION,
-                                                    Skills.STEALTH],
-                               expertise=feature.Expertise(skills=[Skills.INVESTIGATION,
-                                                                   Skills.DECEPTION],
-                                                           proficiencies=None)
-                               )
-        vocation.level_to(level=4,
-                          gaming_set='bone_dice',
-                          languages=feature.LanguagesKnown(languages=[base.Languages.UNDERCOMMON,
-                                                                      base.Languages.ELVISH]),
-                          ability_score_increase_4={
-                              base.AbilityScore.DEX: base.AbilityScoreIncrease(base.AbilityScore.DEX, 2),
-                          })
-
-        background_ = background.Noble(tool_proficiency=feature.ToolProficiency(proficiencies=['chess_set']),
-                                       languages=feature.LanguagesKnown(languages=[base.Languages.DRACONIC]))
-
-        worn_items = items.WornItems()
-        worn_items.don_armor(armor.LEATHER_ARMOR)
-        worn_items.equip_weapon(weapons.RAPIER)
-
-        backpack = items.generate_burglars_pack()
-        fethri = pc.PlayerCharacter(base_, race_, vocation, background_, worn_items, backpack)
-        self.fethri = fethri
+        self.fethri = pc_playground.create_fethri(4)
 
     def test_name(self):
         self.assertEqual(self.fethri.name, 'Fethri Winterwhisper')

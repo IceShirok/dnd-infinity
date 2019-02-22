@@ -1,9 +1,6 @@
 import unittest
 
-from ddddd.entity.base import Skills
-from ddddd.entity.character import race, feature, pc, background
-from ddddd.entity.character.vocations import ranger
-from ddddd.items import items, armor, weapons
+from ddddd import pc_playground
 
 
 class TestPlayerCharacterDorian(unittest.TestCase):
@@ -14,29 +11,7 @@ class TestPlayerCharacterDorian(unittest.TestCase):
     haven't caught these cases already.
     """
     def setUp(self):
-        base_ = pc.PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=1)
-        tool_prof = [
-            feature.ToolProficiency(name='Tool Proficiency',
-                                    proficiencies=['brewers_kit'])
-        ]
-        race_ = race.HillDwarf(traits=tool_prof)
-        vocation = ranger.Ranger(skill_proficiencies=[Skills.ATHLETICS, Skills.ANIMAL_HANDLING, Skills.SURVIVAL],
-                                 favored_enemy='plants',
-                                 languages='elvish',
-                                 favored_terrain='forest')
-        bg = background.Criminal()
-
-        worn_items = items.WornItems()
-        worn_items.don_armor(armor.CHAIN_MAIL)
-        worn_items.equip_weapon(weapons.HANDAXE)
-        worn_items.equip_weapon(weapons.HANDAXE)
-        worn_items.equip_weapon(weapons.LONGBOW)
-
-        backpack = items.generate_burglars_pack()
-        backpack.add_item(armor.CHAIN_SHIRT)
-        backpack.add_item(armor.LEATHER_ARMOR)
-
-        self.dorian = pc.PlayerCharacter(base_, race_, vocation, bg, worn_items, backpack)
+        self.dorian = pc_playground.create_dorian(1)
 
     def test_name(self):
         self.assertEqual(self.dorian.name, 'Dorian Sapbleden')

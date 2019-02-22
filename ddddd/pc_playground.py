@@ -146,7 +146,7 @@ def create_fethri(level=1):
                           languages=feature.LanguagesKnown(languages=[base.Languages.UNDERCOMMON,
                                                                       base.Languages.ELVISH]),
                           ability_score_increase_4={
-                              base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 2),
+                              base.AbilityScore.DEX: base.AbilityScoreIncrease(base.AbilityScore.DEX, 2),
                           })
     background_ = background.Noble(tool_proficiency=feature.ToolProficiency(proficiencies=['chess_set']),
                                    languages=feature.LanguagesKnown(languages=[base.Languages.DRACONIC]))
