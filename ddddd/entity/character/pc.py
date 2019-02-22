@@ -216,19 +216,16 @@ class PlayerCharacter(object):
         for ability in Skills.SKILL_PROFICIENCIES_BY_ABILITY_SCORE.keys():
             skill_proficiencies_p[ability] = {}
             for skill in Skills.SKILL_PROFICIENCIES_BY_ABILITY_SCORE[ability]:
-                skill_proficiencies_p[ability][skill] = {
-                    base.ABILITY: ability,
-                    base.IS_PROFICIENT: False,
-                    base.EXPERTISE: False,
-                }
-                skill_proficiencies_p[ability][skill][base.MODIFIER] = _ability_scores[ability].modifier
+                skill_proficiencies_p[ability][skill] = base.SkillProficiency(name=skill,
+                                                                              ability_score=_ability_scores[ability],
+                                                                              proficiency_bonus=self.proficiency_bonus,
+                                                                              is_proficient=False,
+                                                                              expertise=False)
                 if skill in skill_proficiencies:
-                    skill_proficiencies_p[ability][skill][base.IS_PROFICIENT] = True
-                    skill_proficiencies_p[ability][skill][base.MODIFIER] += self.proficiency_bonus
+                    skill_proficiencies_p[ability][skill].is_proficient = True
                     for e in expertise:
                         if skill in e.skills:
-                            skill_proficiencies_p[ability][skill][base.EXPERTISE] = True
-                            skill_proficiencies_p[ability][skill][base.MODIFIER] += self.proficiency_bonus
+                            skill_proficiencies_p[ability][skill].expertise = True
         return skill_proficiencies_p
     
     @property

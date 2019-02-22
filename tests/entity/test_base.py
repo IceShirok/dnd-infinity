@@ -74,3 +74,41 @@ class TestAbilityScore(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             ability.with_ability_score_increase(bad)
+
+
+class TestSkillProficiency(unittest.TestCase):
+    def test_unskilled(self):
+        skill = base.SkillProficiency(name='Athletics',
+                                      ability_score=base.AbilityScore('STR', 15),
+                                      proficiency_bonus=2,
+                                      is_proficient=False,
+                                      expertise=False)
+        self.assertEqual('STR', skill.ability)
+        self.assertEqual(2, skill.modifier)
+
+    def test_proficient(self):
+        skill = base.SkillProficiency(name='Athletics',
+                                      ability_score=base.AbilityScore('STR', 15),
+                                      proficiency_bonus=2,
+                                      is_proficient=True,
+                                      expertise=False)
+        self.assertEqual('STR', skill.ability)
+        self.assertEqual(4, skill.modifier)
+
+    def test_expert(self):
+        skill = base.SkillProficiency(name='Athletics',
+                                      ability_score=base.AbilityScore('STR', 15),
+                                      proficiency_bonus=2,
+                                      is_proficient=True,
+                                      expertise=True)
+        self.assertEqual('STR', skill.ability)
+        self.assertEqual(6, skill.modifier)
+
+    def test_false_expert(self):
+        skill = base.SkillProficiency(name='Athletics',
+                                      ability_score=base.AbilityScore('STR', 15),
+                                      proficiency_bonus=2,
+                                      is_proficient=False,
+                                      expertise=True)
+        self.assertEqual('STR', skill.ability)
+        self.assertEqual(2, skill.modifier)

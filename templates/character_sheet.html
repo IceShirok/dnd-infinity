@@ -112,9 +112,9 @@
 
                                                     {% for skill in pc.skills_by_ability[ability] %}
                                                     {% set skill_details = pc.skills_by_ability[ability][skill] %}
-                                                    {% set modifier = skill_details['modifier'] %}
-                                                    {% set is_proficient = skill_details['is_proficient'] %}
-                                                    {% set expertise = skill_details['expertise'] %}
+                                                    {% set modifier = skill_details.modifier %}
+                                                    {% set is_proficient = skill_details.is_proficient %}
+                                                    {% set expertise = skill_details.expertise %}
                                                         {{ skill_prof(skill, ability_to_icon[ability], modifier, is_proficient, expertise) }}
                                                     {% endfor %}
                                                 </tbody>

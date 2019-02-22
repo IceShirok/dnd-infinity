@@ -163,6 +163,29 @@ class AbilityScoreIncrease(object):
         return AbilityScoreIncrease(self.ability, self.score_increase + asi.score_increase)
 
 
+class SkillProficiency(object):
+    def __init__(self, name, ability_score, proficiency_bonus, is_proficient, expertise):
+        self.name = name
+        self.ability_score = ability_score
+        self.proficiency_bonus = proficiency_bonus
+        self.is_proficient = is_proficient
+        self.expertise = expertise
+
+    @property
+    def ability(self):
+        return self.ability_score.name
+
+    @property
+    def modifier(self):
+        mod = modifier(self.ability_score.score)
+        if self.is_proficient:
+            mod += self.proficiency_bonus
+            # You can't be an expert if you're not proficient in the skill
+            if self.expertise:
+                mod += self.proficiency_bonus
+        return mod
+
+
 class Sizes(object):
     TINY = 'tiny'
     SMALL = 'small'

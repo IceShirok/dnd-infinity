@@ -61,11 +61,11 @@ def generate_character_sheet(pc):
                     if ability in pc.skills_by_ability:
                         for skill in pc.skills_by_ability[ability]:
                             skill_details = pc.skills_by_ability[ability][skill]
-                            modifier = skill_details['modifier']
+                            modifier = skill_details.modifier
                             skill_proficiency = '-'
-                            if skill_details['is_proficient']:
+                            if skill_details.is_proficient:
                                 skill_proficiency = 'skilled'
-                            if skill_details['expertise']:
+                            if skill_details.expertise:
                                 skill_proficiency = 'expert'
                             skill_row = [
                                 skill,

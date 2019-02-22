@@ -106,14 +106,16 @@ class TestPlayerCharacterDorian(unittest.TestCase):
         skillz = self.dorian.skills_by_ability
 
         athletics = skillz['STR']['Athletics']
-        self.assertEqual(athletics['ability'], 'STR')
-        self.assertEqual(athletics['is_proficient'], True)
-        self.assertEqual(athletics['expertise'], False)
+        self.assertEqual(athletics.ability, 'STR')
+        self.assertEqual(athletics.is_proficient, True)
+        self.assertEqual(athletics.expertise, False)
+        self.assertEqual(athletics.modifier, 5)
 
         athletics = skillz['DEX']['Acrobatics']
-        self.assertEqual(athletics['ability'], 'DEX')
-        self.assertEqual(athletics['is_proficient'], False)
-        self.assertEqual(athletics['expertise'], False)
+        self.assertEqual(athletics.ability, 'DEX')
+        self.assertEqual(athletics.is_proficient, False)
+        self.assertEqual(athletics.expertise, False)
+        self.assertEqual(athletics.modifier, 0)
 
     def test_proficiencies(self):
         prof = self.dorian.proficiencies
