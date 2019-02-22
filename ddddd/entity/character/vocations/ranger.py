@@ -53,8 +53,7 @@ class Ranger(Vocation):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        self.spellcasting = RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
-                                                      casting_spells=list_spells,
+        self.spellcasting = RangerSpellcastingAbility(casting_spells=list_spells,
                                                       spell_slots={SpellTypes.FIRST: 2},
                                                       num_spells_known=2)
 
@@ -80,8 +79,7 @@ class Ranger(Vocation):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        self.spellcasting = RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
-                                                      casting_spells=list_spells,
+        self.spellcasting = RangerSpellcastingAbility(casting_spells=list_spells,
                                                       spell_slots={SpellTypes.FIRST: 3},
                                                       num_spells_known=3)
 
@@ -104,8 +102,7 @@ class Ranger(Vocation):
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
-        self.spellcasting = RangerSpellcastingAbility(spellcasting_ability=AbilityScore.WIS,
-                                                      casting_spells=list_spells,
+        self.spellcasting = RangerSpellcastingAbility(casting_spells=list_spells,
                                                       spell_slots={SpellTypes.FIRST: 4, SpellTypes.SECOND: 2},
                                                       num_spells_known=4)
 
@@ -156,11 +153,11 @@ class Ranger(Vocation):
 
 
 class RangerSpellcastingAbility(spells.SpellcastingAbility):
-    def __init__(self, spellcasting_ability,
-                 spell_slots, casting_spells,
+    def __init__(self, spell_slots, casting_spells,
                  num_spells_known):
-        super(RangerSpellcastingAbility, self).__init__(spellcasting_ability,
-                                                        spell_slots, casting_spells)
+        super(RangerSpellcastingAbility, self).__init__(spellcasting_ability='WIS',
+                                                        spell_slots=spell_slots,
+                                                        casting_spells=casting_spells)
         self.num_spells_known = num_spells_known
         self._verify()
 
