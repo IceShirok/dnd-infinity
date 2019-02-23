@@ -36,10 +36,11 @@ class TestClericSpellcastingAbility(unittest.TestCase):
 class TestClericLevel1(unittest.TestCase):
     def setUp(self):
         class_languages = feature.LanguagesKnown(languages=[base.Languages.DRACONIC, base.Languages.DWARVISH])
+        class_skills = [Skills.ARCANA, Skills.HISTORY]
         class_cantrips = [spells.SACRED_FLAME, spells.GUIDANCE, spells.SPARE_THE_DYING]
         self.cleric = cleric.Cleric(skill_proficiencies=[Skills.INSIGHT, Skills.RELIGION, Skills.ARCANA, Skills.PERSUASION],
-                                    languages=class_languages, cantrips=class_cantrips,
-                                    cleric_domain='knowledge')
+                                    cleric_domain='knowledge', cantrips=class_cantrips,
+                                    languages=class_languages, skills=class_skills)
         self.ability_scores = {'WIS': base.AbilityScore(name='WIS', score=16)}
 
     def test_name(self):
@@ -85,10 +86,11 @@ class TestClericLevel1(unittest.TestCase):
 class TestClericLevel4(unittest.TestCase):
     def setUp(self):
         class_languages = feature.LanguagesKnown(languages=[base.Languages.DRACONIC, base.Languages.DWARVISH])
+        class_skills = [Skills.ARCANA, Skills.HISTORY]
         class_cantrips = [spells.SACRED_FLAME, spells.GUIDANCE, spells.SPARE_THE_DYING]
         self.cleric = cleric.Cleric(skill_proficiencies=[Skills.INSIGHT, Skills.RELIGION, Skills.ARCANA, Skills.PERSUASION],
-                                    languages=class_languages, cantrips=class_cantrips,
-                                    cleric_domain='knowledge')
+                                    cleric_domain='knowledge', cantrips=class_cantrips,
+                                    languages=class_languages, skills=class_skills)
 
         self.cleric.level_to(level=4,
                              cantrip_4=spells.WORD_OF_RADIANCE,

@@ -87,10 +87,11 @@ def create_tamiphi(level=1):
     base_ = base.EntityBase("Tamiphi Tockentell", 10, 12, 15, 14, 18, 7, level=level)
     race_ = race.RockGnome()
     class_languages = feature.LanguagesKnown(languages=[base.Languages.DRACONIC, base.Languages.DWARVISH])
+    class_skills = [Skills.ARCANA, Skills.HISTORY]
     class_cantrips = [spells.SACRED_FLAME, spells.GUIDANCE, spells.SPARE_THE_DYING]
     vocation = cleric.Cleric(skill_proficiencies=[Skills.INSIGHT, Skills.RELIGION, Skills.ARCANA, Skills.PERSUASION],
-                             languages=class_languages, cantrips=class_cantrips,
-                             cleric_domain='knowledge')
+                             cleric_domain='knowledge', cantrips=class_cantrips,
+                             languages=class_languages, skills=class_skills)
     if level > 1:
         vocation.level_to(level=level,
                           cantrip_4=spells.WORD_OF_RADIANCE,

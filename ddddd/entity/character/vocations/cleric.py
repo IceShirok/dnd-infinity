@@ -6,7 +6,7 @@ from ddddd.entity.character.vocation import Vocation
 
 
 class Cleric(Vocation):
-    def __init__(self, skill_proficiencies, languages, cantrips, cleric_domain):
+    def __init__(self, skill_proficiencies, cantrips, cleric_domain, **kwargs):
         super(Cleric, self).__init__(name='Cleric',
                                      level=1,
                                      hit_die=8,
@@ -27,7 +27,7 @@ class Cleric(Vocation):
         # It looks like order really does matter when initializing
         # The class broken when this was set before the parent __init__ was set.
         self.specialization = ClericDomain.get_cleric_domains()[cleric_domain]
-        self._add_level_1_features(languages=languages, cantrips=cantrips)
+        self._add_level_1_features(cantrips=cantrips, **kwargs)
 
     def _add_specialization_features(self, level, **kwargs):
         super(Cleric, self)._add_specialization_features(level, **kwargs)
@@ -45,23 +45,6 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
         super(Cleric, self)._add_level_1_features(**kwargs)
-        languages = kwargs['languages']
-        def_features = {
-            'divine_domain': feature.Feature(name='Divine Domain',
-                                             description='You have chosen to worship Ioun, goddess of knowledge. \
-                                         Your divine domain is the Knowledge Domain.'),
-            'blessings_of_knowledge': feature.Expertise(name='Blessings of Knowledge',
-                                                        description='You become proficient in your choice of two of the following skills: \
-                                                      Arcana, History, Nature, or Religion. Your proficiency bonus is doubled \
-                                                      for any ability check you make that uses either of those skills.',
-                                                        skills=[Skills.ARCANA, Skills.HISTORY],
-                                                        proficiencies=None),
-            'blessings_of_knowledge_languages': feature.LanguagesKnown(name='Blessings of Knowledge: Languages',
-                                                                       description='At 1st level, you learn two languages of your choice.',
-                                                                       languages=languages.languages),
-        }
-        for f_k, f in def_features.items():
-            self._append_feature(f_k, f)
 
     def _add_level_2_features(self, **kwargs):
         super(Cleric, self)._add_level_2_features(**kwargs)
@@ -384,7 +367,22 @@ class ClericDomain(object):
 class KnowledgeDomain(ClericDomain):
 
     def add_level_1_features(self, **kwargs):
-        new_features = {}
+        languages = kwargs['languages']
+        skills = kwargs['skills']
+        new_features = {
+            'divine_domain': feature.Feature(name='Divine Domain',
+                                             description='You have chosen to worship Ioun, goddess of knowledge. \
+                                         Your divine domain is the Knowledge Domain.'),
+            'blessings_of_knowledge': feature.Expertise(name='Blessings of Knowledge',
+                                                        description='You become proficient in your choice of two of the following skills: \
+                                                        Arcana, History, Nature, or Religion. Your proficiency bonus is doubled \
+                                                        for any ability check you make that uses either of those skills.',
+                                                        skills=skills,
+                                                        proficiencies=None),
+            'blessings_of_knowledge_languages': feature.LanguagesKnown(name='Blessings of Knowledge: Languages',
+                                                                       description='At 1st level, you learn two languages of your choice.',
+                                                                       languages=languages.languages),
+        }
 
         simple_spell_list = [
             ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
