@@ -285,7 +285,7 @@ class SpellcastingAbility(object):
         self.spellcasting_ability = spellcasting_ability
 
         self.spell_slots = spell_slots
-        self.casting_spells = casting_spells
+        self.casting_spells = casting_spells if casting_spells else []
 
         self.num_cantrips_known = num_cantrips_known
         self.cantrips = cantrips if cantrips else []

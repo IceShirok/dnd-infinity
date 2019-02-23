@@ -6,29 +6,10 @@ from ddddd.entity.character.vocation import Vocation
 
 
 class Cleric(Vocation):
-    FAVORED_ENEMY = 'favored_enemy'
-    ENEMIES = 'enemies'
-    NATURAL_EXPLORER = 'natural_explorer'
-    TERRAINS = 'terrains'
-    FIGHTING_STYLE = 'fighting_style'
-    STYLES = 'styles'
-
     def __init__(self, skill_proficiencies, languages, cantrips, cleric_domain):
-        self.specialization = ClericDomain.get_cleric_domains()[cleric_domain]
 
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(1),
-                                                 num_spells_known=3 + 1 + 2,
-                                                 num_cantrips_known=spells.cantrips_by_level(1), cantrips=cantrips)
+        spellcasting = ClericSpellcastingAbility(level=1,
+                                                 cantrips=cantrips)
 
         super(Cleric, self).__init__(name='Cleric',
                                      level=1,
@@ -46,7 +27,19 @@ class Cleric(Vocation):
                                      features=None,
                                      spellcasting=spellcasting,
                                      asi=None)
+
+        # It looks like order really does matter when initializing
+        # The class broken when this was set before the parent __init__ was set.
+        self.specialization = ClericDomain.get_cleric_domains()[cleric_domain]
         self._add_level_1_features(languages=languages)
+
+    def _add_specialization_features(self, level, **kwargs):
+        super(Cleric, self)._add_specialization_features(level, **kwargs)
+        get_features = getattr(self.specialization, 'add_level_{}_features'.format(level), None)
+        if get_features:
+            add_level_features = get_features(**kwargs)
+            if 'domain_spells' in add_level_features:
+                self.spellcasting.append_cleric_domain_spells(add_level_features['domain_spells'])
 
     def _add_level_1_features(self, **kwargs):
         super(Cleric, self)._add_level_1_features(**kwargs)
@@ -87,42 +80,17 @@ class Cleric(Vocation):
                                                  a divine well of knowledge. As an action, you choose one skill or tool. \
                                                  For 10 minutes, you have proficiency with the chosen skill or tool.'))
 
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Inflict Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(2),
-                                                 num_spells_known=3 + 2 + 2,
-                                                 num_cantrips_known=spells.cantrips_by_level(2), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=2,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_3_features(self, **kwargs):
         super(Cleric, self)._add_level_3_features(**kwargs)
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
 
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(3),
-                                                 num_spells_known=3 + 3 + 4,
-                                                 num_cantrips_known=spells.cantrips_by_level(3), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=3,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_4_features(self, **kwargs):
@@ -131,25 +99,10 @@ class Cleric(Vocation):
 
         new_cantrip = kwargs['cantrip_4']
         self.spellcasting.cantrips.append(new_cantrip)
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Guiding Bolt', ddddd.entity.character.spells.SpellTypes.FIRST),
 
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(4),
-                                                 num_spells_known=4 + 4 + 4,
-                                                 num_cantrips_known=spells.cantrips_by_level(4), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=4,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_5_features(self, **kwargs):
@@ -168,30 +121,9 @@ class Cleric(Vocation):
                                                  from your deity, using that energy to fuel magical effects. When you finish a short \
                                                  or long rest, you regain your expended uses.'))
 
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Guiding Bolt', ddddd.entity.character.spells.SpellTypes.FIRST),
-
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Spiritual Weapon', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-
-            ('Nondetection', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Speak with Dead', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Tongues', ddddd.entity.character.spells.SpellTypes.THIRD),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(5),
-                                                 num_spells_known=4 + 5 + 6,
-                                                 num_cantrips_known=spells.cantrips_by_level(5), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=5,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_6_features(self, **kwargs):
@@ -201,31 +133,9 @@ class Cleric(Vocation):
                                                      description='At 6th level, you can use your Channel Divinity to read \
                                                  a creature''s thoguhts.'))
 
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Guiding Bolt', ddddd.entity.character.spells.SpellTypes.FIRST),
-
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Spiritual Weapon', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-
-            ('Nondetection', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Speak with Dead', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Tongues', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Bestow Curse', ddddd.entity.character.spells.SpellTypes.THIRD),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(6),
-                                                 num_spells_known=4 + 6 + 6,
-                                                 num_cantrips_known=spells.cantrips_by_level(6), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=6,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_7_features(self, **kwargs):
@@ -234,35 +144,9 @@ class Cleric(Vocation):
         self._append_feature('potent_spellcasting',
                              feature=PotentSpellcasting(wis_mod=4))
 
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Guiding Bolt', ddddd.entity.character.spells.SpellTypes.FIRST),
-
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Spiritual Weapon', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-
-            ('Nondetection', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Speak with Dead', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Tongues', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Bestow Curse', ddddd.entity.character.spells.SpellTypes.THIRD),
-
-            ('Banishment', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Arcane Eye', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Confusion', ddddd.entity.character.spells.SpellTypes.FOURTH),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(7),
-                                                 num_spells_known=4 + 7 + 8,
-                                                 num_cantrips_known=spells.cantrips_by_level(7), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=7,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_8_features(self, **kwargs):
@@ -276,76 +160,17 @@ class Cleric(Vocation):
                                             against your Turn Undead feature, the creature is instantly destroyed \
                                             if its challenge rating is at or below CR 1.'))
 
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Guiding Bolt', ddddd.entity.character.spells.SpellTypes.FIRST),
-
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Spiritual Weapon', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-
-            ('Nondetection', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Speak with Dead', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Tongues', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Bestow Curse', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Spirit Guardians', ddddd.entity.character.spells.SpellTypes.THIRD),
-
-            ('Banishment', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Arcane Eye', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Confusion', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Freedom of Movement', ddddd.entity.character.spells.SpellTypes.FOURTH),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(8),
-                                                 num_spells_known=5 + 8 + 8,
-                                                 num_cantrips_known=spells.cantrips_by_level(8), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=8,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_9_features(self, **kwargs):
         super(Cleric, self)._add_level_9_features(**kwargs)
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Guiding Bolt', ddddd.entity.character.spells.SpellTypes.FIRST),
 
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Spiritual Weapon', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-
-            ('Nondetection', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Speak with Dead', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Tongues', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Bestow Curse', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Spirit Guardians', ddddd.entity.character.spells.SpellTypes.THIRD),
-
-            ('Banishment', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Arcane Eye', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Confusion', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Freedom of Movement', ddddd.entity.character.spells.SpellTypes.FOURTH),
-
-            ('Geas', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Legend Lore', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Scrying', ddddd.entity.character.spells.SpellTypes.FIFTH),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(9),
-                                                 num_spells_known=5 + 9 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(9), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=9,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_10_features(self, **kwargs):
@@ -358,42 +183,9 @@ class Cleric(Vocation):
         new_cantrip = kwargs['cantrip_10']
         self.spellcasting.cantrips.append(new_cantrip)
 
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Guiding Bolt', ddddd.entity.character.spells.SpellTypes.FIRST),
-
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Spiritual Weapon', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-
-            ('Nondetection', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Speak with Dead', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Tongues', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Bestow Curse', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Spirit Guardians', ddddd.entity.character.spells.SpellTypes.THIRD),
-
-            ('Banishment', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Arcane Eye', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Confusion', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Freedom of Movement', ddddd.entity.character.spells.SpellTypes.FOURTH),
-
-            ('Geas', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Legend Lore', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Scrying', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Flame Strike', ddddd.entity.character.spells.SpellTypes.FIFTH),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(10),
-                                                 num_spells_known=5 + 10 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(10), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=10,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_11_features(self, **kwargs):
@@ -405,134 +197,26 @@ class Cleric(Vocation):
                                  against your Turn Undead feature, the creature is instantly destroyed \
                                  if its challenge rating is at or below CR 2.'))
 
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Guiding Bolt', ddddd.entity.character.spells.SpellTypes.FIRST),
-
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Spiritual Weapon', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-
-            ('Nondetection', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Speak with Dead', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Tongues', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Bestow Curse', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Spirit Guardians', ddddd.entity.character.spells.SpellTypes.THIRD),
-
-            ('Banishment', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Arcane Eye', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Confusion', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Freedom of Movement', ddddd.entity.character.spells.SpellTypes.FOURTH),
-
-            ('Geas', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Legend Lore', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Scrying', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Flame Strike', ddddd.entity.character.spells.SpellTypes.FIFTH),
-
-            ('Find the Path', ddddd.entity.character.spells.SpellTypes.SIXTH),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(11),
-                                                 num_spells_known=5 + 11 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(11), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=11,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_12_features(self, **kwargs):
         super(Cleric, self)._add_level_12_features(**kwargs)
         self._aggregate_asi_or_feat(kwargs, 12)
 
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Guiding Bolt', ddddd.entity.character.spells.SpellTypes.FIRST),
-
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Spiritual Weapon', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-
-            ('Nondetection', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Speak with Dead', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Tongues', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Bestow Curse', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Spirit Guardians', ddddd.entity.character.spells.SpellTypes.THIRD),
-
-            ('Banishment', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Arcane Eye', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Confusion', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Freedom of Movement', ddddd.entity.character.spells.SpellTypes.FOURTH),
-
-            ('Geas', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Legend Lore', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Scrying', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Flame Strike', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Greater Restoration', ddddd.entity.character.spells.SpellTypes.FIFTH),
-
-            ('Find the Path', ddddd.entity.character.spells.SpellTypes.SIXTH),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(12),
-                                                 num_spells_known=5 + 12 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(12), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=12,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_13_features(self, **kwargs):
         super(Cleric, self)._add_level_13_features(**kwargs)
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Guiding Bolt', ddddd.entity.character.spells.SpellTypes.FIRST),
 
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Spiritual Weapon', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-
-            ('Nondetection', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Speak with Dead', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Tongues', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Bestow Curse', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Spirit Guardians', ddddd.entity.character.spells.SpellTypes.THIRD),
-
-            ('Banishment', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Arcane Eye', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Confusion', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Freedom of Movement', ddddd.entity.character.spells.SpellTypes.FOURTH),
-
-            ('Geas', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Legend Lore', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Scrying', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Flame Strike', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Greater Restoration', ddddd.entity.character.spells.SpellTypes.FIFTH),
-
-            ('Find the Path', ddddd.entity.character.spells.SpellTypes.SIXTH),
-
-            ('Plane Shift', ddddd.entity.character.spells.SpellTypes.SEVENTH),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(13),
-                                                 num_spells_known=5 + 13 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(13), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=13,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_14_features(self, **kwargs):
@@ -544,147 +228,26 @@ class Cleric(Vocation):
                                  against your Turn Undead feature, the creature is instantly destroyed \
                                  if its challenge rating is at or below CR 3.'))
 
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Guiding Bolt', ddddd.entity.character.spells.SpellTypes.FIRST),
-
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Spiritual Weapon', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-
-            ('Nondetection', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Speak with Dead', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Tongues', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Bestow Curse', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Spirit Guardians', ddddd.entity.character.spells.SpellTypes.THIRD),
-
-            ('Banishment', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Arcane Eye', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Confusion', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Freedom of Movement', ddddd.entity.character.spells.SpellTypes.FOURTH),
-
-            ('Geas', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Legend Lore', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Scrying', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Flame Strike', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Greater Restoration', ddddd.entity.character.spells.SpellTypes.FIFTH),
-
-            ('Find the Path', ddddd.entity.character.spells.SpellTypes.SIXTH),
-            ('Heal', ddddd.entity.character.spells.SpellTypes.SIXTH),
-
-            ('Plane Shift', ddddd.entity.character.spells.SpellTypes.SEVENTH),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(14),
-                                                 num_spells_known=5 + 14 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(14), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=14,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_15_features(self, **kwargs):
         super(Cleric, self)._add_level_15_features(**kwargs)
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Guiding Bolt', ddddd.entity.character.spells.SpellTypes.FIRST),
 
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Spiritual Weapon', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-
-            ('Nondetection', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Speak with Dead', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Tongues', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Bestow Curse', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Spirit Guardians', ddddd.entity.character.spells.SpellTypes.THIRD),
-
-            ('Banishment', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Arcane Eye', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Confusion', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Freedom of Movement', ddddd.entity.character.spells.SpellTypes.FOURTH),
-
-            ('Geas', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Legend Lore', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Scrying', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Flame Strike', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Greater Restoration', ddddd.entity.character.spells.SpellTypes.FIFTH),
-
-            ('Find the Path', ddddd.entity.character.spells.SpellTypes.SIXTH),
-            ('Heal', ddddd.entity.character.spells.SpellTypes.SIXTH),
-
-            ('Plane Shift', ddddd.entity.character.spells.SpellTypes.SEVENTH),
-
-            ('Earthquake', ddddd.entity.character.spells.SpellTypes.EIGHTH),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(15),
-                                                 num_spells_known=5 + 15 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(15), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=15,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_16_features(self, **kwargs):
         super(Cleric, self)._add_level_16_features(**kwargs)
         self._aggregate_asi_or_feat(kwargs, 16)
 
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Guiding Bolt', ddddd.entity.character.spells.SpellTypes.FIRST),
-
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Spiritual Weapon', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-
-            ('Nondetection', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Speak with Dead', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Tongues', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Bestow Curse', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Spirit Guardians', ddddd.entity.character.spells.SpellTypes.THIRD),
-
-            ('Banishment', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Arcane Eye', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Confusion', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Freedom of Movement', ddddd.entity.character.spells.SpellTypes.FOURTH),
-
-            ('Geas', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Legend Lore', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Scrying', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Flame Strike', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Greater Restoration', ddddd.entity.character.spells.SpellTypes.FIFTH),
-
-            ('Find the Path', ddddd.entity.character.spells.SpellTypes.SIXTH),
-            ('Heal', ddddd.entity.character.spells.SpellTypes.SIXTH),
-
-            ('Plane Shift', ddddd.entity.character.spells.SpellTypes.SEVENTH),
-            ('Fire Storm', ddddd.entity.character.spells.SpellTypes.SEVENTH),
-
-            ('Earthquake', ddddd.entity.character.spells.SpellTypes.EIGHTH),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(16),
-                                                 num_spells_known=5 + 16 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(16), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=16,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_17_features(self, **kwargs):
@@ -696,53 +259,9 @@ class Cleric(Vocation):
                                  against your Turn Undead feature, the creature is instantly destroyed \
                                  if its challenge rating is at or below CR 4.'))
 
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Guiding Bolt', ddddd.entity.character.spells.SpellTypes.FIRST),
-
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Spiritual Weapon', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-
-            ('Nondetection', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Speak with Dead', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Tongues', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Bestow Curse', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Spirit Guardians', ddddd.entity.character.spells.SpellTypes.THIRD),
-
-            ('Banishment', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Arcane Eye', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Confusion', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Freedom of Movement', ddddd.entity.character.spells.SpellTypes.FOURTH),
-
-            ('Geas', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Legend Lore', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Scrying', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Flame Strike', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Greater Restoration', ddddd.entity.character.spells.SpellTypes.FIFTH),
-
-            ('Find the Path', ddddd.entity.character.spells.SpellTypes.SIXTH),
-            ('Heal', ddddd.entity.character.spells.SpellTypes.SIXTH),
-
-            ('Plane Shift', ddddd.entity.character.spells.SpellTypes.SEVENTH),
-            ('Fire Storm', ddddd.entity.character.spells.SpellTypes.SEVENTH),
-
-            ('Earthquake', ddddd.entity.character.spells.SpellTypes.EIGHTH),
-
-            ('Gate', ddddd.entity.character.spells.SpellTypes.NINTH),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(17),
-                                                 num_spells_known=5 + 17 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(17), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=17,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_18_features(self, **kwargs):
@@ -753,109 +272,18 @@ class Cleric(Vocation):
                                                  from your deity, using that energy to fuel magical effects. When you finish a short \
                                                  or long rest, you regain your expended uses.'))
 
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Guiding Bolt', ddddd.entity.character.spells.SpellTypes.FIRST),
-
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Spiritual Weapon', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-
-            ('Nondetection', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Speak with Dead', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Tongues', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Bestow Curse', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Spirit Guardians', ddddd.entity.character.spells.SpellTypes.THIRD),
-
-            ('Banishment', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Arcane Eye', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Confusion', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Freedom of Movement', ddddd.entity.character.spells.SpellTypes.FOURTH),
-
-            ('Geas', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Legend Lore', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Scrying', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Flame Strike', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Greater Restoration', ddddd.entity.character.spells.SpellTypes.FIFTH),
-
-            ('Find the Path', ddddd.entity.character.spells.SpellTypes.SIXTH),
-            ('Heal', ddddd.entity.character.spells.SpellTypes.SIXTH),
-            ('Harm', ddddd.entity.character.spells.SpellTypes.SIXTH),
-
-            ('Plane Shift', ddddd.entity.character.spells.SpellTypes.SEVENTH),
-            ('Fire Storm', ddddd.entity.character.spells.SpellTypes.SEVENTH),
-
-            ('Earthquake', ddddd.entity.character.spells.SpellTypes.EIGHTH),
-
-            ('Gate', ddddd.entity.character.spells.SpellTypes.NINTH),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(18),
-                                                 num_spells_known=5 + 18 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(18), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=18,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_19_features(self, **kwargs):
         super(Cleric, self)._add_level_19_features(**kwargs)
         self._aggregate_asi_or_feat(kwargs, 19)
 
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Guiding Bolt', ddddd.entity.character.spells.SpellTypes.FIRST),
-
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Spiritual Weapon', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-
-            ('Nondetection', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Speak with Dead', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Tongues', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Bestow Curse', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Spirit Guardians', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Revivify', ddddd.entity.character.spells.SpellTypes.THIRD),
-
-            ('Banishment', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Arcane Eye', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Confusion', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Freedom of Movement', ddddd.entity.character.spells.SpellTypes.FOURTH),
-
-            ('Geas', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Legend Lore', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Scrying', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Flame Strike', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Greater Restoration', ddddd.entity.character.spells.SpellTypes.FIFTH),
-
-            ('Find the Path', ddddd.entity.character.spells.SpellTypes.SIXTH),
-            ('Heal', ddddd.entity.character.spells.SpellTypes.SIXTH),
-            ('Harm', ddddd.entity.character.spells.SpellTypes.SIXTH),
-
-            ('Plane Shift', ddddd.entity.character.spells.SpellTypes.SEVENTH),
-            ('Fire Storm', ddddd.entity.character.spells.SpellTypes.SEVENTH),
-
-            ('Earthquake', ddddd.entity.character.spells.SpellTypes.EIGHTH),
-
-            ('Gate', ddddd.entity.character.spells.SpellTypes.NINTH),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(19),
-                                                 num_spells_known=5 + 19 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(19), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=19,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
     def _add_level_20_features(self, **kwargs):
@@ -865,56 +293,9 @@ class Cleric(Vocation):
                                                      description='At 20th level, your call for intervention succeeds automatically, \
                                                  no roll required.'))
 
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Guiding Bolt', ddddd.entity.character.spells.SpellTypes.FIRST),
-
-            ('Enhance Ability', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Lesser Restoration', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Spiritual Weapon', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
-            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
-
-            ('Nondetection', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Speak with Dead', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Tongues', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Bestow Curse', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Spirit Guardians', ddddd.entity.character.spells.SpellTypes.THIRD),
-            ('Revivify', ddddd.entity.character.spells.SpellTypes.THIRD),
-
-            ('Banishment', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Arcane Eye', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Confusion', ddddd.entity.character.spells.SpellTypes.FOURTH),
-            ('Freedom of Movement', ddddd.entity.character.spells.SpellTypes.FOURTH),
-
-            ('Geas', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Legend Lore', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Scrying', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Flame Strike', ddddd.entity.character.spells.SpellTypes.FIFTH),
-            ('Greater Restoration', ddddd.entity.character.spells.SpellTypes.FIFTH),
-
-            ('Find the Path', ddddd.entity.character.spells.SpellTypes.SIXTH),
-            ('Heal', ddddd.entity.character.spells.SpellTypes.SIXTH),
-            ('Harm', ddddd.entity.character.spells.SpellTypes.SIXTH),
-
-            ('Plane Shift', ddddd.entity.character.spells.SpellTypes.SEVENTH),
-            ('Fire Storm', ddddd.entity.character.spells.SpellTypes.SEVENTH),
-
-            ('Earthquake', ddddd.entity.character.spells.SpellTypes.EIGHTH),
-
-            ('Gate', ddddd.entity.character.spells.SpellTypes.NINTH),
-            ('True Ressurection', ddddd.entity.character.spells.SpellTypes.NINTH),
-        ]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                 spell_slots=spells.get_spell_slot_by_level(20),
-                                                 num_spells_known=5 + 20 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(20), cantrips=self.spellcasting.cantrips)
+        spellcasting = ClericSpellcastingAbility(level=20,
+                                                 cantrips=self.spellcasting.cantrips,
+                                                 domain_spells=self.spellcasting.casting_spells)
         self.spellcasting = spellcasting
 
 
@@ -930,13 +311,31 @@ class PotentSpellcasting(feature.EnhanceDamage):
 
 
 class ClericSpellcastingAbility(spells.SpellcastingAbility):
-    def __init__(self, spell_slots, list_spells_known,
-                 num_spells_known,
-                 num_cantrips_known, cantrips):
-        super(ClericSpellcastingAbility, self).__init__(base.AbilityScore.WIS,
-                                                        spell_slots, list_spells_known,
-                                                        num_cantrips_known=num_cantrips_known, cantrips=cantrips)
-        self.num_spells_known = num_spells_known
+    """
+    Clerics prepare spells from a pre-determined list of cleric spells. The number of spells
+    a cleric can prepare is determined by some varying factors.
+    In addition, clerics get domain-specific spells that are considered part of their spell list
+    and are already "prepared".
+    """
+    def __init__(self, level, cantrips, domain_spells=None):
+        self.level = level
+        spell_slots = spells.get_spell_slot_by_level(level)
+        super(ClericSpellcastingAbility, self).__init__(spellcasting_ability=base.AbilityScore.WIS,
+                                                        spell_slots=spell_slots,
+                                                        casting_spells=domain_spells,
+                                                        num_cantrips_known=spells.cantrips_by_level(level),
+                                                        cantrips=cantrips)
+
+    def append_cleric_domain_spells(self, spells):
+        self.casting_spells.extend(spells)
+
+    def num_spells_known(self, ability_scores):
+        """
+        The number of spells that a cleric can prepare is the cleric level + the cleric's wisdom modifier.
+        :param ability_scores: the PC's ability scores
+        :return: the total number of spells that the cleric can prepare
+        """
+        return self.level + ability_scores[self.spellcasting_ability].modifier
 
     def _verify(self):
         # TODO this part is tricky because it requires knowing the PC's WIS modifier to determine the number of spells.
@@ -959,7 +358,7 @@ class ClericDomain(object):
     @staticmethod
     def get_cleric_domains():
         return {
-            'knowledge': KnowledgeDomainStrategy(),
+            'knowledge': KnowledgeDomain(),
         }
 
     @staticmethod
@@ -994,11 +393,22 @@ class ClericDomain(object):
         raise NotImplementedError()
 
 
-class KnowledgeDomainStrategy(ClericDomain):
+class KnowledgeDomain(ClericDomain):
 
     def add_level_1_features(self, **kwargs):
         new_features = {}
-        new_stuff = {'features': new_features}
+
+        simple_spell_list = [
+            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
+            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
+        ]
+        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
+
+        new_stuff = {
+            'features': new_features,
+            'domain_spells': casting_spells,
+        }
+
         return new_stuff
 
     def add_level_2_features(self, **kwargs):
@@ -1008,12 +418,34 @@ class KnowledgeDomainStrategy(ClericDomain):
 
     def add_level_3_features(self, **kwargs):
         new_features = {}
-        new_stuff = {'features': new_features}
+
+        simple_spell_list = [
+            ('Augury', ddddd.entity.character.spells.SpellTypes.SECOND),
+            ('Suggestion', ddddd.entity.character.spells.SpellTypes.SECOND),
+        ]
+        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
+
+        new_stuff = {
+            'features': new_features,
+            'domain_spells': casting_spells,
+        }
+
         return new_stuff
 
     def add_level_5_features(self, **kwargs):
         new_features = {}
-        new_stuff = {'features': new_features}
+
+        simple_spell_list = [
+            ('Speak with Dead', ddddd.entity.character.spells.SpellTypes.THIRD),
+            ('Tongues', ddddd.entity.character.spells.SpellTypes.THIRD),
+        ]
+        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
+
+        new_stuff = {
+            'features': new_features,
+            'domain_spells': casting_spells,
+        }
+
         return new_stuff
 
     def add_level_6_features(self, **kwargs):
@@ -1023,7 +455,18 @@ class KnowledgeDomainStrategy(ClericDomain):
 
     def add_level_7_features(self, **kwargs):
         new_features = {}
-        new_stuff = {'features': new_features}
+
+        simple_spell_list = [
+            ('Arcane Eye', ddddd.entity.character.spells.SpellTypes.FOURTH),
+            ('Confusion', ddddd.entity.character.spells.SpellTypes.FOURTH),
+        ]
+        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
+
+        new_stuff = {
+            'features': new_features,
+            'domain_spells': casting_spells,
+        }
+
         return new_stuff
 
     def add_level_8_features(self, **kwargs):
@@ -1033,7 +476,18 @@ class KnowledgeDomainStrategy(ClericDomain):
 
     def add_level_9_features(self, **kwargs):
         new_features = {}
-        new_stuff = {'features': new_features}
+
+        simple_spell_list = [
+            ('Legend Lore', ddddd.entity.character.spells.SpellTypes.FIFTH),
+            ('Scrying', ddddd.entity.character.spells.SpellTypes.FIFTH),
+        ]
+        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
+
+        new_stuff = {
+            'features': new_features,
+            'domain_spells': casting_spells,
+        }
+
         return new_stuff
 
     def add_level_17_features(self, **kwargs):

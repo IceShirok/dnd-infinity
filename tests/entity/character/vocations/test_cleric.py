@@ -8,29 +8,19 @@ from ddddd.entity.character.vocations import cleric
 
 class TestClericSpellcastingAbility(unittest.TestCase):
     def setUp(self):
-        simple_spell_list = [
-            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
-            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
-        ]
         cantrips = [spells.SACRED_FLAME, spells.GUIDANCE, spells.SPARE_THE_DYING]
-        casting_spells = spells.generate_simple_spell_list(simple_spell_list)
-        self.spellcasting = cleric.ClericSpellcastingAbility(list_spells_known=casting_spells,
-                                                             spell_slots=spells.get_spell_slot_by_level(1),
-                                                             num_spells_known=3 + 1 + 2,
-                                                             num_cantrips_known=spells.cantrips_by_level(3),
+        self.spellcasting = cleric.ClericSpellcastingAbility(level=1,
                                                              cantrips=cantrips)
+        self.ability_scores = {'WIS': base.AbilityScore(name='WIS', score=16)}
 
     def test_init(self):
         self.assertEqual('WIS', self.spellcasting.spellcasting_ability)
         self.assertEqual({'1st': 2}, self.spellcasting.spell_slots)
-        self.assertEqual(6, len(self.spellcasting.casting_spells))
+        self.assertEqual(1, self.spellcasting.level)
+        self.assertEqual(0, len(self.spellcasting.casting_spells))
         self.assertEqual(3, self.spellcasting.num_cantrips_known)
         self.assertEqual(3, len(self.spellcasting.cantrips))
-        self.assertEqual(6, self.spellcasting.num_spells_known)
+        self.assertEqual(4, self.spellcasting.num_spells_known(self.ability_scores))
 
     def test_spell_save_dc(self):
         ability_scores = {'WIS': base.AbilityScore('WIS', 16)}
@@ -50,6 +40,7 @@ class TestClericLevel1(unittest.TestCase):
         self.cleric = cleric.Cleric(skill_proficiencies=[Skills.INSIGHT, Skills.RELIGION, Skills.ARCANA, Skills.PERSUASION],
                                     languages=class_languages, cantrips=class_cantrips,
                                     cleric_domain='knowledge')
+        self.ability_scores = {'WIS': base.AbilityScore(name='WIS', score=16)}
 
     def test_name(self):
         self.assertEqual('Cleric', self.cleric.name)
@@ -75,10 +66,10 @@ class TestClericLevel1(unittest.TestCase):
         spellcasting = self.cleric.spellcasting
         self.assertEqual('WIS', spellcasting.spellcasting_ability)
         self.assertEqual({'1st': 2}, spellcasting.spell_slots)
-        self.assertEqual(6, len(spellcasting.casting_spells))
+        self.assertEqual(2, len(spellcasting.casting_spells))
         self.assertEqual(3, spellcasting.num_cantrips_known)
         self.assertEqual(3, len(spellcasting.cantrips))
-        self.assertEqual(6, spellcasting.num_spells_known)
+        self.assertEqual(4, spellcasting.num_spells_known(self.ability_scores))
 
     def test_spell_dc_with_ability(self):
         spell_dc = spells.spell_dc_with_ability('DEX')
@@ -104,6 +95,7 @@ class TestClericLevel4(unittest.TestCase):
                              ability_score_increase_4={
                                  base.AbilityScore.WIS: base.AbilityScoreIncrease(base.AbilityScore.WIS, 2),
                              })
+        self.ability_scores = {'WIS': base.AbilityScore(name='WIS', score=16)}
 
     def test_name(self):
         self.assertEqual('Cleric', self.cleric.name)
@@ -129,10 +121,10 @@ class TestClericLevel4(unittest.TestCase):
         spellcasting = self.cleric.spellcasting
         self.assertEqual('WIS', spellcasting.spellcasting_ability)
         self.assertEqual({'1st': 4, '2nd': 3}, spellcasting.spell_slots)
-        self.assertEqual(11, len(spellcasting.casting_spells))
+        self.assertEqual(4, len(spellcasting.casting_spells))
         self.assertEqual(4, spellcasting.num_cantrips_known)
         self.assertEqual(4, len(spellcasting.cantrips))
-        self.assertEqual(12, spellcasting.num_spells_known)
+        self.assertEqual(7, spellcasting.num_spells_known(self.ability_scores))
 
     def test_asi(self):
         self.assertEqual({'WIS'}, set(self.cleric.asi.keys()))

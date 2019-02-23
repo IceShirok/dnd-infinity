@@ -177,7 +177,7 @@ class TestPlayerCharacterTamiphiLevel1(unittest.TestCase):
     def test_casting_spells(self):
         self.assertTrue('1st' in self.tamiphi.casting_spells)
         first_level_spells = self.tamiphi.casting_spells['1st']
-        self.assertEqual(len(first_level_spells), 6)
+        self.assertEqual(len(first_level_spells), 2)
 
     def test_spell_attack_bonus(self):
         self.assertEqual(self.tamiphi.spell_attack_bonus, 6)
