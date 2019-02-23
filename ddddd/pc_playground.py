@@ -141,12 +141,32 @@ def create_fethri(level=1):
                            )
     if level > 1:
         vocation.level_to(level=level,
+                          roguish_archetype='mastermind',
                           gaming_set='bone_dice',
                           languages=feature.LanguagesKnown(languages=[base.Languages.UNDERCOMMON,
                                                                       base.Languages.ELVISH]),
                           ability_score_increase_4={
                               base.AbilityScore.DEX: base.AbilityScoreIncrease(base.AbilityScore.DEX, 2),
-                          })
+                          },
+                          expertise_6=feature.Expertise(skills=[Skills.STEALTH],
+                                                        proficiencies=['thieves_tools']),
+                          ability_score_increase_8={
+                              base.AbilityScore.DEX: base.AbilityScoreIncrease(base.AbilityScore.DEX, 2),
+                          },
+                          ability_score_increase_10={
+                              base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 2),
+                          },
+                          ability_score_increase_12={
+                              base.AbilityScore.DEX: base.AbilityScoreIncrease(base.AbilityScore.DEX, 2),
+                          },
+                          ability_score_increase_16={
+                              base.AbilityScore.CHA: base.AbilityScoreIncrease(base.AbilityScore.CHA, 2),
+                          },
+                          ability_score_increase_19={
+                              base.AbilityScore.INT: base.AbilityScoreIncrease(base.AbilityScore.INT, 2),
+                          }
+        )
+
     background_ = background.Noble(tool_proficiency=feature.ToolProficiency(proficiencies=['chess_set']),
                                    languages=feature.LanguagesKnown(languages=[base.Languages.DRACONIC]))
 

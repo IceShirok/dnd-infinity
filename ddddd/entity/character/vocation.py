@@ -22,6 +22,17 @@ class Vocation(object):
         self.asi = asi if asi else {}
         self.spellcasting = spellcasting
         self.feats = feats if feats else []
+        self.specialization = None
+
+    def _add_specialization_features(self, level, **kwargs):
+        if self.specialization:
+            new_stuff = getattr(self.specialization, 'add_level_{}_features'.format(level))(**kwargs)
+            if 'features' in new_stuff:
+                for key, f in new_stuff['features'].items():
+                    self._append_feature(key, f)
+            if 'proficiencies' in new_stuff:
+                for key, p in new_stuff['proficiencies'].items():
+                    self.proficiencies[key].proficiencies.extend(p)
 
     def _append_feature(self, f_key, feature):
         self._features[f_key] = feature
