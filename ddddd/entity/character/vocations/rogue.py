@@ -13,8 +13,8 @@ class Rogue(Vocation):
             'sneak_attack': SneakAttack(level=1),
             'thieves_cant': feature.LanguagesKnown(name='Thieves'' Cant',
                                                    description='During your rogue Training you learned thieves'' cant, \
-                                                 a Secret mix of dialect, jargon, and code that allows you to hide messages \
-                                                 in seemingly normal conversation.',
+                                                   a Secret mix of dialect, jargon, and code that allows you to hide messages \
+                                                   in seemingly normal conversation.',
                                                    languages=[base.Languages.THIEVES_CANT]),
             'expertise': expertise,
         }
@@ -39,15 +39,6 @@ class Rogue(Vocation):
                                     spellcasting=None,
                                     asi=None)
 
-    def _add_subclass_features(self, level, **kwargs):
-        new_stuff = getattr(self.roguish_archetype, 'add_level_{}_features'.format(level))(**kwargs)
-        if 'features' in new_stuff:
-            for key, f in new_stuff['features'].items():
-                self._append_feature(key, f)
-        if 'proficiencies' in new_stuff:
-            for key, p in new_stuff['proficiencies'].items():
-                self.proficiencies[key].proficiencies.extend(p)
-
     def _add_level_2_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
         self._append_feature('cunning_action',
@@ -58,8 +49,8 @@ class Rogue(Vocation):
     def _add_level_3_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
 
-        self.roguish_archetype = RoguishArchetype.get_roguish_archetype(kwargs['roguish_archetype'])
-        self._add_subclass_features(self.level, **kwargs)
+        self.specialization = RoguishArchetype.get_roguish_archetype(kwargs['roguish_archetype'])
+        self._add_specialization_features(self.level, **kwargs)
 
     def _add_level_4_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
@@ -98,7 +89,7 @@ class Rogue(Vocation):
 
     def _add_level_9_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-        self._add_subclass_features(self.level, **kwargs)
+        self._add_specialization_features(self.level, **kwargs)
 
     def _add_level_10_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
@@ -120,7 +111,7 @@ class Rogue(Vocation):
 
     def _add_level_13_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-        self._add_subclass_features(self.level, **kwargs)
+        self._add_specialization_features(self.level, **kwargs)
 
     def _add_level_14_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
@@ -146,7 +137,7 @@ class Rogue(Vocation):
 
     def _add_level_17_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-        self._add_subclass_features(self.level, **kwargs)
+        self._add_specialization_features(self.level, **kwargs)
 
     def _add_level_18_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
