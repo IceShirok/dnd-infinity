@@ -7,10 +7,6 @@ from ddddd.entity.character.vocation import Vocation
 
 class Cleric(Vocation):
     def __init__(self, skill_proficiencies, languages, cantrips, cleric_domain):
-
-        spellcasting = ClericSpellcastingAbility(level=1,
-                                                 cantrips=cantrips)
-
         super(Cleric, self).__init__(name='Cleric',
                                      level=1,
                                      hit_die=8,
@@ -25,13 +21,13 @@ class Cleric(Vocation):
                                      saving_throws=[AbilityScore.WIS, AbilityScore.CHA],
                                      skill_proficiencies=skill_proficiencies,
                                      features=None,
-                                     spellcasting=spellcasting,
+                                     spellcasting=None,
                                      asi=None)
 
         # It looks like order really does matter when initializing
         # The class broken when this was set before the parent __init__ was set.
         self.specialization = ClericDomain.get_cleric_domains()[cleric_domain]
-        self._add_level_1_features(languages=languages)
+        self._add_level_1_features(languages=languages, cantrips=cantrips)
 
     def _add_specialization_features(self, level, **kwargs):
         super(Cleric, self)._add_specialization_features(level, **kwargs)
@@ -42,6 +38,12 @@ class Cleric(Vocation):
                 self.spellcasting.append_cleric_domain_spells(add_level_features['domain_spells'])
 
     def _add_level_1_features(self, **kwargs):
+        cantrips = kwargs['cantrips']
+        spellcasting = ClericSpellcastingAbility(level=1,
+                                                 cantrips=cantrips,
+                                                 domain_spells=None)
+        self.spellcasting = spellcasting
+
         super(Cleric, self)._add_level_1_features(**kwargs)
         languages = kwargs['languages']
         def_features = {
@@ -66,19 +68,13 @@ class Cleric(Vocation):
         self._append_feature('channel_divinity',
                              feature=feature.Feature(name='Channel Divinity',
                                                      description='At 2nd level, you gain the ability to channel divine energy directly \
-                                                 from your deity, using that energy to fuel magical effects. When you finish a short \
-                                                 or long rest, you regain your expended uses.'))
+                                                     from your deity, using that energy to fuel magical effects. When you finish a short \
+                                                     or long rest, you regain your expended uses.'))
 
         self._append_feature('channel_divinity_turn_undead',
                              feature=feature.Feature(name='Channel Divinity: Turn Undead',
                                                      description='As an action, you present your holy symbol \
                                                  and speak a prayer censuring the undead.'))
-
-        self._append_feature('channel_divinity_knowledge_of_the_ages',
-                             feature=feature.Feature(name='Channel Divinity: Knowledge of the Ages',
-                                                     description='Starting at 2nd level, you can use your Channel Divinity to tap into \
-                                                 a divine well of knowledge. As an action, you choose one skill or tool. \
-                                                 For 10 minutes, you have proficiency with the chosen skill or tool.'))
 
         spellcasting = ClericSpellcastingAbility(level=2,
                                                  cantrips=self.spellcasting.cantrips,
@@ -114,7 +110,6 @@ class Cleric(Vocation):
                                              against your Turn Undead feature, the creature is instantly destroyed \
                                              if its challenge rating is at or below CR 1/2.'))
 
-        # TODO work on the mechanic to override stuff
         self._append_feature('channel_divinity',
                              feature=feature.Feature(name='Channel Divinity (2/rest)',
                                                      description='At 2nd level, you gain the ability to channel divine energy directly \
@@ -128,10 +123,6 @@ class Cleric(Vocation):
 
     def _add_level_6_features(self, **kwargs):
         super(Cleric, self)._add_level_6_features(**kwargs)
-        self._append_feature('channel_divinity_read_thoughts',
-                             feature=feature.Feature(name='Channel Divinity: Read Thoughts',
-                                                     description='At 6th level, you can use your Channel Divinity to read \
-                                                 a creature''s thoguhts.'))
 
         spellcasting = ClericSpellcastingAbility(level=6,
                                                  cantrips=self.spellcasting.cantrips,
@@ -140,9 +131,6 @@ class Cleric(Vocation):
 
     def _add_level_7_features(self, **kwargs):
         super(Cleric, self)._add_level_7_features(**kwargs)
-        # TODO fix the wisdom modifier
-        self._append_feature('potent_spellcasting',
-                             feature=PotentSpellcasting(wis_mod=4))
 
         spellcasting = ClericSpellcastingAbility(level=7,
                                                  cantrips=self.spellcasting.cantrips,
@@ -412,7 +400,13 @@ class KnowledgeDomain(ClericDomain):
         return new_stuff
 
     def add_level_2_features(self, **kwargs):
-        new_features = {}
+        new_features = {
+            'channel_divinity_knowledge_of_the_ages': feature.Feature(name='Channel Divinity: Knowledge of the Ages',
+                                                                      description='Starting at 2nd level, you can use \
+                                                 your Channel Divinity to tap into a divine well of knowledge. \
+                                                 As an action, you choose one skill or tool. \
+                                                 For 10 minutes, you have proficiency with the chosen skill or tool.')
+        }
         new_stuff = {'features': new_features}
         return new_stuff
 
@@ -449,7 +443,11 @@ class KnowledgeDomain(ClericDomain):
         return new_stuff
 
     def add_level_6_features(self, **kwargs):
-        new_features = {}
+        new_features = {
+            'channel_divinity_read_thoughts': feature.Feature(name='Channel Divinity: Read Thoughts',
+                                                              description='At 6th level, you can use your \
+                                                              Channel Divinity to read a creature''s thoguhts.')
+        }
         new_stuff = {'features': new_features}
         return new_stuff
 
@@ -470,7 +468,10 @@ class KnowledgeDomain(ClericDomain):
         return new_stuff
 
     def add_level_8_features(self, **kwargs):
-        new_features = {}
+        # TODO fix the wisdom modifier
+        new_features = {
+            'potent_spellcasting': PotentSpellcasting(wis_mod=4)
+        }
         new_stuff = {'features': new_features}
         return new_stuff
 
