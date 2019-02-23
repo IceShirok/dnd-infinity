@@ -190,23 +190,6 @@ class SkillProficiency(object):
         return mod
 
 
-class Sizes(object):
-    TINY = 'tiny'
-    SMALL = 'small'
-    MEDIUM = 'medium'
-    LARGE = 'large'
-    HUGE = 'huge'
-    GARGANTUAN = 'gargantuan'
-    SIZE_TO_CARRYING_CAPACITY = {
-        TINY: 0.5,
-        SMALL: 1,
-        MEDIUM: 1,
-        LARGE: 2,
-        HUGE: 4,
-        GARGANTUAN: 8,
-    }
-
-
 class Skills(object):
     ATHLETICS = 'Athletics'
 

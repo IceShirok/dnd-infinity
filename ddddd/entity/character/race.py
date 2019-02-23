@@ -1,5 +1,5 @@
 from ddddd.entity.character import feature, base
-from ddddd.entity.character.base import Languages, Sizes
+from ddddd.entity.character.base import Languages
 
 import logging
 logger = logging.getLogger(__name__)
@@ -46,25 +46,27 @@ class Race(object):
         :return: True if valid, otherwise it'll throw an exception
         """
         required_traits = {}
-        # for req_k, trait_req_details in self.required().items():
-        #     # Go through the list of traits and verify based on specifications
-        #     if req_k not in self.traits:
-        #         required_traits[req_k] = trait_req_details
-        #         required_traits[req_k]['issue'] = 'Required trait {} not inputted!'.format(req_k)
-        #
-        #     input_details = self.traits[req_k]
-        #
-        #     choices_list_k = set(trait_req_details.keys()).intersection(set(input_details.keys())).pop()
-        #     input_list = input_details[choices_list_k]
-        #     if len(input_list) != trait_req_details[base.CHOICES] \
-        #             or not set(input_list).issubset(trait_req_details[choices_list_k]):
-        #         required_traits[req_k] = trait_req_details
-        #         required_traits[req_k]['issue'] = 'Required trait {} is invalid.'.format(req_k)
-
         return required_traits
 
     def required(self):
         return {}
+
+
+class Sizes(object):
+    TINY = 'tiny'
+    SMALL = 'small'
+    MEDIUM = 'medium'
+    LARGE = 'large'
+    HUGE = 'huge'
+    GARGANTUAN = 'gargantuan'
+    SIZE_TO_CARRYING_CAPACITY = {
+        TINY: 0.5,
+        SMALL: 1,
+        MEDIUM: 1,
+        LARGE: 2,
+        HUGE: 4,
+        GARGANTUAN: 8,
+    }
 
 
 #############################
