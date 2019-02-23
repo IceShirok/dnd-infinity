@@ -16,20 +16,6 @@ class Cleric(Vocation):
     def __init__(self, skill_proficiencies, languages, cantrips):
         self.specialization = KnowledgeDomainStrategy()
         # self._add_specialization_features(self.level, **kwargs)
-        def_features = {
-            'divine_domain': feature.Feature(name='Divine Domain',
-                                             description='You have chosen to worship Ioun, goddess of knowledge. \
-                                         Your divine domain is the Knowledge Domain.'),
-            'blessings_of_knowledge': feature.Expertise(name='Blessings of Knowledge',
-                                                        description='You become proficient in your choice of two of the following skills: \
-                                                      Arcana, History, Nature, or Religion. Your proficiency bonus is doubled \
-                                                      for any ability check you make that uses either of those skills.',
-                                                        skills=[Skills.ARCANA, Skills.HISTORY],
-                                                        proficiencies=None),
-            'blessings_of_knowledge_languages': feature.LanguagesKnown(name='Blessings of Knowledge: Languages',
-                                                                       description='At 1st level, you learn two languages of your choice.',
-                                                                       languages=languages.languages),
-        }
 
         simple_spell_list = [
             ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
@@ -58,12 +44,33 @@ class Cleric(Vocation):
                                      },
                                      saving_throws=[AbilityScore.WIS, AbilityScore.CHA],
                                      skill_proficiencies=skill_proficiencies,
-                                     features=def_features,
+                                     features=None,
                                      spellcasting=spellcasting,
                                      asi=None)
+        self._add_level_1_features(languages=languages)
+
+    def _add_level_1_features(self, **kwargs):
+        super(Cleric, self)._add_level_1_features(**kwargs)
+        languages = kwargs['languages']
+        def_features = {
+            'divine_domain': feature.Feature(name='Divine Domain',
+                                             description='You have chosen to worship Ioun, goddess of knowledge. \
+                                         Your divine domain is the Knowledge Domain.'),
+            'blessings_of_knowledge': feature.Expertise(name='Blessings of Knowledge',
+                                                        description='You become proficient in your choice of two of the following skills: \
+                                                      Arcana, History, Nature, or Religion. Your proficiency bonus is doubled \
+                                                      for any ability check you make that uses either of those skills.',
+                                                        skills=[Skills.ARCANA, Skills.HISTORY],
+                                                        proficiencies=None),
+            'blessings_of_knowledge_languages': feature.LanguagesKnown(name='Blessings of Knowledge: Languages',
+                                                                       description='At 1st level, you learn two languages of your choice.',
+                                                                       languages=languages.languages),
+        }
+        for f_k, f in def_features.items():
+            self._append_feature(f_k, f)
 
     def _add_level_2_features(self, **kwargs):
-        self._add_specialization_features(self.level, **kwargs)
+        super(Cleric, self)._add_level_2_features(**kwargs)
         self._append_feature('channel_divinity',
                              feature=feature.Feature(name='Channel Divinity',
                                                      description='At 2nd level, you gain the ability to channel divine energy directly \
@@ -98,7 +105,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_3_features(self, **kwargs):
-        self._add_specialization_features(self.level, **kwargs)
+        super(Cleric, self)._add_level_3_features(**kwargs)
         simple_spell_list = [
             ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
             ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
@@ -120,6 +127,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_4_features(self, **kwargs):
+        super(Cleric, self)._add_level_4_features(**kwargs)
         self._aggregate_asi_or_feat(kwargs, 4)
 
         new_cantrip = kwargs['cantrip_4']
@@ -146,6 +154,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_5_features(self, **kwargs):
+        super(Cleric, self)._add_level_5_features(**kwargs)
         self._append_feature('channel_divinity_destroy_undead',
                              feature=feature.Feature(
                                  name='Channel Divinity: Destroy Undead (CR 1/2)',
@@ -153,7 +162,6 @@ class Cleric(Vocation):
                                              against your Turn Undead feature, the creature is instantly destroyed \
                                              if its challenge rating is at or below CR 1/2.'))
 
-        self._add_specialization_features(self.level, **kwargs)
         # TODO work on the mechanic to override stuff
         self._append_feature('channel_divinity',
                              feature=feature.Feature(name='Channel Divinity (2/rest)',
@@ -188,11 +196,11 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_6_features(self, **kwargs):
+        super(Cleric, self)._add_level_6_features(**kwargs)
         self._append_feature('channel_divinity_read_thoughts',
                              feature=feature.Feature(name='Channel Divinity: Read Thoughts',
                                                      description='At 6th level, you can use your Channel Divinity to read \
                                                  a creature''s thoguhts.'))
-        self._add_specialization_features(self.level, **kwargs)
 
         simple_spell_list = [
             ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
@@ -222,10 +230,10 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_7_features(self, **kwargs):
+        super(Cleric, self)._add_level_7_features(**kwargs)
         # TODO fix the wisdom modifier
         self._append_feature('potent_spellcasting',
                              feature=PotentSpellcasting(wis_mod=4))
-        self._add_specialization_features(self.level, **kwargs)
 
         simple_spell_list = [
             ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
@@ -259,8 +267,8 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_8_features(self, **kwargs):
+        super(Cleric, self)._add_level_8_features(**kwargs)
         self._aggregate_asi_or_feat(kwargs, 8)
-        self._add_specialization_features(self.level, **kwargs)
 
         self._append_feature('channel_divinity_destroy_undead',
                              feature=feature.Feature(
@@ -303,7 +311,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_9_features(self, **kwargs):
-        self._add_specialization_features(self.level, **kwargs)
+        super(Cleric, self)._add_level_9_features(**kwargs)
         simple_spell_list = [
             ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
             ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
@@ -342,6 +350,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_10_features(self, **kwargs):
+        super(Cleric, self)._add_level_10_features(**kwargs)
         self._append_feature('divine_intervention',
                              feature=feature.Feature(name='Divine Intervention',
                                                      description='Beginning at 10th level, you can call on your deity \
@@ -389,6 +398,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_11_features(self, **kwargs):
+        super(Cleric, self)._add_level_11_features(**kwargs)
         self._append_feature('channel_divinity_destroy_undead',
                              feature=feature.Feature(
                                  name='Channel Divinity: Destroy Undead (CR 2)',
@@ -437,6 +447,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_12_features(self, **kwargs):
+        super(Cleric, self)._add_level_12_features(**kwargs)
         self._aggregate_asi_or_feat(kwargs, 12)
 
         simple_spell_list = [
@@ -481,6 +492,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_13_features(self, **kwargs):
+        super(Cleric, self)._add_level_13_features(**kwargs)
         simple_spell_list = [
             ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
             ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
@@ -525,6 +537,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_14_features(self, **kwargs):
+        super(Cleric, self)._add_level_14_features(**kwargs)
         self._append_feature('channel_divinity_destroy_undead',
                              feature=feature.Feature(
                                  name='Channel Divinity: Destroy Undead (CR 3)',
@@ -577,6 +590,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_15_features(self, **kwargs):
+        super(Cleric, self)._add_level_15_features(**kwargs)
         simple_spell_list = [
             ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
             ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
@@ -624,6 +638,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_16_features(self, **kwargs):
+        super(Cleric, self)._add_level_16_features(**kwargs)
         self._aggregate_asi_or_feat(kwargs, 16)
 
         simple_spell_list = [
@@ -674,7 +689,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_17_features(self, **kwargs):
-        self._add_specialization_features(self.level, **kwargs)
+        super(Cleric, self)._add_level_17_features(**kwargs)
         self._append_feature('channel_divinity_destroy_undead',
                              feature=feature.Feature(
                                  name='Channel Divinity: Destroy Undead (CR 4)',
@@ -732,6 +747,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_18_features(self, **kwargs):
+        super(Cleric, self)._add_level_18_features(**kwargs)
         self._append_feature('channel_divinity',
                              feature=feature.Feature(name='Channel Divinity (3/rest)',
                                                      description='At 2nd level, you gain the ability to channel divine energy directly \
@@ -789,6 +805,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_19_features(self, **kwargs):
+        super(Cleric, self)._add_level_19_features(**kwargs)
         self._aggregate_asi_or_feat(kwargs, 19)
 
         simple_spell_list = [
@@ -843,6 +860,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_20_features(self, **kwargs):
+        super(Cleric, self)._add_level_20_features(**kwargs)
         self._append_feature('divine_intervention',
                              feature=feature.Feature(name='Improved Divine Intervention',
                                                      description='At 20th level, your call for intervention succeeds automatically, \
