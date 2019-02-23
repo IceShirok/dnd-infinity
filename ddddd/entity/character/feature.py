@@ -118,6 +118,9 @@ class EnhanceDamage(Feature):
         """Checks to see whether this weapon is qualified for the attack bonus"""
         return True
 
+    def get_bonus(self, **kwargs):
+        return self.attack_bonus
+
 
 class DamageResistance(Feature):
     def __init__(self, damage_type, name=None, description=None):

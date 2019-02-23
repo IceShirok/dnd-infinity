@@ -271,14 +271,17 @@ class Cleric(Vocation):
 
 
 class PotentSpellcasting(feature.EnhanceDamage):
-    def __init__(self, wis_mod):
+    def __init__(self):
         super(PotentSpellcasting, self).__init__(name='Potent Spellcasting',
                                                  description='Starting at 8th level, you add your Wisdom modifier \
                                                  to the damage you deal with any cleric cantrip.',
-                                                 attack_bonus=wis_mod)
+                                                 attack_bonus='WIS')
 
     def qualifies(self, spell):
         return isinstance(spell, spells.DamageCantrip)
+
+    def get_bonus(self, **kwargs):
+        return kwargs['ability_scores']['WIS'].modifier
 
 
 class ClericSpellcastingAbility(spells.SpellcastingAbility):
@@ -468,7 +471,7 @@ class KnowledgeDomain(ClericDomain):
     def add_level_8_features(self, **kwargs):
         # TODO fix the wisdom modifier
         new_features = {
-            'potent_spellcasting': PotentSpellcasting(wis_mod=4)
+            'potent_spellcasting': PotentSpellcasting()
         }
         new_stuff = {'features': new_features}
         return new_stuff
