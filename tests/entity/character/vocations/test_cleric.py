@@ -1,8 +1,7 @@
 import unittest
 
-from ddddd.entity import base
-from ddddd.entity.base import Skills
-from ddddd.entity.character import feature, spells
+from ddddd.entity.character.base import Skills
+from ddddd.entity.character import feature, spells, base
 from ddddd.entity.character.vocations import cleric
 
 

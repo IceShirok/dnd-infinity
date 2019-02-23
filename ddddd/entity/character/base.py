@@ -26,11 +26,10 @@ MODIFIER = 'modifier'
 ABILITY = 'ability'
 SCORE = 'score'
 
-BASE_ABILITY_SCORES = 'base_ability_scores'
+ABILITY_SCORES = 'ability_scores'
 PROF_BONUS = 'proficiency_bonus'
 
 BASIC = 'basic'
-ABILITY_SCORES = 'ability_scores'
 COMBAT = 'combat'
 ARMOR_CLASS = 'armor_class'
 INITIATIVE = 'initiative'
@@ -278,3 +277,45 @@ class Languages(object):
 
         THIEVES_CANT,
     }
+
+
+class PlayerBase(object):
+    """
+    A player character (PC) will consist of the PC's name,
+    ability scores, and level by experience. Features that
+    do not change with certain PC features (race, class, background)
+    and cannot be derived by other features (i.e. proficiency bonus)
+    are put in this class.
+    Why level by experience and not by class? I'm thinking a little
+    too far ahead, but it's because of multiclassing.
+    """
+    def __init__(self, name, str_, dex_, con_, int_, wis_, cha_, level=1):
+        self.name = name
+
+        self.str_ = AbilityScore(AbilityScore.STR, str_)
+        self.dex_ = AbilityScore(AbilityScore.DEX, dex_)
+        self.con_ = AbilityScore(AbilityScore.CON, con_)
+        self.int_ = AbilityScore(AbilityScore.INT, int_)
+        self.wis_ = AbilityScore(AbilityScore.WIS, wis_)
+        self.cha_ = AbilityScore(AbilityScore.CHA, cha_)
+
+        self.level = level
+
+    @property
+    def ability_scores(self):
+        """
+        Return the ability scores.
+        """
+        return {
+            AbilityScore.STR: self.str_,
+            AbilityScore.DEX: self.dex_,
+            AbilityScore.CON: self.con_,
+            AbilityScore.INT: self.int_,
+            AbilityScore.WIS: self.wis_,
+            AbilityScore.CHA: self.cha_,
+        }
+
+    @property
+    def proficiency_bonus(self):
+        """Proficiency bonus is  on a character's level."""
+        return math.floor((self.level + 3) / 4) + 1

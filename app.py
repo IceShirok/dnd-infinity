@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, abort
 from ddddd import pc_playground as pc
-from ddddd.entity.base import prettify_modifier
+from ddddd.entity.character.base import prettify_modifier
 
 import logging
 

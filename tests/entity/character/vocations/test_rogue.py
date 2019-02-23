@@ -1,8 +1,7 @@
 import unittest
 
-from ddddd.entity import base
-from ddddd.entity.base import Skills
-from ddddd.entity.character import feature
+from ddddd.entity.character.base import Skills
+from ddddd.entity.character import feature, base
 from ddddd.entity.character.vocations import rogue
 
 

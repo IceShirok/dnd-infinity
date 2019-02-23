@@ -1,7 +1,6 @@
 import unittest
 
-from ddddd.entity import base
-from ddddd.entity.character import spells
+from ddddd.entity.character import spells, base
 
 
 class TestSpellFunctions(unittest.TestCase):

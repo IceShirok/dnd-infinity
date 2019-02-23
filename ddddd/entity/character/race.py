@@ -1,7 +1,5 @@
-
-from ddddd.entity import base
-from ddddd.entity.character import feature
-from ddddd.entity.base import Languages, Sizes
+from ddddd.entity.character import feature, base
+from ddddd.entity.character.base import Languages, Sizes
 
 import logging
 logger = logging.getLogger(__name__)

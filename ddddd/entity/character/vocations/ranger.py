@@ -1,6 +1,5 @@
-from ddddd.entity import base
-from ddddd.entity.base import AbilityScore, Skills, Languages, SpellTypes
-from ddddd.entity.character import spells, feature
+from ddddd.entity.character.base import AbilityScore, SpellTypes
+from ddddd.entity.character import spells, feature, base
 from ddddd.entity.character.vocation import Vocation
 
 

@@ -1,9 +1,8 @@
 
 import math
 
-from ddddd.entity import base
-from ddddd.entity.base import AbilityScore, Skills
-from ddddd.entity.character import spells, feature
+from ddddd.entity.character.base import AbilityScore, Skills
+from ddddd.entity.character import spells, feature, base
 from ddddd.items import items, weapons
 
 import logging
@@ -15,56 +14,14 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 
-class PlayerBase(object):
-    """
-    A player character (PC) base will consist of the PC's name,
-    base ability scores, and level by experience. Features that
-    do not change with certain PC features (race, class, background)
-    and cannot be derived by other features (i.e. proficiency bonus)
-    are put in this class.
-    Why level by experience and not by class? I'm thinking a little
-    too far ahead, but it's because of multiclassing.
-    """
-    def __init__(self, name, str_, dex_, con_, int_, wis_, cha_, level=1):
-        self.name = name
-
-        self.str_ = base.AbilityScore(base.AbilityScore.STR, str_)
-        self.dex_ = base.AbilityScore(base.AbilityScore.DEX, dex_)
-        self.con_ = base.AbilityScore(base.AbilityScore.CON, con_)
-        self.int_ = base.AbilityScore(base.AbilityScore.INT, int_)
-        self.wis_ = base.AbilityScore(base.AbilityScore.WIS, wis_)
-        self.cha_ = base.AbilityScore(base.AbilityScore.CHA, cha_)
-
-        self.level = level
-
-    @property
-    def base_ability_scores(self):
-        """
-        Return the base ability scores.
-        """
-        return {
-            AbilityScore.STR: self.str_,
-            AbilityScore.DEX: self.dex_,
-            AbilityScore.CON: self.con_,
-            AbilityScore.INT: self.int_,
-            AbilityScore.WIS: self.wis_,
-            AbilityScore.CHA: self.cha_,
-        }
-
-    @property
-    def proficiency_bonus(self):
-        """Proficiency bonus is based on a character's level."""
-        return math.floor((self.level + 3) / 4) + 1
-
-
 class PlayerCharacter(object):
     """
     A player character (PC) in D&D.
     A PC consists of some base characteristics, a race, a class, and
     a background.
     """
-    def __init__(self, base, race=None, vocation=None, background=None, worn_items=None, backpack=None):
-        self.base = base
+    def __init__(self, base_, race=None, vocation=None, background=None, worn_items=None, backpack=None):
+        self.base_ = base_
         self.race = race
         self.vocation = vocation
         self.background = background
@@ -78,7 +35,7 @@ class PlayerCharacter(object):
     @property
     def name(self):
         """Return the PC's name"""
-        return self.base.name
+        return self.base_.name
     
     @property
     def race_name(self):
@@ -98,7 +55,7 @@ class PlayerCharacter(object):
     @property
     def level(self):
         """Return the PC's character level. This is different from vocation level."""
-        return self.base.level
+        return self.base_.level
     
     @property
     def background_name(self):
@@ -108,7 +65,7 @@ class PlayerCharacter(object):
     @property
     def proficiency_bonus(self):
         """Return the PC's proficiency bonus."""
-        return self.base.proficiency_bonus
+        return self.base_.proficiency_bonus
     
     @property
     def speed(self):
@@ -124,7 +81,7 @@ class PlayerCharacter(object):
     def ability_scores(self):
         """Calculate the final ability scores after aggregating all features that can affect ability score."""
         # Calculate the scores and modifiers for each ability score
-        ability_scores_agg = self.base.base_ability_scores
+        ability_scores_agg = self.base_.ability_scores
 
         race_asi = self.race.asi
         for ability in race_asi.keys():

@@ -1,7 +1,7 @@
 from pylatex import Document, Section, Subsection, Command, LineBreak, LongTable, Itemize, LargeText, NewPage
-from pylatex.utils import italic, NoEscape, bold
+from pylatex.utils import NoEscape, bold
 
-from ddddd.entity import base
+from ddddd.entity.character import base
 from ddddd.pc_playground import get_available_characters
 
 

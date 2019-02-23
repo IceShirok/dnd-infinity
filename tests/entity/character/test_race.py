@@ -1,7 +1,6 @@
 import unittest
 
-from ddddd.entity import base
-from ddddd.entity.character import race, feature
+from ddddd.entity.character import race, feature, base
 
 
 class TestRace(unittest.TestCase):

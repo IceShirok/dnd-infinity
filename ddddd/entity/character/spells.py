@@ -1,6 +1,5 @@
-
-from ddddd.entity import base
-from ddddd.entity.base import SpellTypes
+from ddddd.entity.character import base
+from ddddd.entity.character.base import SpellTypes
 
 
 class SpellcastingAbility(object):
