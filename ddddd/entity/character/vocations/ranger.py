@@ -1,4 +1,6 @@
-from ddddd.entity.character.base import AbilityScore, SpellTypes
+import ddddd.entity.character.spells
+from ddddd.entity.character.base import AbilityScore
+from ddddd.entity.character.spells import SpellTypes
 from ddddd.entity.character import spells, feature, base
 from ddddd.entity.character.vocation import Vocation
 
@@ -47,8 +49,8 @@ class Ranger(Vocation):
         # TODO make this a bit more elegant...
         list_spells = []
         simple_spell_list = [
-            ('Hunters Mark', base.SpellTypes.FIRST),
-            ('Animal Friendship', base.SpellTypes.FIRST),
+            ('Hunters Mark', ddddd.entity.character.spells.SpellTypes.FIRST),
+            ('Animal Friendship', ddddd.entity.character.spells.SpellTypes.FIRST),
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
@@ -72,9 +74,9 @@ class Ranger(Vocation):
         # TODO make this a bit more elegant...
         list_spells = []
         simple_spell_list = [
-            ('Hunters Mark', base.SpellTypes.FIRST),
-            ('Animal Friendship', base.SpellTypes.FIRST),
-            ('Longstrider', base.SpellTypes.FIRST),
+            ('Hunters Mark', ddddd.entity.character.spells.SpellTypes.FIRST),
+            ('Animal Friendship', ddddd.entity.character.spells.SpellTypes.FIRST),
+            ('Longstrider', ddddd.entity.character.spells.SpellTypes.FIRST),
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))
@@ -94,10 +96,10 @@ class Ranger(Vocation):
         # TODO make this a bit more elegant...
         list_spells = []
         simple_spell_list = [
-            ('Hunters Mark', base.SpellTypes.FIRST),
-            ('Animal Friendship', base.SpellTypes.FIRST),
-            ('Longstrider', base.SpellTypes.FIRST),
-            ('Pass without Trace', base.SpellTypes.SECOND),
+            ('Hunters Mark', ddddd.entity.character.spells.SpellTypes.FIRST),
+            ('Animal Friendship', ddddd.entity.character.spells.SpellTypes.FIRST),
+            ('Longstrider', ddddd.entity.character.spells.SpellTypes.FIRST),
+            ('Pass without Trace', ddddd.entity.character.spells.SpellTypes.SECOND),
         ]
         for name, level in simple_spell_list:
             list_spells.append(spells.generate_simple_spell(name, level))

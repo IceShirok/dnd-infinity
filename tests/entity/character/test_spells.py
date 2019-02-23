@@ -1,5 +1,6 @@
 import unittest
 
+import ddddd.entity.character.spells
 from ddddd.entity.character import spells, base
 
 
@@ -76,12 +77,12 @@ class TestSpellSlots(unittest.TestCase):
 class TestSpellcastingAbility(unittest.TestCase):
     def setUp(self):
         simple_spell_list = [
-            ('Command', base.SpellTypes.FIRST),
-            ('Identify', base.SpellTypes.FIRST),
-            ('Cure Wounds', base.SpellTypes.FIRST),
-            ('Bless', base.SpellTypes.FIRST),
-            ('Healing Word', base.SpellTypes.FIRST),
-            ('Sanctuary', base.SpellTypes.FIRST),
+            ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
+            ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
+            ('Cure Wounds', ddddd.entity.character.spells.SpellTypes.FIRST),
+            ('Bless', ddddd.entity.character.spells.SpellTypes.FIRST),
+            ('Healing Word', ddddd.entity.character.spells.SpellTypes.FIRST),
+            ('Sanctuary', ddddd.entity.character.spells.SpellTypes.FIRST),
         ]
         cantrips = [spells.SACRED_FLAME, spells.GUIDANCE, spells.SPARE_THE_DYING]
         casting_spells = spells.generate_simple_spell_list(simple_spell_list)

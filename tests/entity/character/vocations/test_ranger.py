@@ -1,5 +1,6 @@
 import unittest
 
+import ddddd.entity.character.spells
 from ddddd.entity.character.base import Skills
 from ddddd.entity.character import spells, base
 from ddddd.entity.character.vocations import ranger
@@ -40,8 +41,8 @@ class TestRangerLevel1(unittest.TestCase):
 class RangerSpellcastingAbility(unittest.TestCase):
     def setUp(self):
         simple_spell_list = [
-            ('Hunters Mark', base.SpellTypes.FIRST),
-            ('Animal Friendship', base.SpellTypes.FIRST),
+            ('Hunters Mark', ddddd.entity.character.spells.SpellTypes.FIRST),
+            ('Animal Friendship', ddddd.entity.character.spells.SpellTypes.FIRST),
         ]
         casting_spells = spells.generate_simple_spell_list(simple_spell_list)
         self.spellcasting = ranger.RangerSpellcastingAbility(spell_slots={'1st': 2},
