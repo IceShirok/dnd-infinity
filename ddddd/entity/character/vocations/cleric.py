@@ -13,9 +13,8 @@ class Cleric(Vocation):
     FIGHTING_STYLE = 'fighting_style'
     STYLES = 'styles'
 
-    def __init__(self, skill_proficiencies, languages, cantrips):
-        self.specialization = KnowledgeDomainStrategy()
-        # self._add_specialization_features(self.level, **kwargs)
+    def __init__(self, skill_proficiencies, languages, cantrips, cleric_domain):
+        self.specialization = ClericDomain.get_cleric_domains()[cleric_domain]
 
         simple_spell_list = [
             ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
@@ -29,7 +28,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(1),
                                                  num_spells_known=3 + 1 + 2,
-                                                 num_cantrips_known=spells.cantrips_by_level(3), cantrips=cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(1), cantrips=cantrips)
 
         super(Cleric, self).__init__(name='Cleric',
                                      level=1,
@@ -101,7 +100,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(2),
                                                  num_spells_known=3 + 2 + 2,
-                                                 num_cantrips_known=spells.cantrips_by_level(3), cantrips=self.spellcasting.cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(2), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _add_level_3_features(self, **kwargs):
@@ -192,7 +191,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(5),
                                                  num_spells_known=4 + 5 + 6,
-                                                 num_cantrips_known=spells.cantrips_by_level(4), cantrips=self.spellcasting.cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(5), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _add_level_6_features(self, **kwargs):
@@ -226,7 +225,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(6),
                                                  num_spells_known=4 + 6 + 6,
-                                                 num_cantrips_known=spells.cantrips_by_level(4), cantrips=self.spellcasting.cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(6), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _add_level_7_features(self, **kwargs):
@@ -263,7 +262,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(7),
                                                  num_spells_known=4 + 7 + 8,
-                                                 num_cantrips_known=spells.cantrips_by_level(4), cantrips=self.spellcasting.cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(7), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _add_level_8_features(self, **kwargs):
@@ -307,7 +306,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(8),
                                                  num_spells_known=5 + 8 + 8,
-                                                 num_cantrips_known=spells.cantrips_by_level(4), cantrips=self.spellcasting.cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(8), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _add_level_9_features(self, **kwargs):
@@ -346,7 +345,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(9),
                                                  num_spells_known=5 + 9 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(4), cantrips=self.spellcasting.cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(9), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _add_level_10_features(self, **kwargs):
@@ -394,7 +393,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(10),
                                                  num_spells_known=5 + 10 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(5), cantrips=self.spellcasting.cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(10), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _add_level_11_features(self, **kwargs):
@@ -443,7 +442,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(11),
                                                  num_spells_known=5 + 11 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(5), cantrips=self.spellcasting.cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(11), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _add_level_12_features(self, **kwargs):
@@ -488,7 +487,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(12),
                                                  num_spells_known=5 + 12 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(5), cantrips=self.spellcasting.cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(12), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _add_level_13_features(self, **kwargs):
@@ -533,7 +532,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(13),
                                                  num_spells_known=5 + 13 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(5), cantrips=self.spellcasting.cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(13), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _add_level_14_features(self, **kwargs):
@@ -586,7 +585,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(14),
                                                  num_spells_known=5 + 14 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(5), cantrips=self.spellcasting.cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(14), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _add_level_15_features(self, **kwargs):
@@ -634,7 +633,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(15),
                                                  num_spells_known=5 + 15 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(5), cantrips=self.spellcasting.cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(15), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _add_level_16_features(self, **kwargs):
@@ -685,7 +684,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(16),
                                                  num_spells_known=5 + 16 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(5), cantrips=self.spellcasting.cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(16), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _add_level_17_features(self, **kwargs):
@@ -743,7 +742,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(17),
                                                  num_spells_known=5 + 17 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(5), cantrips=self.spellcasting.cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(17), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _add_level_18_features(self, **kwargs):
@@ -801,7 +800,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(18),
                                                  num_spells_known=5 + 18 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(5), cantrips=self.spellcasting.cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(18), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _add_level_19_features(self, **kwargs):
@@ -856,7 +855,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(19),
                                                  num_spells_known=5 + 19 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(5), cantrips=self.spellcasting.cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(19), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
     def _add_level_20_features(self, **kwargs):
@@ -915,7 +914,7 @@ class Cleric(Vocation):
         spellcasting = ClericSpellcastingAbility(list_spells_known=casting_spells,
                                                  spell_slots=spells.get_spell_slot_by_level(20),
                                                  num_spells_known=5 + 20 + 10,
-                                                 num_cantrips_known=spells.cantrips_by_level(5), cantrips=self.spellcasting.cantrips)
+                                                 num_cantrips_known=spells.cantrips_by_level(20), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
 

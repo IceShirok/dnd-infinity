@@ -48,7 +48,8 @@ class TestClericLevel1(unittest.TestCase):
         class_languages = feature.LanguagesKnown(languages=[base.Languages.DRACONIC, base.Languages.DWARVISH])
         class_cantrips = [spells.SACRED_FLAME, spells.GUIDANCE, spells.SPARE_THE_DYING]
         self.cleric = cleric.Cleric(skill_proficiencies=[Skills.INSIGHT, Skills.RELIGION, Skills.ARCANA, Skills.PERSUASION],
-                                    languages=class_languages, cantrips=class_cantrips)
+                                    languages=class_languages, cantrips=class_cantrips,
+                                    cleric_domain='knowledge')
 
     def test_name(self):
         self.assertEqual('Cleric', self.cleric.name)
@@ -95,7 +96,8 @@ class TestClericLevel4(unittest.TestCase):
         class_languages = feature.LanguagesKnown(languages=[base.Languages.DRACONIC, base.Languages.DWARVISH])
         class_cantrips = [spells.SACRED_FLAME, spells.GUIDANCE, spells.SPARE_THE_DYING]
         self.cleric = cleric.Cleric(skill_proficiencies=[Skills.INSIGHT, Skills.RELIGION, Skills.ARCANA, Skills.PERSUASION],
-                                    languages=class_languages, cantrips=class_cantrips)
+                                    languages=class_languages, cantrips=class_cantrips,
+                                    cleric_domain='knowledge')
 
         self.cleric.level_to(level=4,
                              cantrip_4=spells.WORD_OF_RADIANCE,

@@ -89,7 +89,8 @@ def create_tamiphi(level=1):
     class_languages = feature.LanguagesKnown(languages=[base.Languages.DRACONIC, base.Languages.DWARVISH])
     class_cantrips = [spells.SACRED_FLAME, spells.GUIDANCE, spells.SPARE_THE_DYING]
     vocation = cleric.Cleric(skill_proficiencies=[Skills.INSIGHT, Skills.RELIGION, Skills.ARCANA, Skills.PERSUASION],
-                             languages=class_languages, cantrips=class_cantrips)
+                             languages=class_languages, cantrips=class_cantrips,
+                             cleric_domain='knowledge')
     if level > 1:
         vocation.level_to(level=level,
                           cantrip_4=spells.WORD_OF_RADIANCE,
