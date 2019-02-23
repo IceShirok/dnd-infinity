@@ -141,6 +141,7 @@ def create_fethri(level=1):
                            )
     if level > 1:
         vocation.level_to(level=level,
+                          roguish_archetype='mastermind',
                           gaming_set='bone_dice',
                           languages=feature.LanguagesKnown(languages=[base.Languages.UNDERCOMMON,
                                                                       base.Languages.ELVISH]),

@@ -39,6 +39,15 @@ class Rogue(Vocation):
                                     spellcasting=None,
                                     asi=None)
 
+    def _add_subclass_features(self, level, **kwargs):
+        new_stuff = getattr(self.roguish_archetype, 'add_level_{}_features'.format(level))(**kwargs)
+        if 'features' in new_stuff:
+            for key, f in new_stuff['features'].items():
+                self._append_feature(key, f)
+        if 'proficiencies' in new_stuff:
+            for key, p in new_stuff['proficiencies'].items():
+                self.proficiencies[key].proficiencies.extend(p)
+
     def _add_level_2_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
         self._append_feature('cunning_action',
@@ -48,26 +57,9 @@ class Rogue(Vocation):
 
     def _add_level_3_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-        new_gaming_set = kwargs['gaming_set']
-        for proficiency in ['disguise_kit', 'forgery_kit', new_gaming_set]:
-            self.proficiencies[base.TOOL_PROFICIENCY].proficiencies.append(proficiency)
 
-        self._append_feature('master_of_intrigue',
-                             feature=feature.Feature(name='Master of Intrigue',
-                                                     description='You can unerringly mimic the speech patterns and accent of a creature \
-                                                 that you hear speak for at least 1 minute.'))
-
-        new_languages = kwargs[base.LANGUAGES]
-        self._append_feature('master_of_intrigue_languages',
-                             feature=feature.LanguagesKnown(name='Master of Intrigue: Languages',
-                                                            languages=new_languages.languages))
-
-        self._append_feature('master_of_tactics',
-                             feature=feature.Feature(name='Master of Tactics',
-                                                     description='Starting at 3rd level, you can use the Help action as a bonus action. \
-                                                 Additionally, when you use the Help action to aid an ally in attacking a creature, \
-                                                 the target of that attack can be within 30 feet of you, rather than 5 feet of you, \
-                                                 if the target can see or hear you.'))
+        self.roguish_archetype = RoguishArchetype.get_roguish_archetype(kwargs['roguish_archetype'])
+        self._add_subclass_features(self.level, **kwargs)
 
     def _add_level_4_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
@@ -106,11 +98,7 @@ class Rogue(Vocation):
 
     def _add_level_9_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-
-        self._append_feature('insightful_manipulator',
-                             feature=feature.Feature(name='Insightful Manipulator',
-                                                     description='You can learn certain information about \
-                                                     its capabilities compared to your own'))
+        self._add_subclass_features(self.level, **kwargs)
 
     def _add_level_10_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
@@ -132,11 +120,7 @@ class Rogue(Vocation):
 
     def _add_level_13_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-
-        self._append_feature('misdirection',
-                             feature=feature.Feature(name='Misdirection',
-                                                     description='Beginning at 13th level, you can sometimes cause \
-                                                     another creature to suffer an attack meant for you.'))
+        self._add_subclass_features(self.level, **kwargs)
 
     def _add_level_14_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
@@ -162,11 +146,7 @@ class Rogue(Vocation):
 
     def _add_level_17_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-
-        self._append_feature('soul_of_deceit',
-                             feature=feature.Feature(name='Soul of Deceit',
-                                                     description='Starting at 17th level, your thoughts can''t be read \
-                                                     by telepathy or other means, unless you allow it.'))
+        self._add_subclass_features(self.level, **kwargs)
 
     def _add_level_18_features(self, **kwargs):
         self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
@@ -190,6 +170,10 @@ class Rogue(Vocation):
                                                      for succeeding when you need to.'))
 
 
+##############################
+# ROGUE FEATURES
+##############################
+
 class SneakAttack(feature.EnhanceDamage):
     def __init__(self, level):
         attack_bonus = '{}d6'.format(math.floor((level+1)/2))
@@ -206,3 +190,122 @@ class SneakAttack(feature.EnhanceDamage):
             if prop in weapon.properties:  # Must be a finesse or ranged weapon
                 return True
         return False
+
+
+##############################
+# ROGUISH ARCHETYPES
+##############################
+
+class RoguishArchetype(object):
+    """
+    The rogue subclass.
+    This determines the features the specific archetype gains.
+    """
+
+    @staticmethod
+    def get_roguish_archetypes():
+        return {
+            'thief': ThiefStrategy(),
+            'mastermind': MastermindStrategy(),
+        }
+
+    @staticmethod
+    def get_roguish_archetype(name):
+        return RoguishArchetype.get_roguish_archetypes()[name]
+
+    def add_level_3_features(self, **kwargs):
+        raise NotImplementedError()
+
+    def add_level_9_features(self, **kwargs):
+        raise NotImplementedError()
+
+    def add_level_13_features(self, **kwargs):
+        raise NotImplementedError()
+
+    def add_level_17_features(self, **kwargs):
+        raise NotImplementedError()
+
+
+class ThiefStrategy(RoguishArchetype):
+    """
+    This represents the thief, a roguish archetype that can be chosen starting level 3.
+    TODO will flesh this out, just need to test swapping out between archetypes
+    """
+
+    def add_level_3_features(self, **kwargs):
+        new_features = {}
+        new_stuff = {'features': new_features}
+        return new_stuff
+
+    def add_level_9_features(self, **kwargs):
+        new_features = {}
+        new_stuff = {'features': new_features}
+        return new_stuff
+
+    def add_level_13_features(self, **kwargs):
+        new_features = {}
+        new_stuff = {'features': new_features}
+        return new_stuff
+
+    def add_level_17_features(self, **kwargs):
+        new_features = {}
+        new_stuff = {'features': new_features}
+        return new_stuff
+
+
+class MastermindStrategy(RoguishArchetype):
+    """
+    This represents the mastermind, a roguish archetype that can be chosen starting level 3.
+    """
+
+    def add_level_3_features(self, **kwargs):
+        new_gaming_set = kwargs['gaming_set']
+        new_proficiencies = {
+            base.TOOL_PROFICIENCY: ['disguise_kit', 'forgery_kit', new_gaming_set],
+        }
+
+        new_languages = kwargs[base.LANGUAGES]
+        new_features = {
+            'master_of_intrigue': feature.Feature(name='Master of Intrigue',
+                                                  description='You can unerringly mimic the speech patterns and accent of a creature \
+                                                         that you hear speak for at least 1 minute.'),
+            'master_of_intrigue_languages': feature.LanguagesKnown(name='Master of Intrigue: Languages',
+                                                                   languages=new_languages.languages),
+            'master_of_tactics': feature.Feature(name='Master of Tactics',
+                                                 description='Starting at 3rd level, you can use the Help action as a bonus action. \
+                                                         Additionally, when you use the Help action to aid an ally in attacking a creature, \
+                                                         the target of that attack can be within 30 feet of you, rather than 5 feet of you, \
+                                                         if the target can see or hear you.'),
+        }
+        new_stuff = {
+            'features': new_features,
+            'proficiencies': new_proficiencies,
+        }
+        return new_stuff
+
+    def add_level_9_features(self, **kwargs):
+        new_features = {
+            'insightful_manipulator': feature.Feature(name='Insightful Manipulator',
+                                                      description='You can learn certain information about \
+                                                      its capabilities compared to your own'),
+        }
+        new_stuff = {'features': new_features}
+        return new_stuff
+
+    def add_level_13_features(self, **kwargs):
+        new_features = {
+            'misdirection': feature.Feature(name='Misdirection',
+                                            description='Beginning at 13th level, you can sometimes cause \
+                                            another creature to suffer an attack meant for you.')
+        }
+        new_stuff = {'features': new_features}
+        return new_stuff
+
+    def add_level_17_features(self, **kwargs):
+        new_features = {
+            'soul_of_deceit': feature.Feature(name='Soul of Deceit',
+                                              description='Starting at 17th level, your thoughts can''t be read \
+                                              by telepathy or other means, unless you allow it.'),
+        }
+        new_stuff = {'features': new_features}
+        return new_stuff
