@@ -9,16 +9,6 @@ from ddddd.items import weapons
 
 class Rogue(Vocation):
     def __init__(self, skill_proficiencies, expertise):
-        def_features = {
-            'sneak_attack': SneakAttack(level=1),
-            'thieves_cant': feature.LanguagesKnown(name='Thieves'' Cant',
-                                                   description='During your rogue Training you learned thieves'' cant, \
-                                                   a Secret mix of dialect, jargon, and code that allows you to hide messages \
-                                                   in seemingly normal conversation.',
-                                                   languages=[base.Languages.THIEVES_CANT]),
-            'expertise': expertise,
-        }
-
         super(Rogue, self).__init__(name='Rogue',
                                     level=1,
                                     hit_die=8,
@@ -35,12 +25,23 @@ class Rogue(Vocation):
                                     },
                                     saving_throws=[AbilityScore.DEX, AbilityScore.INT],
                                     skill_proficiencies=skill_proficiencies,
-                                    features=def_features,
+                                    features=None,
                                     spellcasting=None,
                                     asi=None)
+        self._add_level_1_features(expertise=expertise)
 
     def _add_level_based_features(self, level):
         self._append_feature('sneak_attack', feature=SneakAttack(level=level))
+
+    def _add_level_1_features(self, **kwargs):
+        super(Rogue, self)._add_level_1_features(**kwargs)
+        self._append_feature('thieves_cant', feature=feature.LanguagesKnown(name='Thieves'' Cant',
+                                                                            description='During your rogue Training you learned thieves'' cant, \
+                                                                            a Secret mix of dialect, jargon, and code that allows you to hide messages \
+                                                                            in seemingly normal conversation.',
+                                                                            languages=[base.Languages.THIEVES_CANT]))
+        expertise = kwargs['expertise']
+        self._append_feature('expertise', expertise)
 
     def _add_level_2_features(self, **kwargs):
         super(Rogue, self)._add_level_2_features(**kwargs)

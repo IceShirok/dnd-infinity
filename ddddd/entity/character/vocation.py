@@ -18,7 +18,7 @@ class Vocation(object):
         self.proficiencies = proficiencies
         self.saving_throws = saving_throws
         self.skills = skill_proficiencies
-        self._features = features
+        self._features = features if features else {}
         self.asi = asi if asi else {}
         self.spellcasting = spellcasting
         self.feats = feats if feats else []
@@ -82,6 +82,10 @@ class Vocation(object):
                 getattr(self, '_add_level_{}_features'.format(i))(**kwargs)
             else:
                 raise ValueError('Invalid level!')
+
+    def _add_level_1_features(self, **kwargs):
+        self._add_level_based_features(1)
+        self._add_specialization_features(1, **kwargs)
 
     def _add_level_2_features(self, **kwargs):
         self._add_level_based_features(2)
