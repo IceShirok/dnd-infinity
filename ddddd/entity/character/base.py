@@ -2,9 +2,10 @@
 
 import math
 
-"""
-Common functions
-"""
+
+#############################
+# Common functions
+#############################
 
 
 def modifier(score):
@@ -21,7 +22,10 @@ def prettify_modifier(mod):
         return str(mod)
 
 
-# Basic constants
+##########################################################
+# CONSTANTS TO SHARE BETWEEN MODULES
+##########################################################
+
 MODIFIER = 'modifier'
 ABILITY = 'ability'
 SCORE = 'score'
@@ -112,6 +116,10 @@ SPELL_SLOTS = 'spell_slots'
 RANGE = 'range'
 
 
+#############################
+# ABILITY SCORES
+#############################
+
 class AbilityScore(object):
     STR = 'STR'
     DEX = 'DEX'
@@ -149,6 +157,10 @@ class AbilityScoreIncrease(object):
         return AbilityScoreIncrease(self.ability, self.score_increase + asi.score_increase)
 
 
+#############################
+# SAVING THROWS
+#############################
+
 class SavingThrow(object):
     def __init__(self, ability_score, proficiency_bonus, is_proficient):
         self.ability_score = ability_score
@@ -166,6 +178,10 @@ class SavingThrow(object):
             mod += self.proficiency_bonus
         return mod
 
+
+#############################
+# SKILLS
+#############################
 
 class SkillProficiency(object):
     def __init__(self, name, ability_score, proficiency_bonus, is_proficient, expertise):
@@ -223,6 +239,11 @@ class Skills(object):
     }
 
 
+#############################
+# MISC COMMON CONSTANTS
+#############################
+
+
 class Languages(object):
     COMMON = 'Common'
     DWARVISH = 'Dwarvish'
@@ -249,7 +270,11 @@ class Languages(object):
     }
 
 
-class PlayerBase(object):
+#############################
+# ENTITY BASE
+#############################
+
+class EntityBase(object):
     """
     A player character (PC) will consist of the PC's name,
     ability scores, and level by experience. Features that

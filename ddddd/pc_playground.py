@@ -41,7 +41,7 @@ def create_dorian(level=5):
     :param level: the character level
     :return: Dorian the dwarf ranger
     """
-    base_ = base.PlayerBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=level)
+    base_ = base.EntityBase("Dorian Sapbleden", 16, 10, 14, 12, 14, 8, level=level)
     tool_prof = [
         feature.ToolProficiency(name='Tool Proficiency',
                                 proficiencies=['brewers_kit'])
@@ -84,7 +84,7 @@ def create_tamiphi(level=1):
     :param level: the character level
     :return: Tamiphi the gnome cleric
     """
-    base_ = base.PlayerBase("Tamiphi Tockentell", 10, 12, 15, 14, 18, 7, level=level)
+    base_ = base.EntityBase("Tamiphi Tockentell", 10, 12, 15, 14, 18, 7, level=level)
     race_ = race.RockGnome()
     class_languages = feature.LanguagesKnown(languages=[base.Languages.DRACONIC, base.Languages.DWARVISH])
     class_cantrips = [spells.SACRED_FLAME, spells.GUIDANCE, spells.SPARE_THE_DYING]
@@ -130,7 +130,7 @@ def create_fethri(level=1):
     :param level: the character level
     :return: Fethri the tiefling rogue
     """
-    base_ = base.PlayerBase("Fethri Winterwhisper", 10, 14, 12, 15, 11, 12, level=level)
+    base_ = base.EntityBase("Fethri Winterwhisper", 10, 14, 12, 15, 11, 12, level=level)
     race_ = race.Tiefling()
     vocation = rogue.Rogue(skill_proficiencies=[Skills.INVESTIGATION,
                                                 Skills.DECEPTION,

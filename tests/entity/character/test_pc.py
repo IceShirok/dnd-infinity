@@ -5,7 +5,7 @@ from ddddd.entity.character import base
 
 class TestPlayerBase(unittest.TestCase):
     def setUp(self):
-        self.pc_base = base.PlayerBase('Bob', 15, 14, 13, 12, 10, 8)
+        self.pc_base = base.EntityBase('Bob', 15, 14, 13, 12, 10, 8)
 
     def test_base_ability_scores(self):
         scores = self.pc_base.ability_scores
