@@ -1,8 +1,7 @@
 import unittest
 
-from ddddd.entity import base
-from ddddd.entity.base import AbilityScoreIncrease
-from ddddd.entity.character import vocation, feature
+from ddddd.entity.character.base import AbilityScoreIncrease
+from ddddd.entity.character import vocation, feature, base
 
 
 class TestVocation(unittest.TestCase):

@@ -1,8 +1,7 @@
 import math
 
-from ddddd.entity import base
-from ddddd.entity.base import AbilityScore
-from ddddd.entity.character import feature
+from ddddd.entity.character.base import AbilityScore
+from ddddd.entity.character import feature, base
 from ddddd.entity.character.vocation import Vocation
 from ddddd.items import weapons
 

@@ -1,15 +1,14 @@
 import unittest
 
-from ddddd.entity import base
-from ddddd.entity.character import pc
+from ddddd.entity.character import base
 
 
 class TestPlayerBase(unittest.TestCase):
     def setUp(self):
-        self.pc_base = pc.PlayerBase('Bob', 15, 14, 13, 12, 10, 8)
+        self.pc_base = base.EntityBase('Bob', 15, 14, 13, 12, 10, 8)
 
     def test_base_ability_scores(self):
-        scores = self.pc_base.base_ability_scores
+        scores = self.pc_base.ability_scores
         result_count = list(filter(lambda a: isinstance(a, base.AbilityScore), scores.values()))
         self.assertEqual(len(result_count), 6)
 

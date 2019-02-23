@@ -1,63 +1,17 @@
-
-from ddddd.entity import base
-from ddddd.entity.base import SpellTypes
+from ddddd.entity.character import base
 
 
-class SpellcastingAbility(object):
-    """
-    An object representing a character's ability to cast spells.
-    This is likely going to be delegated to the class factory, as each class
-    will known the number of spells and the available spell slots
-    for that class and level. I'm not sure whether to add the spellcasting
-    bonus and DCs here or at the class level...
-    """
-    def __init__(self, spellcasting_ability,
-                 spell_slots, casting_spells,
-                 num_cantrips_known=0, cantrips=None):
-        self.spellcasting_ability = spellcasting_ability
-
-        self.spell_slots = spell_slots
-        self.casting_spells = casting_spells
-
-        self.num_cantrips_known = num_cantrips_known
-        self.cantrips = cantrips if cantrips else []
-
-    def spell_save_dc(self, ability_scores, proficiency_bonus):
-        return 8 + ability_scores[self.spellcasting_ability].modifier + proficiency_bonus
-
-    def spell_attack_bonus(self, ability_scores, proficiency_bonus):
-        return ability_scores[self.spellcasting_ability].modifier + proficiency_bonus
-
-    def _verify(self):
-        if len(self.cantrips) > 0:
-            if self.num_cantrips_known > 0:
-                raise ValueError('Cannot learn cantrips!')
-            if len(self.cantrips) != self.num_cantrips_known:
-                raise ValueError('Must have {} cantrips but inputted {} cantrips!'.format(self.num_cantrips_known,
-                                                                                          len(self.cantrips)))
-
-        for s in self.casting_spells:
-            if s.level not in self.spell_slots:
-                raise ValueError('Cannot cast a {}-level spell - you don''t have the spell slots for it!'.format(s.level))
-
-
-def generate_simple_spell_list(spell_list):
-    """
-    Generates a quick spell list from a list of spell name/level pair.
-    :param spell_list: a list of spell name/level tuples.
-    :return: a list of spells with default params.
-    """
-    return list(map(lambda s: generate_simple_spell(s[0], s[1]), spell_list))
-
-
-def generate_simple_spell(name, level):
-    return Spell(name=name, level=level,
-                 magic_school='enchantment',
-                 casting_time='1 action',
-                 spell_range='30 ft',
-                 components=['verbal', 'somatic'],
-                 duration='instantaneous',
-                 description='This is a spell.')
+class SpellTypes(object):
+    CANTRIPS = 'cantrips'
+    FIRST = '1st'
+    SECOND = '2nd'
+    THIRD = '3rd'
+    FOURTH = '4th'
+    FIFTH = '5th'
+    SIXTH = '6th'
+    SEVENTH = '7th'
+    EIGHTH = '8th'
+    NINTH = '9th'
 
 
 class Spell(object):
@@ -79,6 +33,11 @@ class Spell(object):
         self.components = components
         self.duration = duration
         self.description = description
+
+
+##############################
+# CANTRIPS
+##############################
 
 
 class Cantrip(Spell):
@@ -130,10 +89,6 @@ class DamageCantrip(Cantrip):
     def calculate_damage_calc(self, caster_level):
         return self.damage_calc(caster_level)
 
-
-##############################
-# CANTRIPS
-##############################
 
 # Some classes may follow this pattern
 def cantrips_by_level(level):
@@ -272,6 +227,25 @@ def get_spell_slot_by_level(level):
     return spell_slots
 
 
+def generate_simple_spell_list(spell_list):
+    """
+    Generates a quick spell list from a list of spell name/level pair.
+    :param spell_list: a list of spell name/level tuples.
+    :return: a list of spells with default params.
+    """
+    return list(map(lambda s: generate_simple_spell(s[0], s[1]), spell_list))
+
+
+def generate_simple_spell(name, level):
+    return Spell(name=name, level=level,
+                 magic_school='enchantment',
+                 casting_time='1 action',
+                 spell_range='30 ft',
+                 components=['verbal', 'somatic'],
+                 duration='instantaneous',
+                 description='This is a spell.')
+
+
 # 1st level spells
 BLESS = Spell(name='Bless',
               level=SpellTypes.FIRST,
@@ -290,3 +264,46 @@ COMMAND = Spell(name='Command',
                 components=['verbal'],
                 duration='1 round',
                 description='You speak a one-word command to a creature you can see within range.')
+
+
+##############################
+# SPELLCASTING ABILITY
+##############################
+
+
+class SpellcastingAbility(object):
+    """
+    An object representing a character's ability to cast spells.
+    This is likely going to be delegated to the class factory, as each class
+    will known the number of spells and the available spell slots
+    for that class and level. I'm not sure whether to add the spellcasting
+    bonus and DCs here or at the class level...
+    """
+    def __init__(self, spellcasting_ability,
+                 spell_slots, casting_spells,
+                 num_cantrips_known=0, cantrips=None):
+        self.spellcasting_ability = spellcasting_ability
+
+        self.spell_slots = spell_slots
+        self.casting_spells = casting_spells
+
+        self.num_cantrips_known = num_cantrips_known
+        self.cantrips = cantrips if cantrips else []
+
+    def spell_save_dc(self, ability_scores, proficiency_bonus):
+        return 8 + ability_scores[self.spellcasting_ability].modifier + proficiency_bonus
+
+    def spell_attack_bonus(self, ability_scores, proficiency_bonus):
+        return ability_scores[self.spellcasting_ability].modifier + proficiency_bonus
+
+    def _verify(self):
+        if len(self.cantrips) > 0:
+            if self.num_cantrips_known > 0:
+                raise ValueError('Cannot learn cantrips!')
+            if len(self.cantrips) != self.num_cantrips_known:
+                raise ValueError('Must have {} cantrips but inputted {} cantrips!'.format(self.num_cantrips_known,
+                                                                                          len(self.cantrips)))
+
+        for s in self.casting_spells:
+            if s.level not in self.spell_slots:
+                raise ValueError('Cannot cast a {}-level spell - you don''t have the spell slots for it!'.format(s.level))

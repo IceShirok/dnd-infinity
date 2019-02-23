@@ -1,5 +1,4 @@
-
-from ddddd.entity import base
+from ddddd.entity.character import base
 
 
 class Feature(object):

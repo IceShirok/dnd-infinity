@@ -1,11 +1,6 @@
 import unittest
 
 from ddddd import pc_playground
-from ddddd.entity import base
-from ddddd.entity.base import Skills
-from ddddd.entity.character import race, feature, pc, background
-from ddddd.entity.character.vocations import ranger, rogue
-from ddddd.items import items, armor, weapons
 
 
 class TestPlayerCharacterFethriLevel1(unittest.TestCase):

@@ -1,6 +1,5 @@
 import unittest
 
-from ddddd.entity import base
 from ddddd.entity.character import feature
 
 

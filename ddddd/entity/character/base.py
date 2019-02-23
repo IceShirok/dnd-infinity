@@ -2,9 +2,10 @@
 
 import math
 
-"""
-Common functions
-"""
+
+#############################
+# Common functions
+#############################
 
 
 def modifier(score):
@@ -21,16 +22,18 @@ def prettify_modifier(mod):
         return str(mod)
 
 
-# Basic constants
+##########################################################
+# CONSTANTS TO SHARE BETWEEN MODULES
+##########################################################
+
 MODIFIER = 'modifier'
 ABILITY = 'ability'
 SCORE = 'score'
 
-BASE_ABILITY_SCORES = 'base_ability_scores'
+ABILITY_SCORES = 'ability_scores'
 PROF_BONUS = 'proficiency_bonus'
 
 BASIC = 'basic'
-ABILITY_SCORES = 'ability_scores'
 COMBAT = 'combat'
 ARMOR_CLASS = 'armor_class'
 INITIATIVE = 'initiative'
@@ -113,18 +116,9 @@ SPELL_SLOTS = 'spell_slots'
 RANGE = 'range'
 
 
-class SpellTypes(object):
-    CANTRIPS = 'cantrips'
-    FIRST = '1st'
-    SECOND = '2nd'
-    THIRD = '3rd'
-    FOURTH = '4th'
-    FIFTH = '5th'
-    SIXTH = '6th'
-    SEVENTH = '7th'
-    EIGHTH = '8th'
-    NINTH = '9th'
-
+#############################
+# ABILITY SCORES
+#############################
 
 class AbilityScore(object):
     STR = 'STR'
@@ -163,6 +157,10 @@ class AbilityScoreIncrease(object):
         return AbilityScoreIncrease(self.ability, self.score_increase + asi.score_increase)
 
 
+#############################
+# SAVING THROWS
+#############################
+
 class SavingThrow(object):
     def __init__(self, ability_score, proficiency_bonus, is_proficient):
         self.ability_score = ability_score
@@ -180,6 +178,10 @@ class SavingThrow(object):
             mod += self.proficiency_bonus
         return mod
 
+
+#############################
+# SKILLS
+#############################
 
 class SkillProficiency(object):
     def __init__(self, name, ability_score, proficiency_bonus, is_proficient, expertise):
@@ -202,23 +204,6 @@ class SkillProficiency(object):
             if self.expertise:
                 mod += self.proficiency_bonus
         return mod
-
-
-class Sizes(object):
-    TINY = 'tiny'
-    SMALL = 'small'
-    MEDIUM = 'medium'
-    LARGE = 'large'
-    HUGE = 'huge'
-    GARGANTUAN = 'gargantuan'
-    SIZE_TO_CARRYING_CAPACITY = {
-        TINY: 0.5,
-        SMALL: 1,
-        MEDIUM: 1,
-        LARGE: 2,
-        HUGE: 4,
-        GARGANTUAN: 8,
-    }
 
 
 class Skills(object):
@@ -254,6 +239,11 @@ class Skills(object):
     }
 
 
+#############################
+# MISC COMMON CONSTANTS
+#############################
+
+
 class Languages(object):
     COMMON = 'Common'
     DWARVISH = 'Dwarvish'
@@ -278,3 +268,49 @@ class Languages(object):
 
         THIEVES_CANT,
     }
+
+
+#############################
+# ENTITY BASE
+#############################
+
+class EntityBase(object):
+    """
+    A player character (PC) will consist of the PC's name,
+    ability scores, and level by experience. Features that
+    do not change with certain PC features (race, class, background)
+    and cannot be derived by other features (i.e. proficiency bonus)
+    are put in this class.
+    Why level by experience and not by class? I'm thinking a little
+    too far ahead, but it's because of multiclassing.
+    """
+    def __init__(self, name, str_, dex_, con_, int_, wis_, cha_, level=1):
+        self.name = name
+
+        self.str_ = AbilityScore(AbilityScore.STR, str_)
+        self.dex_ = AbilityScore(AbilityScore.DEX, dex_)
+        self.con_ = AbilityScore(AbilityScore.CON, con_)
+        self.int_ = AbilityScore(AbilityScore.INT, int_)
+        self.wis_ = AbilityScore(AbilityScore.WIS, wis_)
+        self.cha_ = AbilityScore(AbilityScore.CHA, cha_)
+
+        self.level = level
+
+    @property
+    def ability_scores(self):
+        """
+        Return the ability scores.
+        """
+        return {
+            AbilityScore.STR: self.str_,
+            AbilityScore.DEX: self.dex_,
+            AbilityScore.CON: self.con_,
+            AbilityScore.INT: self.int_,
+            AbilityScore.WIS: self.wis_,
+            AbilityScore.CHA: self.cha_,
+        }
+
+    @property
+    def proficiency_bonus(self):
+        """Proficiency bonus is  on a character's level."""
+        return math.floor((self.level + 3) / 4) + 1

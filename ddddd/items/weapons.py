@@ -1,4 +1,4 @@
-from ddddd.entity import base
+from ddddd.entity.character import base
 from ddddd.items import currency
 from ddddd.items.items import Item
 

@@ -1,5 +1,5 @@
 import unittest
-from ddddd.entity import base
+from ddddd.entity.character import base
 
 
 class TestFunctions(unittest.TestCase):
