@@ -14,6 +14,8 @@ class Cleric(Vocation):
     STYLES = 'styles'
 
     def __init__(self, skill_proficiencies, languages, cantrips):
+        self.specialization = KnowledgeDomainStrategy()
+        # self._add_specialization_features(self.level, **kwargs)
         def_features = {
             'divine_domain': feature.Feature(name='Divine Domain',
                                              description='You have chosen to worship Ioun, goddess of knowledge. \
@@ -60,14 +62,8 @@ class Cleric(Vocation):
                                      spellcasting=spellcasting,
                                      asi=None)
 
-    def _level_1_requirements(self):
-        return {}
-
-    def _level_2_requirements(self):
-        req = {}
-        return req
-
     def _add_level_2_features(self, **kwargs):
+        self._add_specialization_features(self.level, **kwargs)
         self._append_feature('channel_divinity',
                              feature=feature.Feature(name='Channel Divinity',
                                                      description='At 2nd level, you gain the ability to channel divine energy directly \
@@ -101,11 +97,8 @@ class Cleric(Vocation):
                                                  num_cantrips_known=spells.cantrips_by_level(3), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
-    def _level_3_requirements(self):
-        req = {}
-        return req
-
     def _add_level_3_features(self, **kwargs):
+        self._add_specialization_features(self.level, **kwargs)
         simple_spell_list = [
             ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
             ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
@@ -125,15 +118,6 @@ class Cleric(Vocation):
                                                  num_spells_known=3 + 3 + 4,
                                                  num_cantrips_known=spells.cantrips_by_level(3), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
-
-    def _level_4_requirements(self):
-        req = {
-            'ability_score_increase': {
-                'name': 'Ability Score Increase',
-                'description': 'You can increase one ability score of your choice by 2, or you can increase two Ability Scores of your choice by 1.',
-            },
-        }
-        return req
 
     def _add_level_4_features(self, **kwargs):
         self._aggregate_asi_or_feat(kwargs, 4)
@@ -161,19 +145,6 @@ class Cleric(Vocation):
                                                  num_cantrips_known=spells.cantrips_by_level(4), cantrips=self.spellcasting.cantrips)
         self.spellcasting = spellcasting
 
-    def _level_5_requirements(self):
-        req = {
-            base.SPELLCASTING: {
-                base.SPELLCASTING_ABILITY: AbilityScore.WIS,
-                base.NUM_SPELLS_KNOWN: 4,
-                base.SPELL_SLOTS: {
-                    SpellTypes.FIRST: 4,
-                    SpellTypes.SECOND: 2,
-                }
-            },
-        }
-        return req
-
     def _add_level_5_features(self, **kwargs):
         self._append_feature('channel_divinity_destroy_undead',
                              feature=feature.Feature(
@@ -182,6 +153,7 @@ class Cleric(Vocation):
                                              against your Turn Undead feature, the creature is instantly destroyed \
                                              if its challenge rating is at or below CR 1/2.'))
 
+        self._add_specialization_features(self.level, **kwargs)
         # TODO work on the mechanic to override stuff
         self._append_feature('channel_divinity',
                              feature=feature.Feature(name='Channel Divinity (2/rest)',
@@ -220,6 +192,7 @@ class Cleric(Vocation):
                              feature=feature.Feature(name='Channel Divinity: Read Thoughts',
                                                      description='At 6th level, you can use your Channel Divinity to read \
                                                  a creature''s thoguhts.'))
+        self._add_specialization_features(self.level, **kwargs)
 
         simple_spell_list = [
             ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
@@ -252,6 +225,7 @@ class Cleric(Vocation):
         # TODO fix the wisdom modifier
         self._append_feature('potent_spellcasting',
                              feature=PotentSpellcasting(wis_mod=4))
+        self._add_specialization_features(self.level, **kwargs)
 
         simple_spell_list = [
             ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
@@ -286,6 +260,7 @@ class Cleric(Vocation):
 
     def _add_level_8_features(self, **kwargs):
         self._aggregate_asi_or_feat(kwargs, 8)
+        self._add_specialization_features(self.level, **kwargs)
 
         self._append_feature('channel_divinity_destroy_undead',
                              feature=feature.Feature(
@@ -328,6 +303,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_9_features(self, **kwargs):
+        self._add_specialization_features(self.level, **kwargs)
         simple_spell_list = [
             ('Command', ddddd.entity.character.spells.SpellTypes.FIRST),
             ('Identify', ddddd.entity.character.spells.SpellTypes.FIRST),
@@ -698,11 +674,7 @@ class Cleric(Vocation):
         self.spellcasting = spellcasting
 
     def _add_level_17_features(self, **kwargs):
-        self._append_feature('visions_of_the_past',
-                             feature=feature.Feature(name='Visions of the Past',
-                                                     description='Starting at 17th level, you can call up \
-                                                 visions of the past that relate to an object you hold or your immediate surroundings.'))
-
+        self._add_specialization_features(self.level, **kwargs)
         self._append_feature('channel_divinity_destroy_undead',
                              feature=feature.Feature(
                                  name='Channel Divinity: Destroy Undead (CR 4)',
@@ -956,3 +928,102 @@ class ClericSpellcastingAbility(spells.SpellcastingAbility):
         # spells_ = list(filter(lambda x: x.level != base.SpellTypes.CANTRIPS, self.list_spells_known))
         # if len(spells_) != self.num_spells_known:
         #     raise ValueError('Must have {} spells but inputted {} spells!'.format(self.num_spells_known, len(spells_)))
+
+
+##############################
+# CLERIC DOMAINS
+##############################
+
+class ClericDomain(object):
+    """
+    The cleric subclass.
+    """
+
+    @staticmethod
+    def get_cleric_domains():
+        return {
+            'knowledge': KnowledgeDomainStrategy(),
+        }
+
+    @staticmethod
+    def get_cleric_domain(name):
+        return ClericDomain.get_cleric_domains()[name]
+
+    def add_level_1_features(self, **kwargs):
+        raise NotImplementedError()
+
+    def add_level_2_features(self, **kwargs):
+        raise NotImplementedError()
+
+    def add_level_3_features(self, **kwargs):
+        raise NotImplementedError()
+
+    def add_level_5_features(self, **kwargs):
+        raise NotImplementedError()
+
+    def add_level_6_features(self, **kwargs):
+        raise NotImplementedError()
+
+    def add_level_7_features(self, **kwargs):
+        raise NotImplementedError()
+
+    def add_level_8_features(self, **kwargs):
+        raise NotImplementedError()
+
+    def add_level_9_features(self, **kwargs):
+        raise NotImplementedError()
+
+    def add_level_17_features(self, **kwargs):
+        raise NotImplementedError()
+
+
+class KnowledgeDomainStrategy(ClericDomain):
+
+    def add_level_1_features(self, **kwargs):
+        new_features = {}
+        new_stuff = {'features': new_features}
+        return new_stuff
+
+    def add_level_2_features(self, **kwargs):
+        new_features = {}
+        new_stuff = {'features': new_features}
+        return new_stuff
+
+    def add_level_3_features(self, **kwargs):
+        new_features = {}
+        new_stuff = {'features': new_features}
+        return new_stuff
+
+    def add_level_5_features(self, **kwargs):
+        new_features = {}
+        new_stuff = {'features': new_features}
+        return new_stuff
+
+    def add_level_6_features(self, **kwargs):
+        new_features = {}
+        new_stuff = {'features': new_features}
+        return new_stuff
+
+    def add_level_7_features(self, **kwargs):
+        new_features = {}
+        new_stuff = {'features': new_features}
+        return new_stuff
+
+    def add_level_8_features(self, **kwargs):
+        new_features = {}
+        new_stuff = {'features': new_features}
+        return new_stuff
+
+    def add_level_9_features(self, **kwargs):
+        new_features = {}
+        new_stuff = {'features': new_features}
+        return new_stuff
+
+    def add_level_17_features(self, **kwargs):
+        new_features = {
+            'visions_of_the_past': feature.Feature(name='Visions of the Past',
+                                                   description='Starting at 17th level, you can call up \
+                                                   visions of the past that relate to an object you hold or your immediate surroundings.')
+        }
+        new_stuff = {'features': new_features}
+        return new_stuff
