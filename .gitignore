@@ -3,3 +3,7 @@ __pycache__/
 .idea/
 *.pdf
 *.tex
+*.aux
+*.log
+*.fdb_latexmk
+*.fls
