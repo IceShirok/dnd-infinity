@@ -71,7 +71,7 @@ def generate_character_sheet(pc):
         write_(r'\noindent\begin{tabular}{|m{3.1in}|}')
         write_(r'\hline')
         for ability in pc.ability_scores:
-            write_(r'\textbf{'+ability+r'} \ding{114}\\')
+            write_(r'\textbf{'+ability+r'}\\')
             saving_throw = pc.saving_throws[ability]
             save_sym = r'$\square$'
             if saving_throw.is_proficient:
@@ -125,7 +125,7 @@ def generate_character_sheet(pc):
                                             weapon_details['attack_type'])
             write_(r'\textbf{'+weapon.name+r'} \ding{114}\\')
             write_(r'{} $\vert$ {}\\'.format(attack_bonus, weapon_details['damage']))
-        for _ in range(0, 4):
+        for _ in range(0, 3):
             write_(r'\rule{3in}{.2pt}\\')
         write_(r'\hline')
         write_(r'\end{tabular}')

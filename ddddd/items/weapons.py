@@ -42,6 +42,10 @@ HANDAXE = Weapon('handaxe', category=SIMPLE, damage='1d6 slashing',
                  price=currency.GoldPieces(5), weight=2,
                  properties=[LIGHT, 'thrown (range 20/60)'])
 
+SHORTBOW = Weapon('shortbow', category=SIMPLE, damage='1d6 piercing',
+                 price=currency.GoldPieces(10), weight=2,
+                 properties=['ammunition (range 80/320)', TWO_HANDED])
+
 RAPIER = Weapon('rapier', category=MARTIAL, damage='1d8 piercing',
                 price=currency.GoldPieces(25), weight=2,
                 properties=[FINESSE])
@@ -55,7 +59,7 @@ LONGSWORD = Weapon('lsongsword', category=MARTIAL, damage='1d8 piercing',
                    properties=['versatile (1d10)'])
 
 WEAPON_TYPE_TO_WEAPONS = {
-    SIMPLE: [MACE, HANDAXE],
+    SIMPLE: [MACE, HANDAXE, SHORTBOW],
     MARTIAL: [RAPIER, LONGBOW],
 }
 
