@@ -18,15 +18,23 @@ class Vocation(object):
         self.proficiencies = proficiencies
         self.saving_throws = saving_throws
         self.skills = skill_proficiencies
-        self._features = features
+        self._features = features if features else {}
         self.asi = asi if asi else {}
         self.spellcasting = spellcasting
         self.feats = feats if feats else []
         self.specialization = None
 
+    def _add_level_based_features(self, level):
+        """
+        This function is called after every level.
+        Each specific vocation may or may not need to override this.
+        """
+        pass
+
     def _add_specialization_features(self, level, **kwargs):
-        if self.specialization:
-            new_stuff = getattr(self.specialization, 'add_level_{}_features'.format(level))(**kwargs)
+        add_level_features = getattr(self.specialization, 'add_level_{}_features'.format(level), None)
+        if self.specialization and add_level_features:
+            new_stuff = add_level_features(**kwargs)
             if 'features' in new_stuff:
                 for key, f in new_stuff['features'].items():
                     self._append_feature(key, f)
@@ -75,59 +83,82 @@ class Vocation(object):
             else:
                 raise ValueError('Invalid level!')
 
+    def _add_level_1_features(self, **kwargs):
+        self._add_level_based_features(1)
+        self._add_specialization_features(1, **kwargs)
+
     def _add_level_2_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(2)
+        self._add_specialization_features(2, **kwargs)
 
     def _add_level_3_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(3)
+        self._add_specialization_features(3, **kwargs)
 
     def _add_level_4_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(4)
+        self._add_specialization_features(4, **kwargs)
 
     def _add_level_5_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(5)
+        self._add_specialization_features(5, **kwargs)
 
     def _add_level_6_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(6)
+        self._add_specialization_features(6, **kwargs)
 
     def _add_level_7_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(7)
+        self._add_specialization_features(7, **kwargs)
 
     def _add_level_8_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(8)
+        self._add_specialization_features(8, **kwargs)
 
     def _add_level_9_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(9)
+        self._add_specialization_features(9, **kwargs)
 
     def _add_level_10_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(10)
+        self._add_specialization_features(10, **kwargs)
 
     def _add_level_11_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(11)
+        self._add_specialization_features(11, **kwargs)
 
     def _add_level_12_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(12)
+        self._add_specialization_features(12, **kwargs)
 
     def _add_level_13_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(13)
+        self._add_specialization_features(13, **kwargs)
 
     def _add_level_14_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(14)
+        self._add_specialization_features(14, **kwargs)
 
     def _add_level_15_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(15)
+        self._add_specialization_features(15, **kwargs)
 
     def _add_level_16_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(16)
+        self._add_specialization_features(16, **kwargs)
 
     def _add_level_17_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(17)
+        self._add_specialization_features(17, **kwargs)
 
     def _add_level_18_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(18)
+        self._add_specialization_features(18, **kwargs)
 
     def _add_level_19_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(19)
+        self._add_specialization_features(19, **kwargs)
 
     def _add_level_20_features(self, **kwargs):
-        return {}
+        self._add_level_based_features(20)
+        self._add_specialization_features(20, **kwargs)

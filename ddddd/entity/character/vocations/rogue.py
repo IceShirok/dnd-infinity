@@ -9,16 +9,6 @@ from ddddd.items import weapons
 
 class Rogue(Vocation):
     def __init__(self, skill_proficiencies, expertise):
-        def_features = {
-            'sneak_attack': SneakAttack(level=1),
-            'thieves_cant': feature.LanguagesKnown(name='Thieves'' Cant',
-                                                   description='During your rogue Training you learned thieves'' cant, \
-                                                   a Secret mix of dialect, jargon, and code that allows you to hide messages \
-                                                   in seemingly normal conversation.',
-                                                   languages=[base.Languages.THIEVES_CANT]),
-            'expertise': expertise,
-        }
-
         super(Rogue, self).__init__(name='Rogue',
                                     level=1,
                                     hit_die=8,
@@ -35,31 +25,42 @@ class Rogue(Vocation):
                                     },
                                     saving_throws=[AbilityScore.DEX, AbilityScore.INT],
                                     skill_proficiencies=skill_proficiencies,
-                                    features=def_features,
+                                    features=None,
                                     spellcasting=None,
                                     asi=None)
+        self._add_level_1_features(expertise=expertise)
+
+    def _add_level_based_features(self, level):
+        self._append_feature('sneak_attack', feature=SneakAttack(level=level))
+
+    def _add_level_1_features(self, **kwargs):
+        super(Rogue, self)._add_level_1_features(**kwargs)
+        self._append_feature('thieves_cant', feature=feature.LanguagesKnown(name='Thieves'' Cant',
+                                                                            description='During your rogue Training you learned thieves'' cant, \
+                                                                            a Secret mix of dialect, jargon, and code that allows you to hide messages \
+                                                                            in seemingly normal conversation.',
+                                                                            languages=[base.Languages.THIEVES_CANT]))
+        expertise = kwargs['expertise']
+        self._append_feature('expertise', expertise)
 
     def _add_level_2_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
+        super(Rogue, self)._add_level_2_features(**kwargs)
         self._append_feature('cunning_action',
                              feature=feature.Feature(name='Cunning Action',
                                                      description='Starting at 2nd level, your quick thinking and agility \
                                                  allow you to move and act quickly.'))
 
     def _add_level_3_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-
+        super(Rogue, self)._add_level_3_features(**kwargs)
         self.specialization = RoguishArchetype.get_roguish_archetype(kwargs['roguish_archetype'])
         self._add_specialization_features(self.level, **kwargs)
 
     def _add_level_4_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-
+        super(Rogue, self)._add_level_4_features(**kwargs)
         self._aggregate_asi_or_feat(kwargs, level=4)
 
     def _add_level_5_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-
+        super(Rogue, self)._add_level_5_features(**kwargs)
         self._append_feature('uncanny_dodge',
                              feature=feature.Feature(name='Uncanny Dodge',
                                                      description='Starting at 5th level, when an attacker that \
@@ -67,7 +68,7 @@ class Rogue(Vocation):
                                                  to halve the attack''s damage against you.'))
 
     def _add_level_6_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
+        super(Rogue, self)._add_level_6_features(**kwargs)
         old_expertise = self._features['expertise']
         new_expertise = kwargs['expertise_6']
         expert_skills = old_expertise.skills + new_expertise.skills
@@ -75,47 +76,41 @@ class Rogue(Vocation):
         self._append_feature('expertise', Expertise(skills=expert_skills, proficiencies=expert_proficiencies))
 
     def _add_level_7_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-
+        super(Rogue, self)._add_level_7_features(**kwargs)
         self._append_feature('evasion',
                              feature=feature.Feature(name='Evasion',
                                                      description='Beginning at 7th level, you can nimbly dodge \
                                                      out of the way of certain area effects.'))
 
     def _add_level_8_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-
+        super(Rogue, self)._add_level_8_features(**kwargs)
         self._aggregate_asi_or_feat(kwargs, level=8)
 
     def _add_level_9_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
+        super(Rogue, self)._add_level_9_features(**kwargs)
         self._add_specialization_features(self.level, **kwargs)
 
     def _add_level_10_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-
+        super(Rogue, self)._add_level_10_features(**kwargs)
         self._aggregate_asi_or_feat(kwargs, level=10)
 
     def _add_level_11_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-
+        super(Rogue, self)._add_level_11_features(**kwargs)
         self._append_feature('reliable_talent',
                              feature=feature.Feature(name='Reliable Talent',
                                                      description='By 11th level, you have refined your chosen skills \
                                                      until they approach perfection.'))
 
     def _add_level_12_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-
+        super(Rogue, self)._add_level_12_features(**kwargs)
         self._aggregate_asi_or_feat(kwargs, level=12)
 
     def _add_level_13_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
+        super(Rogue, self)._add_level_13_features(**kwargs)
         self._add_specialization_features(self.level, **kwargs)
 
     def _add_level_14_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-
+        super(Rogue, self)._add_level_14_features(**kwargs)
         self._append_feature('blindsense',
                              feature=feature.Feature(name='Blindsense',
                                                      description='Starting at 14th level, if you are able to hear, \
@@ -123,38 +118,33 @@ class Rogue(Vocation):
                                                      within 10 feet of you.'))
 
     def _add_level_15_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-
+        super(Rogue, self)._add_level_15_features(**kwargs)
         self._append_feature('slippery_mind',
                              feature=feature.Feature(name='Slippery Mind',
                                                      description='By 15th level, you have acquired greater \
                                                      mental strength. You gain proficiency in Wisdom saving throws.'))
 
     def _add_level_16_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-
+        super(Rogue, self)._add_level_16_features(**kwargs)
         self._aggregate_asi_or_feat(kwargs, level=16)
 
     def _add_level_17_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
+        super(Rogue, self)._add_level_17_features(**kwargs)
         self._add_specialization_features(self.level, **kwargs)
 
     def _add_level_18_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-
+        super(Rogue, self)._add_level_18_features(**kwargs)
         self._append_feature('elusive',
                              feature=feature.Feature(name='Elusive',
                                                      description='Beginning at 18th level, you are so evasive \
                                                      that attackers rarely gain the upper hand against you.'))
 
     def _add_level_19_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-
+        super(Rogue, self)._add_level_19_features(**kwargs)
         self._aggregate_asi_or_feat(kwargs, level=19)
 
     def _add_level_20_features(self, **kwargs):
-        self._append_feature('sneak_attack', feature=SneakAttack(level=self.level))
-
+        super(Rogue, self)._add_level_20_features(**kwargs)
         self._append_feature('stroke_of_luck',
                              feature=feature.Feature(name='Stroke of Luck',
                                                      description='At 20th level, you have an uncanny knack \

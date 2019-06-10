@@ -276,7 +276,7 @@ class PlayerCharacter(object):
             total_damage = cantrip.damage_calc(self.level)
             for bonus in vocation_bonuses:
                 if bonus.qualifies(cantrip):
-                    total_damage = '{} + {}'.format(total_damage, bonus.attack_bonus)
+                    total_damage = '{} + {}'.format(total_damage, bonus.get_bonus(ability_scores=self.ability_scores))
 
             bonuses[cantrip.name] = {
                 'cantrip': cantrip,
