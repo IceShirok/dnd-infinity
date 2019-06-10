@@ -63,13 +63,8 @@ class Ranger(Vocation):
                              feature=feature.Feature(name='Primeval Awareness',
                                                      description='Beginning at 3rd level, you can use your action and expend one Ranger spell slot \
                                                  to focus your awareness on the region around you..'))
-
-        archetype_feature = kwargs['archetype_feature']
-        # TODO clean up the martial specialized features
-        self._append_feature('ranger_archetype',
-                             feature=feature.Feature(name='Ranger Archetype',
-                                                     description='Emulating the Hunter archetype means accepting your place as a bulwark \
-                                                 between civilization and the terrors of The Wilderness.'.format(archetype_feature)))
+        self.specialization = RangerArchetype.get_ranger_archetype(kwargs['ranger_archetype'])
+        self._add_specialization_features(self.level, **kwargs)
 
         # TODO make this a bit more elegant...
         list_spells = []
@@ -108,7 +103,7 @@ class Ranger(Vocation):
                                                       num_spells_known=4)
 
     def _add_level_6_features(self, **kwargs):
-        return {}
+        self._add_specialization_features(self.level, **kwargs)
 
     def _add_level_7_features(self, **kwargs):
         return {}
@@ -123,7 +118,7 @@ class Ranger(Vocation):
         return {}
 
     def _add_level_11_features(self, **kwargs):
-        return {}
+        self._add_specialization_features(self.level, **kwargs)
 
     def _add_level_12_features(self, **kwargs):
         return {}
@@ -135,7 +130,7 @@ class Ranger(Vocation):
         return {}
 
     def _add_level_15_features(self, **kwargs):
-        return {}
+        self._add_specialization_features(self.level, **kwargs)
 
     def _add_level_16_features(self, **kwargs):
         return {}
@@ -191,3 +186,75 @@ class NaturalExplorer(feature.Feature):
         super(NaturalExplorer, self).__init__(name='Natural Explorer',
                                               description=final_desc)
         self.favored_terrains = favored_terrains
+
+
+##############################
+# ROGUISH ARCHETYPES
+##############################
+
+class RangerArchetype(object):
+    """
+    The ranger subclass.
+    This determines the features the specific archetype gains.
+    """
+
+    @staticmethod
+    def get_ranger_archetypes():
+        return {
+            'hunter': HunterStrategy(),
+        }
+
+    @staticmethod
+    def get_ranger_archetype(name):
+        return RangerArchetype.get_ranger_archetypes()[name]
+
+    def add_level_3_features(self, **kwargs):
+        raise NotImplementedError()
+
+    def add_level_9_features(self, **kwargs):
+        raise NotImplementedError()
+
+    def add_level_11_features(self, **kwargs):
+        raise NotImplementedError()
+
+    def add_level_15_features(self, **kwargs):
+        raise NotImplementedError()
+
+
+class HunterStrategy(RangerArchetype):
+    """
+    This represents the hunter, a ranger archetype that can be chosen starting level 3.
+    """
+
+    def add_level_3_features(self, **kwargs):
+        new_features = {
+            'coloussus_slayer': feature.Feature(name='Colussus Slayer',
+                                                description=''),
+        }
+        new_stuff = {'features': new_features}
+        return new_stuff
+
+    def add_level_9_features(self, **kwargs):
+        new_features = {
+            'escape_the_horde': feature.Feature(name='Escape the Horde',
+                                                description=''),
+        }
+        new_stuff = {'features': new_features}
+        return new_stuff
+
+    def add_level_11_features(self, **kwargs):
+        new_features = {
+            'whirlwind_attack': feature.Feature(name='Whirlwind Attack',
+                                                description=''),
+        }
+        new_stuff = {'features': new_features}
+        return new_stuff
+
+    def add_level_15_features(self, **kwargs):
+        new_features = {
+            'stand_against_the_tide': feature.Feature(name='Stand Against the Tide',
+                                                      description=''),
+        }
+        new_stuff = {'features': new_features}
+        return new_stuff
+
