@@ -54,7 +54,7 @@ def create_dorian(level=5):
     if level > 1:
         vocation.level_to(level=level,
                           fighting_style='two_weapon_fighting',
-                          archetype_feature='colossus_slayer',
+                          ranger_archetype='hunter',
                           ability_score_increase_4={
                               base.AbilityScore.STR: base.AbilityScoreIncrease(base.AbilityScore.STR, 2),
                           })

@@ -17,10 +17,10 @@ class Rogue(Vocation):
                                                                                          proficiencies=['light']),
                                         base.WEAPON_PROFICIENCY: feature.WeaponProficiency(name='Weapon Proficiency',
                                                                                            proficiencies=['simple',
-                                                                                                        'hand crossbow',
-                                                                                                        'longsword',
-                                                                                                        'rapier',
-                                                                                                        'shortsword']),
+                                                                                                          'hand crossbow',
+                                                                                                          'longsword',
+                                                                                                          'rapier',
+                                                                                                          'shortsword']),
                                         base.TOOL_PROFICIENCY: feature.ToolProficiency(proficiencies=['thieves_tools'])
                                     },
                                     saving_throws=[AbilityScore.DEX, AbilityScore.INT],
@@ -157,7 +157,7 @@ class Rogue(Vocation):
 
 class SneakAttack(feature.EnhanceDamage):
     def __init__(self, level):
-        attack_bonus = '{}d6'.format(math.floor((level+1)/2))
+        attack_bonus = '{}d6'.format(math.floor((level + 1) / 2))
         super(SneakAttack, self).__init__(name='Sneak Attack',
                                           description='Beginning at 1st level, you know how to strike subtly \
                                           and exploit a foe''s distraction. \
@@ -214,22 +214,38 @@ class ThiefStrategy(RoguishArchetype):
     """
 
     def add_level_3_features(self, **kwargs):
-        new_features = {}
+        new_features = {
+            'fast_hands': feature.Feature(name='Fast Hands',
+                                          description='Starting at 3rd level, you can use the bonus action granted by your Cunning Action \
+                                                       to make a Dexterity (Sleight of Hand) check, use your thieves tools \
+                                                       to disarm a trap or open a lock, or take the Use an Object action.'),
+            'second_story_work': feature.Feature(name='Second-Story Work',
+                                                 description=''),
+        }
         new_stuff = {'features': new_features}
         return new_stuff
 
     def add_level_9_features(self, **kwargs):
-        new_features = {}
+        new_features = {
+            'supreme_sneak': feature.Feature(name='Supreme Sneak',
+                                             description=''),
+        }
         new_stuff = {'features': new_features}
         return new_stuff
 
     def add_level_13_features(self, **kwargs):
-        new_features = {}
+        new_features = {
+            'use_magic_device': feature.Feature(name='Use Magic Device',
+                                                description=''),
+        }
         new_stuff = {'features': new_features}
         return new_stuff
 
     def add_level_17_features(self, **kwargs):
-        new_features = {}
+        new_features = {
+            'thiefs_reflexes': feature.Feature(name='Thieves'' Reflexes',
+                                               description=''),
+        }
         new_stuff = {'features': new_features}
         return new_stuff
 
