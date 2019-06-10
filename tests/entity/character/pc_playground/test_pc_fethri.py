@@ -183,7 +183,7 @@ class TestPlayerCharacterFethriLevel1(unittest.TestCase):
     #########################
 
     def test_carrying_weight(self):
-        self.assertEqual(self.fethri.carrying_weight, 67)
+        self.assertEqual(self.fethri.carrying_weight, 69)
 
     def test_carrying_capacity(self):
         self.assertEqual(self.fethri.carrying_capacity, 150)
@@ -375,7 +375,7 @@ class TestPlayerCharacterFethriLevel4(unittest.TestCase):
     #########################
 
     def test_carrying_weight(self):
-        self.assertEqual(self.fethri.carrying_weight, 67)
+        self.assertEqual(self.fethri.carrying_weight, 69)
 
     def test_carrying_capacity(self):
         self.assertEqual(self.fethri.carrying_capacity, 150)
@@ -573,7 +573,7 @@ class TestPlayerCharacterFethriLevel20(unittest.TestCase):
     #########################
 
     def test_carrying_weight(self):
-        self.assertEqual(self.fethri.carrying_weight, 67)
+        self.assertEqual(self.fethri.carrying_weight, 69)
 
     def test_carrying_capacity(self):
         self.assertEqual(self.fethri.carrying_capacity, 150)
