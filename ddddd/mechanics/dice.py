@@ -12,3 +12,11 @@ def roll_d6():
 
 def roll_d20():
     return roll_die(20)
+
+
+def roll_ability_score():
+    values = []
+    for _ in range(0, 4):
+        values.append(roll_d6())
+    min_value = min(values)
+    return sum(values) - min_value

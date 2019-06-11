@@ -1,10 +1,22 @@
-from flask import Flask, render_template, redirect, url_for, abort
+from flask import Flask, render_template, redirect, url_for, abort, flash
 from ddddd import pc_playground as pc
 from ddddd.entity.character.base import prettify_modifier
 
 import logging
 
+from ddddd.mechanics import dice
+from ddddd.pc_creator import PcCreatorForm
+
+import os
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+
+class Config(object):
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
+
+
 app = Flask(__name__)
+app.config.from_object(Config)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -50,6 +62,30 @@ def generate_pc(pc_name, level):
                            title='D&D Character Sheet - {}'.format(pc_name.capitalize()),
                            pc=create_pc(level=level),
                            pmod=prettify_modifier)
+
+
+@app.route('/pc/create', methods=['GET', 'POST'])
+def create_pc():
+    form = PcCreatorForm()
+    if form.validate_on_submit():
+        flash('name : {}'.format(form.name.data))
+        flash('race : {}'.format(form.race.data))
+        flash('vocation : {}'.format(form.vocation.data))
+        flash('background : {}'.format(form.background.data))
+
+        ability_scores = {
+            'STR': dice.roll_ability_score(),
+            'DEX': dice.roll_ability_score(),
+            'CON': dice.roll_ability_score(),
+            'INT': dice.roll_ability_score(),
+            'WIS': dice.roll_ability_score(),
+            'CHA': dice.roll_ability_score(),
+        }
+        flash(ability_scores)
+
+    return render_template('pc_creator.html',
+                           title='D&D Character Sheet - Create',
+                           form=form)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="banner" class="columns">
+    <div class="column col-3">
+    </div>
+    <div class="column col-6">
+        <h1>Create a Character</h1>
+        <form action="" method="post" novalidate>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.name.label }}<br>
+                {{ form.name(size=32) }}
+                {% for error in form.name.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.race.label }}<br>
+                {{ form.race }}
+                {% for error in form.race.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.vocation.label }}<br>
+                {{ form.vocation }}
+                {% for error in form.vocation.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.background.label }}<br>
+                {{ form.background }}
+                {% for error in form.background.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ form.submit() }}</p>
+        </form>
+    </div>
+    <div class="column col-3"></div>
+</div>
+{% endblock %}
