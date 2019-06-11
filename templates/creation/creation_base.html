@@ -8,6 +8,16 @@
         {% endif %}
     </div>
     <div class="column col-6">
+        <header class="navbar">
+            <section class="navbar-section"></section>
+            <section class="navbar-center">
+                <a href="{{ url_for('create_pc_race') }}">Race</a> |
+                <a href="{{ url_for('create_pc_vocation') }}">Vocation</a> |
+                <a href="{{ url_for('create_pc_abilities') }}">Abilities</a> |
+                <a href="{{ url_for('create_pc_background') }}">Background</a>
+            </section>
+            <section class="navbar-section"></section>
+        </header>
         {% block creation %}{% endblock %}
     </div>
     <div class="column col-3">
