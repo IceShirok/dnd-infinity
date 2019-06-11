@@ -1,0 +1,10 @@
+{% extends "creation/creation_base.html" %}
+
+{% block creation %}
+<h1>Ability Scores</h1>
+<ul>
+    {% for ability in ability_scores %}
+    <li>{{ ability }}: {{ ability_scores[ability] }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

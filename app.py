@@ -83,9 +83,49 @@ def create_pc():
         }
         flash(ability_scores)
 
-    return render_template('pc_creator.html',
-                           title='D&D Character Sheet - Create',
+    return render_template('creation/pc_creator.html',
+                           title='D&D Character Creation - Create',
                            form=form)
+
+
+@app.route('/pc/create/race', methods=['GET', 'POST'])
+def create_pc_race():
+    return render_template('creation/race.html',
+                           title='D&D Character Creation - Race',
+                           next_url=url_for('create_pc_vocation'))
+
+
+@app.route('/pc/create/vocation', methods=['GET', 'POST'])
+def create_pc_vocation():
+    return render_template('creation/vocation.html',
+                           title='D&D Character Creation - Vocation',
+                           prev_url=url_for('create_pc_race'),
+                           next_url=url_for('create_pc_abilities'))
+
+
+@app.route('/pc/create/abilities', methods=['GET', 'POST'])
+def create_pc_abilities():
+    ability_scores = {
+        'STR': dice.roll_ability_score(),
+        'DEX': dice.roll_ability_score(),
+        'CON': dice.roll_ability_score(),
+        'INT': dice.roll_ability_score(),
+        'WIS': dice.roll_ability_score(),
+        'CHA': dice.roll_ability_score(),
+    }
+
+    return render_template('creation/abilities.html',
+                           title='D&D Character Creation - Abilities',
+                           ability_scores=ability_scores,
+                           prev_url=url_for('create_pc_vocation'),
+                           next_url=url_for('create_pc_background'))
+
+
+@app.route('/pc/create/background', methods=['GET', 'POST'])
+def create_pc_background():
+    return render_template('creation/background.html',
+                           title='D&D Character Creation - Background',
+                           prev_url=url_for('create_pc_abilities'))
 
 
 if __name__ == '__main__':
