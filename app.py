@@ -105,6 +105,9 @@ def create_pc_vocation():
 
 @app.route('/pc/create/abilities', methods=['GET', 'POST'])
 def create_pc_abilities():
+    # https://stackoverflow.com/questions/11113903/in-memory-storage-for-flask-application
+    # Check out storing PC information in-memory
+    # able to go through testing without needing to reload
     ability_scores = {
         'STR': dice.roll_ability_score(),
         'DEX': dice.roll_ability_score(),
