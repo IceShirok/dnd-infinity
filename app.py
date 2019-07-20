@@ -87,13 +87,21 @@ def initiative_tracker_creator():
                            title='D&D Initiative Tracker')
 
 
+it = init_tracker.get_sample_initiative_tracker()
+it.reset_combat()
+
+
 @app.route('/combat')
 def initiative_tracker():
-    initiative_tracker = init_tracker.get_sample_initiative_tracker()
-    initiative_tracker.reset_combat()
     return render_template('init_tracker.html',
                            title='D&D Initiative Tracker',
-                           init_tracker=initiative_tracker)
+                           init_tracker=it)
+
+
+@app.route('/combat/next')
+def initiative_tracker_next_turn():
+    it.next_turn()
+    return redirect(url_for('initiative_tracker'))
 
 
 if __name__ == '__main__':

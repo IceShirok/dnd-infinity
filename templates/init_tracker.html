@@ -5,23 +5,34 @@
 <h2>Round {{ init_tracker.round }}</h2>
 <div class="columns">
     <div class="column col-4">
-    {% for entity in init_tracker.get_intiative_order() %}
-        <div class="card">
-            <div class="card-image"></div>
-            <div class="card-header">
-                <figure class="avatar avatar-xl" data-initial="{{ entity.avatar_initials }}" style="background-color: {{ entity.avatar_color }};"></figure>
-                <div class="card-title h5">{{ entity.name }}</div>
-                <div class="card-subtitle text-gray">{{ entity.initiative }}</div>
-            </div>
-            <div class="card-body">
-                {% if entity == init_tracker.get_current_entity() %}
-                    <p>It's your turn! Go forth and conquer!</p>
-                {% else %}
-                    <p>...</p>
-                {% endif %}
-            </div>
-        </div>
-    {% endfor %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Initiative</th>
+                <th>Hit Points</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for entity in init_tracker.get_intiative_order() %}
+            <tr class="active {{ 'bg-primary' if entity == init_tracker.get_current_entity() else 'bg-light' }}">
+                <td>
+                    <figure class="avatar avatar-xl" data-initial="{{ entity.avatar_initials }}" style="background-color: {{ entity.avatar_color }};"></figure>
+                </td>
+                <td>{{ entity.name }}</td>
+                <td>{{ entity.initiative }}</td>
+                <td>???</td>
+                <td></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="column col-4">
+        <a href="{{ url_for('initiative_tracker_next_turn') }}">Next!!!</a>
     </div>
 </div>
 {% endblock %}
