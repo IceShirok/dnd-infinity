@@ -4,7 +4,7 @@
 <h1>Roll for initiative!</h1>
 <h2>Round {{ init_tracker.round }}</h2>
 <div class="columns">
-    <div class="column col-4">
+    <div class="column col-6">
         <table class="table">
             <thead>
             <tr>
@@ -24,15 +24,19 @@
                 <td>{{ entity.name }}</td>
                 <td>{{ entity.initiative }}</td>
                 <td>???</td>
-                <td></td>
+                <td>
+                    <p><span class="label">default label</span></p>
+                    <p><span class="label">default label</span></p>
+                </td>
             </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
 
-    <div class="column col-4">
-        <a href="{{ url_for('initiative_tracker_next_turn') }}">Next!!!</a>
+    <div class="column col-2">
+        <p><a href="{{ url_for('initiative_tracker_next_turn') }}">Next!!!</a></p>
+        <p><a href="{{ url_for('initiative_tracker_reset') }}">Reset!!!</a></p>
     </div>
 </div>
 {% endblock %}

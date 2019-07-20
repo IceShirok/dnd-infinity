@@ -104,6 +104,12 @@ def initiative_tracker_next_turn():
     return redirect(url_for('initiative_tracker'))
 
 
+@app.route('/combat/reset')
+def initiative_tracker_reset():
+    it.reset_combat()
+    return redirect(url_for('initiative_tracker'))
+
+
 if __name__ == '__main__':
     app.register_error_handler(404, page_not_found)
     app.register_error_handler(500, server_error)
