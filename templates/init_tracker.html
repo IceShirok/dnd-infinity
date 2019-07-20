@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Roll for initiative!</h1>
+<h2>Round {{ init_tracker.round }}</h2>
+<div class="columns">
+    <div class="column col-4">
+    {% for entity in init_tracker.get_intiative_order() %}
+        <div class="card">
+            <div class="card-image"></div>
+            <div class="card-header">
+                <figure class="avatar avatar-xl" data-initial="{{ entity.avatar_initials }}" style="background-color: {{ entity.avatar_color }};"></figure>
+                <div class="card-title h5">{{ entity.name }}</div>
+                <div class="card-subtitle text-gray">{{ entity.initiative }}</div>
+            </div>
+            <div class="card-body">
+                {% if entity == init_tracker.get_current_entity() %}
+                    <p>It's your turn! Go forth and conquer!</p>
+                {% else %}
+                    <p>...</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}

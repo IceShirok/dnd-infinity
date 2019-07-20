@@ -1,10 +1,29 @@
 from flask import Flask, render_template, redirect, url_for, abort
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+
 from ddddd import pc_playground as pc
 from ddddd.entity.character.base import prettify_modifier
 
 import logging
+import os
+
+from ddddd.mechanics import init_tracker
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+
+class Config(object):
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+        'sqlite:///' + os.path.join(basedir, 'app.db')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
 
 app = Flask(__name__)
+app.config.from_object(Config)
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -33,6 +52,11 @@ def page_not_found(e):
                            available_pc=pc.get_available_characters()), 404
 
 
+"""
+PC Character Manager
+"""
+
+
 @app.route('/pc/<string:pc_name>')
 def generate_pc_def():
     return redirect(url_for('generate_pc', pc_name=pc, level=1))
@@ -50,6 +74,26 @@ def generate_pc(pc_name, level):
                            title='D&D Character Sheet - {}'.format(pc_name.capitalize()),
                            pc=create_pc(level=level),
                            pmod=prettify_modifier)
+
+
+"""
+Initiative Tracker
+"""
+
+
+@app.route('/combat/create')
+def initiative_tracker_creator():
+    return render_template('init_tracker_creator.html',
+                           title='D&D Initiative Tracker')
+
+
+@app.route('/combat')
+def initiative_tracker():
+    initiative_tracker = init_tracker.get_sample_initiative_tracker()
+    initiative_tracker.reset_combat()
+    return render_template('init_tracker.html',
+                           title='D&D Initiative Tracker',
+                           init_tracker=initiative_tracker)
 
 
 if __name__ == '__main__':

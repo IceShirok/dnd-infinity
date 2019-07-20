@@ -5,9 +5,19 @@ class EntityWithInitiative(object):
 
 
 class SimpleEntity(EntityWithInitiative):
-    def __init__(self, name, initiative_mod):
+    def __init__(self, name, initiative_mod, avatar_initials):
         self.name = name
         self.initiative_mod = initiative_mod
+        self.avatar_initials = avatar_initials
+
+        def stringToColorHex(s):
+            """
+            Ref: https://stackoverflow.com/questions/2464745/compute-hex-color-code-for-an-arbitrary-string
+            """
+            i = hash(s)
+            hex_it_up = hex(((i >> 24) & 0xFFF) + ((i >> 16) & 0xFFF) + ((i >> 8) & 0xFFF) + (i & 0xFFF))
+            return hex_it_up.replace('0x', '#')
+        self.avatar_color = stringToColorHex(self)
 
     def initiative(self):
         return self.initiative_mod
@@ -16,7 +26,11 @@ class SimpleEntity(EntityWithInitiative):
 class InitiativeEntity(object):
     def __init__(self, entity, initiative):
         self.entity = entity
+        self.name = entity.name
         self.initiative = initiative
+
+        self.avatar_initials = entity.avatar_initials
+        self.avatar_color = entity.avatar_color
 
     def __eq__(self, other):
         if not isinstance(other, InitiativeEntity):
@@ -63,31 +77,38 @@ class InitiativeTracker(object):
         return self.entities
 
 
-def initiative_tracker():
+def get_sample_initiative_tracker():
     init_tracker = InitiativeTracker()
     entities_raw = [
-        ('Brother Hadad', 7),
-        ('Cheese', 14),
-        ('Solomon King', 13),
-        ('Lawrence', 21),
-        ('Fethri Winterwhisper', 17),
-        ('Cake Monster', 5),
+        ('Brother Hadad', 7, 'BH'),
+        ('Cheese', 14, 'Ch'),
+        ('Solomon King', 13, 'SK'),
+        ('Lawrence', 21, 'La'),
+        ('Fethri Winterwhisper', 17, 'FW'),
+        ('Cake Monster', 5, 'CM'),
+        ('Abbot Halcyon', 10, 'AH')
     ]
-    for entity, initiative in entities_raw:
-        init_tracker.add_entity(entity, initiative)
+    for entity, initiative, avatar_initials in entities_raw:
+        init_tracker.add_entity(SimpleEntity(entity, 0, avatar_initials), initiative)
+    return init_tracker
 
-    def print_init_tracker():
-        entities = init_tracker.get_intiative_order()
-        print('ROUND {}'.format(init_tracker.round))
-        for e in entities:
-            if init_tracker.get_current_entity() == e:
-                print('---> {}'.format(e))
-            else:
-                print('     {}'.format(e))
+
+def print_init_tracker(init_tracker):
+    entities = init_tracker.get_intiative_order()
+    print('ROUND {}'.format(init_tracker.round))
+    for e in entities:
+        if init_tracker.get_current_entity() == e:
+            print('---> {}'.format(e))
+        else:
+            print('     {}'.format(e))
+
+
+def initiative_tracker():
+    init_tracker = get_sample_initiative_tracker()
 
     init_tracker.reset_combat()
     while True:
-        print_init_tracker()
+        print_init_tracker(init_tracker)
         user_input = input('What would you like to do? (exit, etc) > ')
         if user_input == 'exit':
             break
